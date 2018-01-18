@@ -1,17 +1,6 @@
-﻿  MenuState.cpp
-c:\users\aaron\source\repos\crucible_game\crucible_game\tile.h(50): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-c:\users\aaron\source\repos\crucible_game\crucible_game\gamestate.h(19): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-c:\users\aaron\source\repos\crucible_game\crucible_game\gamestate.h(20): warning C4244: 'argument': conversion from 'const unsigned int' to 'float', possible loss of data
-c:\users\aaron\source\repos\crucible_game\crucible_game\gui.h(40): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-c:\users\aaron\source\repos\crucible_game\crucible_game\gui.h(40): warning C4244: 'argument': conversion from 'const float' to 'int', possible loss of data
-c:\users\aaron\source\repos\crucible_game\crucible_game\gui.h(91): error C2059: syntax error: ')'
-c:\users\aaron\source\repos\crucible_game\crucible_game\gui.h(91): error C2143: syntax error: missing ')' before ';'
-  Gui.cpp
-c:\users\aaron\source\repos\crucible_game\crucible_game\tile.h(50): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-c:\users\aaron\source\repos\crucible_game\crucible_game\gui.h(40): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-c:\users\aaron\source\repos\crucible_game\crucible_game\gui.h(40): warning C4244: 'argument': conversion from 'const float' to 'int', possible loss of data
-c:\users\aaron\source\repos\crucible_game\crucible_game\gui.h(91): error C2059: syntax error: ')'
-c:\users\aaron\source\repos\crucible_game\crucible_game\gui.h(91): error C2143: syntax error: missing ')' before ';'
-c:\users\aaron\source\repos\crucible_game\crucible_game\gui.cpp(6): error C2511: 'Gui::Gui(void)': overloaded member function not found in 'Gui'
-  c:\users\aaron\source\repos\crucible_game\crucible_game\gui.h(82): note: see declaration of 'Gui'
-  Generating Code...
+﻿  TestState.cpp
+c:\users\aaron\documents\crucible_game\crucible_game\tile.h(50): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\aaron\documents\crucible_game\crucible_game\gamestate.h(19): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\aaron\documents\crucible_game\crucible_game\gamestate.h(20): warning C4244: 'argument': conversion from 'const unsigned int' to 'float', possible loss of data
+c:\users\aaron\documents\crucible_game\crucible_game\teststate.cpp(45): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+  Crucible_Game.vcxproj -> C:\Users\Aaron\Documents\Crucible_Game\x64\Debug\Crucible_Game.exe

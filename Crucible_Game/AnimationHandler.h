@@ -35,7 +35,13 @@ private:
 
 	int currentAnim;
 
+	bool paused;
+
 public:
+
+	/* pause / unpause the anim */
+	void pause() { if(!paused)paused = true; }
+	void unPause() { if (paused)paused = false; }
 
 	/* Add a new animation */
 	void addAnim(Animation& anim);

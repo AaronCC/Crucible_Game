@@ -97,7 +97,7 @@ void Game::loadTiles()
 			TileType::STATIC,
 			TexMap("dungeonFloor", sf::Vector2u{ 1,0 }));*/
 
-	Animation walkAnim(0,8,0.2);
+	Animation walkAnim(0,8,0.1);
 	this->tileAtlas["walktest"] =
 		Tile(sf::Vector2u(64,64), 1, texmgr.getRef("walktest"),
 		{ walkAnim, walkAnim, walkAnim, walkAnim },

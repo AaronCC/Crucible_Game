@@ -69,7 +69,7 @@ void Map::loadMap()
 	}
 	this->player = game->tileAtlas.at("walktest");
 	player.setPosition(sf::Vector2f(0, 0));
-	player.sprite.setPosition(sf::Vector2f(0, 0));
+	player.sprite.setPosition({ (float)game->windowSize.x / 2, (float)game->windowSize.y / 2 });
 	player.animHandler.changeAnim(0);
 }
 
