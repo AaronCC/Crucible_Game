@@ -1,10 +1,18 @@
 #include "Game.h"
 #include "GameState.h"
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
 Game::Game()
 {
-	this->window.create(sf::VideoMode(800, 600), "Game");
+	
+	this->window.create(sf::VideoMode(windowSize.x, windowSize.y), "Game");
 	this->window.setFramerateLimit(60);
+	tileSize = sf::Vector2u(TILE_SIZE, TILE_SIZE);
+	loadTextures();
+	loadFonts();
+	loadTiles();
 }
 
 
@@ -58,4 +66,53 @@ void Game::gameLoop()
 		peekState()->draw(dt);
 		this->window.display();
 	}
+}
+
+void Game::loadTiles()
+{
+	Animation staticAnim(0, 0, 1.0f);
+	this->tileAtlas["grass0"] =
+		Tile(this->tileSize, 1, texmgr.getRef("grass"),
+		{ staticAnim },
+			TileType::STATIC,
+			TexMap("grass0", sf::Vector2u{ 0,0 }));
+	this->tileAtlas["grass1"] =
+		Tile(this->tileSize, 1, texmgr.getRef("grass"),
+		{ staticAnim },
+			TileType::STATIC,
+			TexMap("grass1", sf::Vector2u{ 1,0 }));
+	this->tileAtlas["grass2"] =
+		Tile(this->tileSize, 1, texmgr.getRef("grass"),
+		{ staticAnim },
+			TileType::STATIC,
+			TexMap("grass2", sf::Vector2u{ 2,0 }));
+}
+
+void Game::loadTextures()
+{
+	std::string line;
+	std::ifstream texFile("media/Textures.txt");
+	if (texFile.is_open())
+	{
+		while (std::getline(texFile, line))
+		{
+			std::istringstream iss(line);
+			std::vector<std::string> texPair((std::istream_iterator<std::string>(iss)),
+				std::istream_iterator<std::string>());
+			texmgr.loadTexture(texPair[0], texPair[1]);
+		}
+		texFile.close();
+	}
+}
+
+void Game::loadFonts()
+{
+	sf::Font font;
+	if (!font.loadFromFile("media/font.ttf"))
+	{
+		//Error
+	}
+	this->fonts["main_font"] = font;
+
+	return;
 }

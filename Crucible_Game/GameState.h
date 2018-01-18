@@ -15,10 +15,15 @@ public:
 	virtual void update(const float dt) = 0;
 	virtual void handleInput() = 0;
 
+	void initView() {
+		view = { sf::Vector2f(this->game->windowSize.x / 2, this->game->windowSize.y / 2),
+			sf::Vector2f(this->game->windowSize.x, this->game->windowSize.y) };
+	}
+
 	void GameState::resizeView(float windowW, float windowH)
 	{
 		float windowRatio = windowW / (float)windowH;
-		float viewRatio = this->game->aspectRatio;
+		float viewRatio =  this->game->aspectRatio;
 		float sizeX = 1;
 		float sizeY = 1;
 		float posX = 0;

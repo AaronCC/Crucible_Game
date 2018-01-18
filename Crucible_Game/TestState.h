@@ -2,6 +2,7 @@
 #define TEST_STATE_H
 
 #include "GameState.h"
+#include "Map.h"
 
 class TestState : public GameState
 {
@@ -17,6 +18,8 @@ public:
 private:
 	sf::Font testFont;
 	sf::Text testText;
+
+	Map* map;
 };
 
 #endif /* TEST_STATE_H */

@@ -5,6 +5,11 @@
 #include <SFML/System.hpp>
 #include <stack>
 
+#include "TextureManager.h"
+#include "Tile.h"
+
+#define TILE_SIZE 32
+
 class GameState;
 
 class Game
@@ -12,7 +17,7 @@ class Game
 public: 
 
 	const float aspectRatio = 800 / (float)600;
-
+	const sf::Vector2u windowSize{ 800,600 };
 	std::stack<GameState*> states;
 
 	void pushState(GameState* state);
@@ -20,12 +25,26 @@ public:
 	void changeState(GameState* state);
 	GameState* peekState();
 
-	void gameLoop();
+	std::map<std::string, Tile> tileAtlas;
+	//std::map<std::string, GuiStyle> stylesheets;
+	std::map<std::string, sf::Font> fonts;
+	sf::Vector2u tileSize;
 
 	sf::RenderWindow window;
+	TextureManager texmgr;
+
+	void gameLoop();
+
 	Game();
 	~Game();
 
+private:
+
+	void loadTiles();
+
+	void loadTextures();
+
+	void loadFonts();
 };
 
 #endif /* GAME_H */

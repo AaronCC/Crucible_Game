@@ -1,5 +1,5 @@
-﻿  TestState.cpp
-  Main.cpp
-  Generating Code...
+﻿  Map.cpp
+c:\users\aaron\source\repos\crucible_game\crucible_game\tile.h(45): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\aaron\source\repos\crucible_game\crucible_game\map.cpp(17): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
   Crucible_Game.vcxproj -> C:\Users\Aaron\source\repos\Crucible_Game\x64\Debug\Crucible_Game.exe
   Crucible_Game.vcxproj -> C:\Users\Aaron\source\repos\Crucible_Game\x64\Debug\Crucible_Game.pdb (Partial PDB)
