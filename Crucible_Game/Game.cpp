@@ -86,6 +86,18 @@ void Game::loadTiles()
 		{ staticAnim },
 			TileType::STATIC,
 			TexMap("grass2", sf::Vector2u{ 2,0 }));
+
+	this->tileAtlas["dungeonWall"] =
+		Tile(this->tileSize, 1, texmgr.getRef("dungeon"),
+		{ staticAnim },
+			TileType::STATIC,
+			TexMap("dungeonWall", sf::Vector2u{ 0,0 }));
+	this->tileAtlas["dungeonFloor"] =
+		Tile(this->tileSize, 1, texmgr.getRef("dungeon"),
+		{ staticAnim },
+			TileType::STATIC,
+			TexMap("dungeonFloor", sf::Vector2u{ 1,0 }));
+
 }
 
 void Game::loadTextures()

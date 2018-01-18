@@ -20,6 +20,11 @@ public:
 			sf::Vector2f(this->game->windowSize.x, this->game->windowSize.y) };
 	}
 
+	void updateView(sf::Vector2f center)
+	{
+		view.setCenter(center);
+	}
+
 	void GameState::resizeView(float windowW, float windowH)
 	{
 		float windowRatio = windowW / (float)windowH;

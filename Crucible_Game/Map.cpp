@@ -19,7 +19,7 @@ void Map::loadMap()
 	----------------
 	TEST MAP
 	5x5 GRASS @ 0,0
-	*/
+
 	width = 26;
 	height = 26;
 	sf::Vector2f origin{ 0,0 };
@@ -39,10 +39,32 @@ void Map::loadMap()
 		pos.y += tileSize.y;
 		pos.x = origin.x;
 	}
-	/*
+
 	END
 	----------------
+	DUNGEON LEVEL
+
 	*/
+	width = 25;
+	height = 25;
+	sf::Vector2f origin{ 0,0 };
+	sf::Vector2f pos{ origin.x,origin.y };
+
+	for (size_t y = 0; y < height; y++)
+	{
+		for (size_t x = 0; x < width; x++)
+		{
+			if(x == 0 || y == 0 || x == width-1 || y == height-1 )
+				tiles.push_back(game->tileAtlas.at("dungeonWall"));
+			else
+				tiles.push_back(game->tileAtlas.at("dungeonFloor"));
+			this->tiles[y*this->width + x].setPosition(pos);
+			this->tiles[y*this->width + x].sprite.setPosition(pos);
+			pos.x += tileSize.x;
+		}
+		pos.y += tileSize.y;
+		pos.x = origin.x;
+	}
 }
 
 Map::Map(Game* game)

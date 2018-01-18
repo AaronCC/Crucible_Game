@@ -42,7 +42,28 @@ void TestState::handleInput()
 			resizeView(event.size.width, event.size.height);
 			break;
 		}
+		case sf::Event::KeyPressed:
+		{
+			
+		}
 		default: break;
 		}
+	}
+	sf::Vector2f center = view.getCenter();
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+	{
+		updateView({ center.x - 5, center.y });
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+	{
+		updateView({ center.x, center.y - 5 });
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+	{
+		updateView({ center.x, center.y + 5});
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+	{
+		updateView({ center.x + 5, center.y });
 	}
 }
