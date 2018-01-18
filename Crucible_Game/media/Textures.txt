@@ -1,2 +1,3 @@
 grass media/ground_grass.png
 dungeon media/ground_dungeon.png
+walktest media/walktest.png

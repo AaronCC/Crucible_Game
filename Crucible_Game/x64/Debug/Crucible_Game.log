@@ -1,7 +1,14 @@
-﻿  TestState.cpp
+﻿  Tile.cpp
+c:\users\aaron\source\repos\crucible_game\crucible_game\tile.h(45): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\aaron\source\repos\crucible_game\crucible_game\tile.cpp(35): warning C4065: switch statement contains 'default' but no 'case' labels
+  TestState.cpp
 c:\users\aaron\source\repos\crucible_game\crucible_game\tile.h(45): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
 c:\users\aaron\source\repos\crucible_game\crucible_game\gamestate.h(19): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
 c:\users\aaron\source\repos\crucible_game\crucible_game\gamestate.h(20): warning C4244: 'argument': conversion from 'const unsigned int' to 'float', possible loss of data
 c:\users\aaron\source\repos\crucible_game\crucible_game\teststate.cpp(42): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+  Map.cpp
+c:\users\aaron\source\repos\crucible_game\crucible_game\tile.h(45): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\aaron\source\repos\crucible_game\crucible_game\map.cpp(18): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  Generating Code...
   Crucible_Game.vcxproj -> C:\Users\Aaron\source\repos\Crucible_Game\x64\Debug\Crucible_Game.exe
   Crucible_Game.vcxproj -> C:\Users\Aaron\source\repos\Crucible_Game\x64\Debug\Crucible_Game.pdb (Partial PDB)

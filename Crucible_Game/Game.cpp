@@ -71,7 +71,7 @@ void Game::gameLoop()
 void Game::loadTiles()
 {
 	Animation staticAnim(0, 0, 1.0f);
-	this->tileAtlas["grass0"] =
+	/*this->tileAtlas["grass0"] =
 		Tile(this->tileSize, 1, texmgr.getRef("grass"),
 		{ staticAnim },
 			TileType::STATIC,
@@ -85,19 +85,25 @@ void Game::loadTiles()
 		Tile(this->tileSize, 1, texmgr.getRef("grass"),
 		{ staticAnim },
 			TileType::STATIC,
-			TexMap("grass2", sf::Vector2u{ 2,0 }));
+			TexMap("grass2", sf::Vector2u{ 2,0 }));*/
 
-	this->tileAtlas["dungeonWall"] =
+	this->tileAtlas["dungeon"] =
+		Tile(this->tileSize, 1, texmgr.getRef("dungeon"),
+		{ staticAnim, staticAnim },
+			TileType::STATIC,
+			TexMap("dungeon", sf::Vector2u{ 0,0 }));
+	/*this->tileAtlas["dungeonFloor"] =
 		Tile(this->tileSize, 1, texmgr.getRef("dungeon"),
 		{ staticAnim },
 			TileType::STATIC,
-			TexMap("dungeonWall", sf::Vector2u{ 0,0 }));
-	this->tileAtlas["dungeonFloor"] =
-		Tile(this->tileSize, 1, texmgr.getRef("dungeon"),
-		{ staticAnim },
-			TileType::STATIC,
-			TexMap("dungeonFloor", sf::Vector2u{ 1,0 }));
+			TexMap("dungeonFloor", sf::Vector2u{ 1,0 }));*/
 
+	Animation walkAnim(0,8,0.2);
+	this->tileAtlas["walktest"] =
+		Tile(sf::Vector2u(64,64), 1, texmgr.getRef("walktest"),
+		{ walkAnim, walkAnim, walkAnim, walkAnim },
+			TileType::ANIMATED,
+			TexMap("walktest", sf::Vector2u{ 1,0 }));
 }
 
 void Game::loadTextures()

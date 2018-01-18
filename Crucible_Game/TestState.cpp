@@ -53,17 +53,21 @@ void TestState::handleInput()
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{
 		updateView({ center.x - 5, center.y });
+		this->map->player.animHandler.changeAnim(1);
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 	{
 		updateView({ center.x, center.y - 5 });
+		this->map->player.animHandler.changeAnim(0);
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 	{
 		updateView({ center.x, center.y + 5});
+		this->map->player.animHandler.changeAnim(2);
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 	{
 		updateView({ center.x + 5, center.y });
+		this->map->player.animHandler.changeAnim(3);
 	}
 }

@@ -6,14 +6,14 @@
 void Tile::draw(sf::RenderWindow& window, float dt)
 {
 	/* Change the sprite to reflect the tile variant */
-	this->animHandler.changeAnim(this->tileVariant);
+	if (tileType == TileType::STATIC)
+		this->animHandler.changeAnim(this->tileVariant);
 
 	/* Update the animation */
 	this->animHandler.update(dt);
 
 	/* Update the sprite */
-	if (tileType == TileType::ANIMATED)
-		this->sprite.setTextureRect(this->animHandler.bounds);
+	this->sprite.setTextureRect(this->animHandler.bounds);
 
 	/* Draw the tile */
 	window.draw(this->sprite);

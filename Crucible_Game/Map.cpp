@@ -9,6 +9,7 @@ void Map::draw(sf::RenderWindow & window, float dt)
 			this->tiles[y*this->width + x].draw(window, dt);
 		}
 	}
+	player.draw(window, dt);
 	return;
 }
 
@@ -54,10 +55,11 @@ void Map::loadMap()
 	{
 		for (size_t x = 0; x < width; x++)
 		{
-			if(x == 0 || y == 0 || x == width-1 || y == height-1 )
-				tiles.push_back(game->tileAtlas.at("dungeonWall"));
+			tiles.push_back(game->tileAtlas.at("dungeon"));
+			if (x == 0 || y == 0 || x == width - 1 || y == height - 1)
+				this->tiles[y*this->width + x].tileVariant = 0;
 			else
-				tiles.push_back(game->tileAtlas.at("dungeonFloor"));
+				this->tiles[y*this->width + x].tileVariant = 1;
 			this->tiles[y*this->width + x].setPosition(pos);
 			this->tiles[y*this->width + x].sprite.setPosition(pos);
 			pos.x += tileSize.x;
@@ -65,6 +67,10 @@ void Map::loadMap()
 		pos.y += tileSize.y;
 		pos.x = origin.x;
 	}
+	this->player = game->tileAtlas.at("walktest");
+	player.setPosition(sf::Vector2f(0, 0));
+	player.sprite.setPosition(sf::Vector2f(0, 0));
+	player.animHandler.changeAnim(0);
 }
 
 Map::Map(Game* game)
