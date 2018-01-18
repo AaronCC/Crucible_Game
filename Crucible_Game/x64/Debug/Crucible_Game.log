@@ -1,14 +1,17 @@
-﻿  Tile.cpp
-c:\users\aaron\source\repos\crucible_game\crucible_game\tile.h(45): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-c:\users\aaron\source\repos\crucible_game\crucible_game\tile.cpp(35): warning C4065: switch statement contains 'default' but no 'case' labels
-  TestState.cpp
-c:\users\aaron\source\repos\crucible_game\crucible_game\tile.h(45): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+﻿  MenuState.cpp
+c:\users\aaron\source\repos\crucible_game\crucible_game\tile.h(50): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
 c:\users\aaron\source\repos\crucible_game\crucible_game\gamestate.h(19): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
 c:\users\aaron\source\repos\crucible_game\crucible_game\gamestate.h(20): warning C4244: 'argument': conversion from 'const unsigned int' to 'float', possible loss of data
-c:\users\aaron\source\repos\crucible_game\crucible_game\teststate.cpp(42): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-  Map.cpp
-c:\users\aaron\source\repos\crucible_game\crucible_game\tile.h(45): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-c:\users\aaron\source\repos\crucible_game\crucible_game\map.cpp(18): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\aaron\source\repos\crucible_game\crucible_game\gui.h(40): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\aaron\source\repos\crucible_game\crucible_game\gui.h(40): warning C4244: 'argument': conversion from 'const float' to 'int', possible loss of data
+c:\users\aaron\source\repos\crucible_game\crucible_game\gui.h(91): error C2059: syntax error: ')'
+c:\users\aaron\source\repos\crucible_game\crucible_game\gui.h(91): error C2143: syntax error: missing ')' before ';'
+  Gui.cpp
+c:\users\aaron\source\repos\crucible_game\crucible_game\tile.h(50): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\aaron\source\repos\crucible_game\crucible_game\gui.h(40): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\aaron\source\repos\crucible_game\crucible_game\gui.h(40): warning C4244: 'argument': conversion from 'const float' to 'int', possible loss of data
+c:\users\aaron\source\repos\crucible_game\crucible_game\gui.h(91): error C2059: syntax error: ')'
+c:\users\aaron\source\repos\crucible_game\crucible_game\gui.h(91): error C2143: syntax error: missing ')' before ';'
+c:\users\aaron\source\repos\crucible_game\crucible_game\gui.cpp(6): error C2511: 'Gui::Gui(void)': overloaded member function not found in 'Gui'
+  c:\users\aaron\source\repos\crucible_game\crucible_game\gui.h(82): note: see declaration of 'Gui'
   Generating Code...
-  Crucible_Game.vcxproj -> C:\Users\Aaron\source\repos\Crucible_Game\x64\Debug\Crucible_Game.exe
-  Crucible_Game.vcxproj -> C:\Users\Aaron\source\repos\Crucible_Game\x64\Debug\Crucible_Game.pdb (Partial PDB)

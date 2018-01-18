@@ -90,8 +90,7 @@ void Game::loadTiles()
 	this->tileAtlas["dungeon"] =
 		Tile(this->tileSize, 1, texmgr.getRef("dungeon"),
 		{ staticAnim, staticAnim },
-			TileType::STATIC,
-			TexMap("dungeon", sf::Vector2u{ 0,0 }));
+			TileType::STATIC);
 	/*this->tileAtlas["dungeonFloor"] =
 		Tile(this->tileSize, 1, texmgr.getRef("dungeon"),
 		{ staticAnim },
@@ -102,8 +101,7 @@ void Game::loadTiles()
 	this->tileAtlas["walktest"] =
 		Tile(sf::Vector2u(64,64), 1, texmgr.getRef("walktest"),
 		{ walkAnim, walkAnim, walkAnim, walkAnim },
-			TileType::ANIMATED,
-			TexMap("walktest", sf::Vector2u{ 1,0 }));
+			TileType::ANIMATED);
 }
 
 void Game::loadTextures()
