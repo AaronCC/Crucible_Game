@@ -14,6 +14,10 @@ public:
 	virtual void update(const float dt);
 	virtual void handleInput();
 
+private:
+	Gui buttons;
+	sf::Font testFont;
+	sf::Text testText;
 };
 
 #endif /* MENU_STATE_H*/

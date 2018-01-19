@@ -22,7 +22,7 @@ public:
 
 	std::string activate() { return msg; }
 
-	void draw(const float dt);
+	void draw(sf::RenderWindow& window, float dt);
 	void update(const float dt);
 	void onHover();
 
@@ -52,22 +52,6 @@ public:
 	}
 };
 
-//class GuiButton : GuiElement
-//{
-//	GuiButton(sf::Texture& texture,
-//		const unsigned int height,
-//		const sf::Vector2f size,
-//		const std::vector<Animation>& animations,
-//		const EType type,
-//		const std::string msg)
-//		: GuiElement(texture, height, size, animations, type, msg) {
-//
-//	}
-//	void draw(const float dt);
-//	void update(const float dt);
-//	void onHover();
-//};
-
 class GuiStyle {
 public:
 	sf::Color textCol;
@@ -96,6 +80,10 @@ public:
 	std::vector<GuiElement> elements;
 	GuiElement getEntry(const sf::Vector2f mousePos);
 
+	void draw(sf::RenderWindow& window, float dt);
+	void update(float dt);
+
+	Gui() {}
 	Gui(GuiStyle style, bool horizontal,
 		std::vector<sf::Texture> eTextures,
 		std::vector<std::vector<Animation>> eAnims,

@@ -1,6 +1,7 @@
 #ifndef MAP_H
 #define MAP_H
 #include "Game.h"
+#include "Gui.h"
 
 class Map
 {
@@ -18,6 +19,10 @@ public:
 
 	Map(Game* game);
 	~Map();
+
+private:
+	Gui buttons;
+	sf::Font testFont;
 };
 
 #endif /* MAP_H */
