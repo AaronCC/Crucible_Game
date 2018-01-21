@@ -69,7 +69,7 @@ public:
 	AnimationHandler(const sf::IntRect& frameSize)
 	{
 		this->frameSize = frameSize;
-
+		this->paused = false;
 		this->t = 0.0f;
 		this->currentAnim = -1;
 	}
