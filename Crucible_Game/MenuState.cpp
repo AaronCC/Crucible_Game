@@ -12,11 +12,13 @@ MenuState::MenuState(Game* game)
 	buttons = Gui(
 		GuiStyle(sf::Color::Black, sf::Color::White, &testFont, false),
 		true,
-		{"button"},
-		{ { btnAnim } },
-		{ std::pair<std::string,std::string>("btn1","btn1") },
+		{"button","button"},
+		{ { btnAnim }, { btnAnim } },
+		{ std::pair<std::string,std::string>("btn1","btn1"),
+		  std::pair<std::string,std::string>("btn1","btn1") },
 		{ 64,32 },
-		{ { (float)this->game->windowSize.x/2, (float)this->game->windowSize.y/2} },
+		{ { (float)this->game->windowSize.x/2, (float)this->game->windowSize.y/2 },
+		  { 400, 400 } },
 		EType::BUTTON, 0, game);
 	initView();
 }
@@ -54,7 +56,16 @@ void MenuState::handleInput()
 		}
 		case sf::Event::MouseMoved:
 		{
-			this->buttons.highlight(this->buttons.getElement(mousePos));
+			this->buttons.highlight(this->buttons.getElement(mousePos));	
+		}
+		case sf::Event::MouseButtonPressed:
+		{
+			if (event.mouseButton.button == sf::Mouse::Left)
+			{
+				std::string msg = this->buttons.getEMsg(mousePos);
+				if (msg == "btn1")
+					this->game->pushState(new TestState(game));
+			}
 		}
 		case sf::Event::KeyReleased:
 		{

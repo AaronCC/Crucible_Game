@@ -5,8 +5,8 @@
 
 void AnimationHandler::update(const float dt)
 {
-	//if (paused)
-	//	return;
+	if (paused)
+		return;
 
 	if (currentAnim >= this->animations.size() || currentAnim < 0) return;
 

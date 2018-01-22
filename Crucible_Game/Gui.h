@@ -92,7 +92,7 @@ public:
 
 	std::vector<GuiElement> elements;
 	int getElement(const sf::Vector2f mousePos);
-
+	std::string getEMsg(const sf::Vector2f mousePos);
 	void draw(sf::RenderWindow& window, float dt);
 	void update(float dt);
 
