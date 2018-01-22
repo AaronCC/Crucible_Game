@@ -8,8 +8,13 @@ TestState::TestState(Game* game)
 	testFont.loadFromFile("C:/Windows/Fonts/Arial.ttf");
 	testText.setFont(testFont);
 	testText.setPosition(200, 200);
-	testText.setString("Crucible Game");
+	testText.setString("");
 	initView();
+	Animation walkAnim(0, 8, 0.1);
+	player = Player(game,
+		sf::Vector2u(64,64),
+		this->game->texmgr.getRef("walktest"),
+		{ walkAnim,walkAnim,walkAnim,walkAnim });
 	map = new Map(game);
 	map->loadMap();
 }
@@ -21,13 +26,16 @@ TestState::~TestState()
 void TestState::draw(const float dt)
 {
 	this->game->window.setView(this->view);
-	this->game->window.draw(testText);
 	this->map->draw(this->game->window, dt);
+
+	testText.setString(std::to_string(player.getForce().x) + std::to_string(player.getForce().y));
+	this->game->window.draw(testText);
+	this->player.draw(dt);
 }
 
 void TestState::update(const float dt)
 {
-
+	this->player.update(dt);
 }
 
 void TestState::handleInput()
@@ -36,6 +44,7 @@ void TestState::handleInput()
 
 	sf::Vector2f mousePos = this->game->window.mapPixelToCoords(sf::Mouse::getPosition(this->game->window), this->view);
 
+	this->player.handleInput();
 	while (this->game->window.pollEvent(event))
 	{
 		switch (event.type)
@@ -53,7 +62,7 @@ void TestState::handleInput()
 		}
 	}
 	sf::Vector2f center = view.getCenter();
-	PLAYER.animHandler.unPause();
+	/*PLAYER.animHandler.unPause();
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{
 		updateView({ center.x - 2, center.y });
@@ -82,5 +91,5 @@ void TestState::handleInput()
 	else
 	{
 		PLAYER.animHandler.pause();
-	}
+	}*/
 }

@@ -9,7 +9,7 @@ void Map::draw(sf::RenderWindow & window, float dt)
 			this->tiles[y*this->width + x].draw(window, dt);
 		}
 	}
-	player.draw(window, dt);
+	//player.draw(window, dt);
 	return;
 }
 
@@ -67,10 +67,10 @@ void Map::loadMap()
 		pos.y += tileSize.y;
 		pos.x = origin.x;
 	}
-	this->player = game->tileAtlas.at("walktest");
+	/*this->player = game->tileAtlas.at("walktest");
 	player.setPosition(sf::Vector2f(0, 0));
 	player.sprite.setPosition({ (float)game->windowSize.x / 2, (float)game->windowSize.y / 2 });
-	player.animHandler.changeAnim(0);
+	player.animHandler.changeAnim(0);*/
 }
 
 Map::Map(Game* game)

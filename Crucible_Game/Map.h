@@ -10,7 +10,7 @@ public:
 	int width, height;
 	sf::Vector2u tileSize;
 	Tile background;
-	Tile player;
+	//Tile player;
 	Game* game;
 
 	void draw(sf::RenderWindow & window, float dt);
