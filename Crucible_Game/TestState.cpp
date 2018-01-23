@@ -12,7 +12,7 @@ TestState::TestState(Game* game)
 	initView();
 	Animation walkAnim(0, 8, 0.1);
 	player = Player(game,
-		sf::Vector2u(64,64),
+		sf::Vector2u(64, 64),
 		this->game->texmgr.getRef("walktest"),
 		{ walkAnim,walkAnim,walkAnim,walkAnim });
 	map = new Map(game);
@@ -28,14 +28,18 @@ void TestState::draw(const float dt)
 	this->game->window.setView(this->view);
 	this->map->draw(this->game->window, dt);
 
-	testText.setString(std::to_string(player.getForce().x) + std::to_string(player.getForce().y));
-	this->game->window.draw(testText);
+	//testText.setString(std::to_string(player.getForce().x) + std::to_string(player.getForce().y));
+	//this->game->window.draw(testText);
 	this->player.draw(dt);
 }
 
 void TestState::update(const float dt)
 {
+	sf::Vector2f oldPos = player.position;
 	this->player.update(dt);
+	this->player.updateAnim(view);
+	if (oldPos != player.position)
+		updateView(player.position);
 }
 
 void TestState::handleInput()
@@ -47,6 +51,7 @@ void TestState::handleInput()
 	this->player.handleInput();
 	while (this->game->window.pollEvent(event))
 	{
+		player.handleEvent(event);
 		switch (event.type)
 		{
 		case sf::Event::Resized:
@@ -56,7 +61,7 @@ void TestState::handleInput()
 		}
 		case sf::Event::KeyReleased:
 		{
-			
+
 		}
 		default: break;
 		}
@@ -74,7 +79,7 @@ void TestState::handleInput()
 		updateView({ center.x, center.y - 2 });
 		PLAYER.animHandler.changeAnim(0);
 		PLAYER.sprite.setPosition({ PLAYER.sprite.getPosition().x, PLAYER.sprite.getPosition().y - 2 });
-		
+
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 	{

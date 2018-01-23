@@ -40,6 +40,14 @@ void AnimationHandler::update(const float dt)
 	return;
 }
 
+void AnimationHandler::reset()
+{
+	sf::IntRect rect = this->frameSize;
+	rect.left = 0;
+	rect.top = rect.height * this->currentAnim;
+	this->bounds = rect;
+}
+
 void AnimationHandler::addAnim(Animation& anim)
 {
 	this->animations.push_back(anim);

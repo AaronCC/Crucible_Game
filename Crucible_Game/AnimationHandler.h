@@ -39,6 +39,8 @@ private:
 
 public:
 
+	void reset();
+
 	/* pause / unpause the anim */
 	void pause() { if(!paused)paused = true; }
 	void unPause() { if (paused)paused = false; }
