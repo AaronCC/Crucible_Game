@@ -40,7 +40,7 @@ void Player::handleEvent(sf::Event event)
 	switch (event.type)
 	{
 	case sf::Event::Resized:
-		hudView = helper.resizeView(event.size.width, event.size.height, game->aspectRatio);
+		hudView.setViewport(helper.resizeView(event.size.width, event.size.height, game->aspectRatio));
 	default:
 		break;
 	}
@@ -108,12 +108,12 @@ void Player::update(float dt)
 
 	totalForce += moveForce;
 
-	fX = velocity.x == 0 ? 0 : friction; // 0.1
+	fX = velocity.x == 0 ? 0 : friction;
 	fY = velocity.y == 0 ? 0 : friction;
 
 	acceleration.x = velocity.x > 0 ? (totalForce.x / mass) - fX 
 		: (totalForce.x / mass) + fX;
-	acceleration.y = velocity.y > 0 ? (totalForce.y / mass) - fY // 0.1
+	acceleration.y = velocity.y > 0 ? (totalForce.y / mass) - fY
 		: (totalForce.y / mass) + fY;
 
 	velocity += acceleration; 

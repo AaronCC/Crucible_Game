@@ -43,8 +43,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\Aaron\Documents\Crucible_Game\SFML-2.4.2\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Aaron\Documents\Crucible_Game\SFML-2.4.2\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files %28x86%29\SFML-2.4.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files %28x86%29\SFML-2.4.0\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>C:\Users\Aaron\Documents\Crucible_Game\SFML-2.4.2\include;$(IncludePath)</IncludePath>
@@ -81,22 +81,30 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AnimationHandler.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Gui.cpp" />
+    <ClCompile Include="Helper.cpp" />
+    <ClCompile Include="Hud.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="MenuState.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="TestState.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Tile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimationHandler.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="Gui.h" />
+    <ClInclude Include="Helper.h" />
+    <ClInclude Include="Hud.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="MenuState.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="TestState.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Tile.h" />

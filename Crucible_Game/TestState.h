@@ -4,6 +4,7 @@
 #include "GameState.h"
 #include "Player.h"
 #include "Map.h"
+#include "Camera.h"
 
 class TestState : public GameState
 {
@@ -12,8 +13,12 @@ public:
 	TestState(Game* game);
 	~TestState();
 
-	Player player;
+	Camera camera;
 
+	Player player;
+	int fps;
+	int fTotal;
+	float fTime;
 	virtual void draw(const float dt);
 	virtual void update(const float dt);
 	virtual void handleInput();

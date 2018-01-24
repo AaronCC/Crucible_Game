@@ -1,6 +1,6 @@
 #include "Helper.h"
 
-sf::View Helper::resizeView(float windowW, float windowH, float aspectRatio)
+sf::FloatRect Helper::resizeView(float windowW, float windowH, float aspectRatio)
 {
 	float windowRatio = windowW / (float)windowH;
 	float viewRatio = aspectRatio;
@@ -22,7 +22,7 @@ sf::View Helper::resizeView(float windowW, float windowH, float aspectRatio)
 		posY = (1 - sizeY) / 2.f;
 	}
 
-	return sf::View(sf::FloatRect(posX, posY, sizeX, sizeY));
+	return sf::FloatRect(posX, posY, sizeX, sizeY);
 }
 
 float Helper::magnitude(sf::Vector2f vec)

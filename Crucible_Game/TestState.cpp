@@ -9,7 +9,7 @@ TestState::TestState(Game* game)
 	testText.setFont(testFont);
 	testText.setPosition(200, 200);
 	testText.setString("");
-	initView();
+	//initView();
 	Animation walkAnim(0, 8, 0.1);
 	player = Player(game,
 		sf::Vector2u(64, 64),
@@ -17,6 +17,7 @@ TestState::TestState(Game* game)
 		{ walkAnim,walkAnim,walkAnim,walkAnim });
 	map = new Map(game);
 	map->loadMap();
+	camera = Camera(game, &player);
 }
 
 TestState::~TestState()
@@ -25,21 +26,27 @@ TestState::~TestState()
 
 void TestState::draw(const float dt)
 {
-	this->game->window.setView(this->view);
+	this->camera.setView();
 	this->map->draw(this->game->window, dt);
-
-	//testText.setString(std::to_string(player.getForce().x) + std::to_string(player.getForce().y));
-	//this->game->window.draw(testText);
+	if (fTime >= 1)
+	{
+		fTime = 0;
+		fTotal = fps;
+		fps = 0;
+	}
+	fTime += dt;
+	fps++;
+	testText.setString(std::to_string(fTotal));
+	this->game->window.draw(testText);
 	this->player.draw(dt);
 }
 
 void TestState::update(const float dt)
 {
 	sf::Vector2f oldPos = player.position;
+	this->camera.update(dt);
 	this->player.update(dt);
 	this->player.updateAnim(view);
-	if (oldPos != player.position)
-		updateView(player.position);
 }
 
 void TestState::handleInput()
