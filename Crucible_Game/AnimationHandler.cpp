@@ -46,6 +46,7 @@ void AnimationHandler::reset()
 	rect.left = 0;
 	rect.top = rect.height * this->currentAnim;
 	this->bounds = rect;
+	this->paused = false;
 }
 
 void AnimationHandler::addAnim(Animation& anim)

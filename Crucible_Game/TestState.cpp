@@ -9,7 +9,7 @@ TestState::TestState(Game* game)
 	testText.setFont(testFont);
 	testText.setPosition(200, 200);
 	testText.setString("");
-	//initView();
+	initView();
 	Animation walkAnim(0, 8, 0.1);
 	player = Player(game,
 		sf::Vector2u(64, 64),
@@ -27,6 +27,7 @@ TestState::~TestState()
 void TestState::draw(const float dt)
 {
 	this->camera.setView();
+	//this->game->window.
 	this->map->draw(this->game->window, dt);
 	if (fTime >= 1)
 	{
@@ -46,7 +47,7 @@ void TestState::update(const float dt)
 	sf::Vector2f oldPos = player.position;
 	this->camera.update(dt);
 	this->player.update(dt);
-	this->player.updateAnim(view);
+	this->player.updateAnim(this->camera.view);
 }
 
 void TestState::handleInput()
@@ -54,7 +55,7 @@ void TestState::handleInput()
 	sf::Event event;
 
 	sf::Vector2f mousePos = this->game->window.mapPixelToCoords(sf::Mouse::getPosition(this->game->window), this->view);
-
+	
 	this->player.handleInput();
 	while (this->game->window.pollEvent(event))
 	{

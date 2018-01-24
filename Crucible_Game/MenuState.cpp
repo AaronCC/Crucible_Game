@@ -44,7 +44,7 @@ void MenuState::handleInput()
 	sf::Event event;
 
 	sf::Vector2f mousePos = this->game->window.mapPixelToCoords(sf::Mouse::getPosition(this->game->window), this->view);
-
+	
 	while (this->game->window.pollEvent(event))
 	{
 		switch (event.type)

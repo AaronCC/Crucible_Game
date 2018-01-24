@@ -2,7 +2,7 @@
 
 void Camera::update(float dt)
 {
-	sf::Vector2f target = this->player->position;
+	/*sf::Vector2f target = this->player->position;
 	sf::Vector2f center = this->view.getCenter();
 
 	if (center == target)
@@ -24,9 +24,10 @@ void Camera::update(float dt)
 	{
 		if (mag < helper.magnitude((dir * speed) * dt))
 			this->view.setCenter(target);
-		velocity *= 0.8f;
+		velocity *= 0.2f;
 		this->view.move(velocity * dt);
-	}
+	}*/
+	this->view.setCenter(player->position);
 }
 
 void Camera::setView()

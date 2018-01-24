@@ -6,6 +6,7 @@
 #include "Game.h"
 #include "Hud.h"
 #include "Helper.h"
+#include "Ability.h"
 
 class Player
 {
@@ -23,7 +24,8 @@ public:
 	int maxHealth;
 
 	WalkState walkState;
-
+	WalkState oldWalkState;
+		
 	AnimationHandler animHandler;
 
 	Game* game;
@@ -31,6 +33,14 @@ public:
 	sf::View hudView;
 
 	sf::Sprite sprite;
+
+	std::vector<Ability*> abilities;
+	std::map<sf::Keyboard::Key, Ability> keyAbilities;
+	std::map<sf::Keyboard::Key, float> keyCooldowns;
+	Ability rmbAbility;
+	float rmbCooldown;
+	Ability lmbAbility;
+	float lmbCooldown;
 
 	std::map<sf::Keyboard::Key, bool> keys;
 	std::map<std::string, unsigned int> anims;
@@ -43,6 +53,7 @@ public:
 	void handleEvent(sf::Event event);
 	void draw(float dt);
 	void update(float dt);
+	void updateAbilities(float dt);
 	void move(sf::Vector2f offset) { position += offset; }
 	void setPos(sf::Vector2f pos) { position = pos; }
 	void updateAnim(sf::View view);
@@ -58,7 +69,7 @@ public:
 		this->friction = 15.f;
 		this->mass = 1.f;
 		this->speed = 50.f;
-		this->maxSpeed = 125.f;
+		this->maxSpeed = 100.f;
 
 		this->health = 100;
 		this->maxHealth = this->health;
@@ -86,6 +97,7 @@ public:
 			sf::Vector2f(this->game->windowSize.x, this->game->windowSize.y) };
 
 		hud = Hud(game, { "globe","life_globe" });
+		rmbAbility = Ability(this->game, game->texmgr.getRef("slash"), { 0,3,0.1f }, { 32,32 }, "slash", 0.5f);
 	}
 
 	~Player();

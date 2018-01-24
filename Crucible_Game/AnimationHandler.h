@@ -35,13 +35,14 @@ private:
 
 	int currentAnim;
 
-	bool paused;
+	bool paused = false;
 
 public:
 
 	void reset();
 
 	/* pause / unpause the anim */
+	bool isPaused() { return paused; }
 	void pause() { if(!paused)paused = true; }
 	void unPause() { if (paused)paused = false; }
 

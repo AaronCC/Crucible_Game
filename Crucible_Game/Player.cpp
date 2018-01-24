@@ -23,6 +23,16 @@ void Player::handleInput()
 		walkState = WalkState::RIGHT;
 
 	}
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
+	{
+		if (rmbCooldown <= 0)
+		{
+			Ability* ability = new Ability(rmbAbility);
+			ability->activate(this->position, sf::Mouse::getPosition(), ability->id);
+			abilities.push_back(ability);
+			rmbCooldown = ability->cooldown;
+		}
+	}
 	/* temp */
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::J))
 	{
@@ -33,14 +43,17 @@ void Player::handleInput()
 			health = maxHealth;
 		}
 	}
+
 }
 
 void Player::handleEvent(sf::Event event)
-{	
+{
 	switch (event.type)
 	{
 	case sf::Event::Resized:
 		hudView.setViewport(helper.resizeView(event.size.width, event.size.height, game->aspectRatio));
+
+		break;
 	default:
 		break;
 	}
@@ -57,6 +70,11 @@ void Player::draw(float dt)
 	/* Draw the tile */
 	this->game->window.draw(this->sprite);
 
+	for (auto ability : abilities)
+	{
+		ability->draw(dt);
+	}
+
 	this->game->window.setView(hudView);
 	this->hud.draw(dt);
 
@@ -67,14 +85,18 @@ void Player::updateAnim(sf::View view)
 {
 	this->animHandler.unPause();
 
-	if (walkState == WalkState::NONE && velocity.x == 0 && velocity.y == 0)
+	if (walkState == WalkState::NONE && velocity.x == 0 && velocity.y == 0 && !this->animHandler.isPaused())
 	{
-		this->animHandler.pause();
 		this->animHandler.reset();
+		this->animHandler.pause();
 	}
 
 	sf::Vector2f mousePos = this->game->window.mapPixelToCoords(sf::Mouse::getPosition(this->game->window), view);
 	std::string oldAnim = currentAnim;
+
+	/*sf::Vector2f camPos = view.getCenter();
+	sf::Vector2f camW = view.getSize() / 2.f;
+	mousePos = { mousePos.x + camPos.x - camW.x, mousePos.y + camPos.y - camW.y};*/
 
 	float xdiff = mousePos.x - position.x;
 	float ydiff = mousePos.y - position.y;
@@ -86,7 +108,7 @@ void Player::updateAnim(sf::View view)
 		else
 			currentAnim = "S";
 	}
-	else if(xdiff > 0)
+	else if (xdiff > 0)
 	{
 		if (std::abs(ydiff) < std::abs(xdiff))
 			currentAnim = "E";
@@ -98,6 +120,7 @@ void Player::updateAnim(sf::View view)
 	}
 
 	this->animHandler.changeAnim(anims[currentAnim]);
+	oldWalkState = walkState;
 	walkState = WalkState::NONE;
 }
 
@@ -111,12 +134,12 @@ void Player::update(float dt)
 	fX = velocity.x == 0 ? 0 : friction;
 	fY = velocity.y == 0 ? 0 : friction;
 
-	acceleration.x = velocity.x > 0 ? (totalForce.x / mass) - fX 
+	acceleration.x = velocity.x > 0 ? (totalForce.x / mass) - fX
 		: (totalForce.x / mass) + fX;
 	acceleration.y = velocity.y > 0 ? (totalForce.y / mass) - fY
 		: (totalForce.y / mass) + fY;
 
-	velocity += acceleration; 
+	velocity += acceleration;
 
 	velocity.x = std::abs(velocity.x) <= std::abs(fX) ? 0 : velocity.x;
 	velocity.y = std::abs(velocity.y) <= std::abs(fY) ? 0 : velocity.y;
@@ -127,6 +150,36 @@ void Player::update(float dt)
 
 	totalForce -= moveForce;
 	moveForce = { 0,0 };
+
+	updateAbilities(dt);
+}
+
+void Player::updateAbilities(float dt)
+{
+	int i = 0;
+	std::vector<int> rmCache;
+	if (rmbCooldown > 0)
+		rmbCooldown -= dt;
+	if (lmbCooldown > 0)
+		lmbCooldown -= dt;
+	for (auto cd : keyCooldowns)
+	{
+		if (cd.second > 0)
+			cd.second -= dt;
+	}
+	for (auto ability : abilities)
+	{
+		ability->update(dt);
+		if (!ability->isAlive)
+			rmCache.push_back(i);
+		i++;
+	}
+	for (int rm = 0; rm < rmCache.size(); rm++)
+	{
+		abilities.erase(abilities.begin() + rmCache[rm]);
+		if (rm < rmCache.size() - 1)
+			rmCache[rm + 1]--;
+	}
 }
 
 Player::~Player()

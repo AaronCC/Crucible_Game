@@ -28,7 +28,7 @@ public:
 	Camera() {};
 	Camera(Game* game, Player* player)
 	{
-		this->speed = 75.f;
+		this->speed = 115.f;
 		this->maxSpeed = 125.f;
 		this->player = player;
 		this->game = game; 
