@@ -5,3 +5,5 @@ button media/button.png
 globe media/globe.png
 life_globe media/life_globe.png
 slash media/slash.png
+ability_slot media/ability_slot.png
+slash_icon media/slash_icon.png

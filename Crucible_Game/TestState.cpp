@@ -7,7 +7,7 @@ TestState::TestState(Game* game)
 	this->game = game;
 	testFont.loadFromFile("C:/Windows/Fonts/Arial.ttf");
 	testText.setFont(testFont);
-	testText.setPosition(200, 200);
+	testText.setPosition(0, 0);
 	testText.setString("");
 	initView();
 	Animation walkAnim(0, 8, 0.1);
@@ -37,9 +37,9 @@ void TestState::draw(const float dt)
 	}
 	fTime += dt;
 	fps++;
-	testText.setString(std::to_string(fTotal));
-	this->game->window.draw(testText);
+	testText.setString("FPS: " +std::to_string(fTotal));
 	this->player.draw(dt);
+	this->game->window.draw(testText);
 }
 
 void TestState::update(const float dt)
@@ -64,7 +64,7 @@ void TestState::handleInput()
 		{
 		case sf::Event::Resized:
 		{
-			resizeView(event.size.width, event.size.height);
+			this->camera.resizeView(event.size.width, event.size.height);
 			break;
 		}
 		case sf::Event::KeyReleased:

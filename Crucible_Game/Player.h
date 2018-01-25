@@ -96,8 +96,11 @@ public:
 		hudView = { sf::Vector2f(this->game->windowSize.x / 2, this->game->windowSize.y / 2),
 			sf::Vector2f(this->game->windowSize.x, this->game->windowSize.y) };
 
-		hud = Hud(game, { "globe","life_globe" });
+		hud = Hud(game, { "globe","life_globe", "ability_slot" });
+
+		/* TEMP */
 		rmbAbility = Ability(this->game, game->texmgr.getRef("slash"), { 0,3,0.1f }, { 32,32 }, "slash", 0.5f);
+		hud.setSlotSprites({}, "", "slash_icon");
 	}
 
 	~Player();

@@ -126,7 +126,6 @@ void Player::updateAnim(sf::View view)
 
 void Player::update(float dt)
 {
-	this->sprite.setPosition(position);
 	float fX, fY;
 
 	totalForce += moveForce;
@@ -147,6 +146,7 @@ void Player::update(float dt)
 	velocity = helper.clamp(velocity, maxSpeed);
 
 	move(velocity * dt);
+	this->sprite.setPosition(position);
 
 	totalForce -= moveForce;
 	moveForce = { 0,0 };
