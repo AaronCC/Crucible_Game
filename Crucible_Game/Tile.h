@@ -23,7 +23,7 @@ public:
 
 	AnimationHandler animHandler;
 
-	sf::Vector2f position;
+	sf::Vector2i position;
 	sf::Sprite sprite;
 
 	sf::Uint32 unitHeight;
@@ -35,19 +35,22 @@ public:
 	* same tile */
 	int tileVariant;
 
+	bool passable;
+
 	/* Constructor */
 	Tile() { }
 	Tile(sf::Vector2u tileSize, const unsigned int height, sf::Texture& texture,
 		const std::vector<Animation>& animations,
 		const TileType tileType)
 	{
+		this->passable = true;
 		sf::Vector2u size = texture.getSize();
 		this->tileType = tileType;
 		this->tileVariant = 0;
 		unitHeight = tileSize.y / TILE_SIZE;
 		unitWidth = tileSize.x / TILE_SIZE; 
 		this->animHandler.changeAnim(this->tileVariant);
-		this->sprite.setOrigin(sf::Vector2f(tileSize.x/2, tileSize.y));
+		this->sprite.setOrigin(sf::Vector2f(tileSize.x/2, tileSize.y/2));
 		this->sprite.setTexture(texture);
 		this->animHandler.frameSize = sf::IntRect(0, 0, tileSize.x, tileSize.y*height);
 		for (auto animation : animations)
@@ -57,7 +60,10 @@ public:
 		this->animHandler.update(0.0f);
 	}
 
-	void setPosition(sf::Vector2f position) { this->position = position; } 
+	void setPosition(sf::Vector2i position) { 
+		this->position = position; 
+		this->sprite.setPosition({ std::round((float)position.x),std::round((float)position.y) });
+	} 
 
 	void draw(sf::RenderWindow& window, float dt);
 

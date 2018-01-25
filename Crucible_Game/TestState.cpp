@@ -10,14 +10,15 @@ TestState::TestState(Game* game)
 	testText.setPosition(0, 0);
 	testText.setString("");
 	initView();
-	Animation walkAnim(0, 8, 0.1);
-	player = Player(game,
-		sf::Vector2u(64, 64),
-		this->game->texmgr.getRef("walktest"),
-		{ walkAnim,walkAnim,walkAnim,walkAnim });
-	map = new Map(game);
-	map->loadMap();
+	Animation walkAnim(0, 0, 0.1);
 	camera = Camera(game, &player);
+	map = new Map(game, &camera);
+	map->loadMap();
+	player = Player(game,
+		sf::Vector2u(32, 32),
+		this->game->texmgr.getRef("player"),
+		{ walkAnim,walkAnim,walkAnim,walkAnim },
+		map->spawnPos);
 }
 
 TestState::~TestState()
@@ -47,6 +48,7 @@ void TestState::update(const float dt)
 	sf::Vector2f oldPos = player.position;
 	this->camera.update(dt);
 	this->player.update(dt);
+	this->map->update(dt);
 	this->player.updateAnim(this->camera.view);
 }
 
@@ -75,34 +77,4 @@ void TestState::handleInput()
 		}
 	}
 	sf::Vector2f center = view.getCenter();
-	/*PLAYER.animHandler.unPause();
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-	{
-		updateView({ center.x - 2, center.y });
-		PLAYER.animHandler.changeAnim(1);
-		PLAYER.sprite.setPosition({ PLAYER.sprite.getPosition().x - 2, PLAYER.sprite.getPosition().y });
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-	{
-		updateView({ center.x, center.y - 2 });
-		PLAYER.animHandler.changeAnim(0);
-		PLAYER.sprite.setPosition({ PLAYER.sprite.getPosition().x, PLAYER.sprite.getPosition().y - 2 });
-
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-	{
-		updateView({ center.x, center.y + 2});
-		PLAYER.animHandler.changeAnim(2);
-		PLAYER.sprite.setPosition({ PLAYER.sprite.getPosition().x, PLAYER.sprite.getPosition().y + 2 });
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-	{
-		updateView({ center.x + 2, center.y });
-		PLAYER.animHandler.changeAnim(3);
-		PLAYER.sprite.setPosition({ PLAYER.sprite.getPosition().x + 2, PLAYER.sprite.getPosition().y });
-	}
-	else
-	{
-		PLAYER.animHandler.pause();
-	}*/
 }

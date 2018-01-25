@@ -99,6 +99,7 @@
     <ClInclude Include="Ability.h" />
     <ClInclude Include="AnimationHandler.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Dungeon.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="Gui.h" />

@@ -1,19 +1,41 @@
 ﻿  TestState.cpp
-c:\users\aaron\source\repos\crucible_game\crucible_game\tile.h(50): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\aaron\source\repos\crucible_game\crucible_game\tile.h(53): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
 c:\users\aaron\source\repos\crucible_game\crucible_game\gamestate.h(19): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
 c:\users\aaron\source\repos\crucible_game\crucible_game\gamestate.h(20): warning C4244: 'argument': conversion from 'const unsigned int' to 'float', possible loss of data
-c:\users\aaron\source\repos\crucible_game\crucible_game\hud.h(43): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-c:\users\aaron\source\repos\crucible_game\crucible_game\hud.h(48): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-c:\users\aaron\source\repos\crucible_game\crucible_game\hud.h(59): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\aaron\source\repos\crucible_game\crucible_game\hud.h(46): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\aaron\source\repos\crucible_game\crucible_game\hud.h(51): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\aaron\source\repos\crucible_game\crucible_game\hud.h(62): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
 c:\users\aaron\source\repos\crucible_game\crucible_game\ability.h(51): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-c:\users\aaron\source\repos\crucible_game\crucible_game\player.h(79): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-c:\users\aaron\source\repos\crucible_game\crucible_game\player.h(96): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-c:\users\aaron\source\repos\crucible_game\crucible_game\player.h(97): warning C4244: 'argument': conversion from 'const unsigned int' to 'float', possible loss of data
+c:\users\aaron\source\repos\crucible_game\crucible_game\player.h(88): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\aaron\source\repos\crucible_game\crucible_game\player.h(105): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\aaron\source\repos\crucible_game\crucible_game\player.h(106): warning C4244: 'argument': conversion from 'const unsigned int' to 'float', possible loss of data
 c:\users\aaron\source\repos\crucible_game\crucible_game\gui.h(56): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
 c:\users\aaron\source\repos\crucible_game\crucible_game\gui.h(56): warning C4244: 'argument': conversion from 'const float' to 'int', possible loss of data
 c:\users\aaron\source\repos\crucible_game\crucible_game\gui.h(126): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
 c:\users\aaron\source\repos\crucible_game\crucible_game\camera.h(35): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
 c:\users\aaron\source\repos\crucible_game\crucible_game\camera.h(36): warning C4244: 'argument': conversion from 'const unsigned int' to 'float', possible loss of data
 c:\users\aaron\source\repos\crucible_game\crucible_game\teststate.cpp(13): warning C4305: 'argument': truncation from 'double' to 'float'
-c:\users\aaron\source\repos\crucible_game\crucible_game\teststate.cpp(67): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\aaron\source\repos\crucible_game\crucible_game\teststate.cpp(69): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+  Map.cpp
+c:\users\aaron\source\repos\crucible_game\crucible_game\tile.h(53): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\aaron\source\repos\crucible_game\crucible_game\gui.h(56): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\aaron\source\repos\crucible_game\crucible_game\gui.h(56): warning C4244: 'argument': conversion from 'const float' to 'int', possible loss of data
+c:\users\aaron\source\repos\crucible_game\crucible_game\gui.h(126): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+c:\users\aaron\source\repos\crucible_game\crucible_game\hud.h(46): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\aaron\source\repos\crucible_game\crucible_game\hud.h(51): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\aaron\source\repos\crucible_game\crucible_game\hud.h(62): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\aaron\source\repos\crucible_game\crucible_game\ability.h(51): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\aaron\source\repos\crucible_game\crucible_game\player.h(88): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\aaron\source\repos\crucible_game\crucible_game\player.h(105): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\aaron\source\repos\crucible_game\crucible_game\player.h(106): warning C4244: 'argument': conversion from 'const unsigned int' to 'float', possible loss of data
+c:\users\aaron\source\repos\crucible_game\crucible_game\camera.h(35): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\aaron\source\repos\crucible_game\crucible_game\camera.h(36): warning C4244: 'argument': conversion from 'const unsigned int' to 'float', possible loss of data
+c:\users\aaron\source\repos\crucible_game\crucible_game\dungeon.h(151): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+c:\users\aaron\source\repos\crucible_game\crucible_game\dungeon.h(377): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+c:\users\aaron\source\repos\crucible_game\crucible_game\map.cpp(36): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+c:\users\aaron\source\repos\crucible_game\crucible_game\map.cpp(37): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+  Generating Code...
+  Skipping... (no relevant changes detected)
+  MenuState.cpp
+  Main.cpp
   Crucible_Game.vcxproj -> C:\Users\Aaron\source\repos\Crucible_Game\x64\Debug\Crucible_Game.exe

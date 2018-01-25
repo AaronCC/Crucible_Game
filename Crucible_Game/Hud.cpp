@@ -40,6 +40,7 @@ void Hud::setSlotSprites(std::vector<std::pair<sf::Keyboard::Key, std::string>> 
 	}
 }
 
+
 void Hud::draw(float dt)
 {
 	for (auto element : elements)
@@ -58,6 +59,7 @@ void Hud::draw(float dt)
 
 void Hud::update(float dt)
 {
+
 }
 
 void Hud::updateHealth(float percent)
@@ -67,6 +69,18 @@ void Hud::updateHealth(float percent)
 	elements[H_POOL].setTextureRect({ 0, newH,hRect.width,hRect.height });
 	sf::Vector2f pos = elements[H_GLOBE].getPosition();
 	elements[H_POOL].setPosition(pos.x, pos.y + newH);
+}
+
+void Hud::handleInput(sf::Event event)
+{
+	switch (event.type)
+	{
+	case sf::Event::MouseMoved:
+		
+		break;
+	default:
+		break;
+	}
 }
 
 Hud::~Hud()

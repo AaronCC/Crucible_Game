@@ -1,5 +1,5 @@
 #include "Player.h"
-
+#include <cmath>
 void Player::handleInput()
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
@@ -52,8 +52,9 @@ void Player::handleEvent(sf::Event event)
 	{
 	case sf::Event::Resized:
 		hudView.setViewport(helper.resizeView(event.size.width, event.size.height, game->aspectRatio));
-
 		break;
+	case sf::Event::MouseMoved:
+		hud.handleInput(event);
 	default:
 		break;
 	}
@@ -100,8 +101,15 @@ void Player::updateAnim(sf::View view)
 
 	float xdiff = mousePos.x - position.x;
 	float ydiff = mousePos.y - position.y;
+	sf::Vector2f normalDir = helper.normalized({ xdiff,ydiff },
+		helper.magnitude({ xdiff,ydiff }));
+	double angle = std::acos(helper.dotProduct({ 0,1 }, normalDir))*(180.0 / 3.141592653589793238463);
 
-	if (std::abs(ydiff) >= std::abs(xdiff))
+	if (xdiff > 0)
+		angle += 2 * (180 - angle);
+
+	this->sprite.setRotation(angle);
+	/*if (std::abs(ydiff) >= std::abs(xdiff))
 	{
 		if (ydiff < 0)
 			currentAnim = "N";
@@ -118,7 +126,7 @@ void Player::updateAnim(sf::View view)
 		if (std::abs(ydiff) < std::abs(xdiff))
 			currentAnim = "W";
 	}
-
+*/
 	this->animHandler.changeAnim(anims[currentAnim]);
 	oldWalkState = walkState;
 	walkState = WalkState::NONE;

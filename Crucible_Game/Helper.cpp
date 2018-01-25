@@ -1,5 +1,10 @@
 #include "Helper.h"
 
+float Helper::dotProduct(sf::Vector2f v1, sf::Vector2f v2)
+{
+	return (v1.x * v2.x + v1.y * v2.y);
+}
+
 sf::FloatRect Helper::resizeView(float windowW, float windowH, float aspectRatio)
 {
 	float windowRatio = windowW / (float)windowH;

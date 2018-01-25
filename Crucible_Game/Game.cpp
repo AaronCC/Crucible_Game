@@ -89,7 +89,28 @@ void Game::loadTiles()
 
 	this->tileAtlas["dungeon"] =
 		Tile(this->tileSize, 1, texmgr.getRef("dungeon"),
-		{ staticAnim, staticAnim },
+		{ 
+			staticAnim, // Unused
+		    staticAnim, // Floor
+		    staticAnim, // Corridor
+			staticAnim, // Wall
+			staticAnim, // ClosedDoor
+			staticAnim, // OpenDoor
+			staticAnim, // Downstairs
+		},
+			TileType::STATIC);
+
+	this->tileAtlas["can_select"] =
+		Tile(this->tileSize, 1, texmgr.getRef("can_select"),
+			{
+				staticAnim,
+			},
+			TileType::STATIC);
+	this->tileAtlas["cant_select"] =
+		Tile(this->tileSize, 1, texmgr.getRef("cant_select"),
+			{
+				staticAnim,
+			},
 			TileType::STATIC);
 	/*this->tileAtlas["dungeonFloor"] =
 		Tile(this->tileSize, 1, texmgr.getRef("dungeon"),

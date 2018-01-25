@@ -5,6 +5,8 @@
 #define H_GLOBE "hGlobe"
 #define H_POOL "hPool"
 #define A_SLOT "aSlot"
+#define CAN_SELECT "can_select"
+#define CANT_SELECT "cant_select"
 #define A_SLOT_COUNT 8
 class Hud
 {
@@ -21,6 +23,7 @@ public:
 
 	void setSlotSprites(std::vector<std::pair<sf::Keyboard::Key, std::string>> slotSpriteIDs,
 		std::string lmbID, std::string rmbID);
+
 
 	Hud() {};
 	Hud(Game * game, std::vector<std::string> eData)
@@ -60,12 +63,24 @@ public:
 			slotText[i].setPosition(slotPos.x + (slotW / 2) - (slotText[i].getString().getSize() * 4.f), slotPos.y - slotW - 20.f);
 			slotText[i].setCharacterSize(12);
 		}
+		eCount++;
+
+		//elements[CAN_SELECT].setTexture(game->texmgr.getRef(eData[eCount])); 
+		//elements[CAN_SELECT].setOrigin(0,0);
+		//eCount++;
+
+		//elements[CANT_SELECT].setTexture(game->texmgr.getRef(eData[eCount]));
+		//elements[CANT_SELECT].setOrigin(elements[CANT_SELECT].getTexture()->getSize().x/2,
+		//	elements[CANT_SELECT].getTexture()->getSize().y/2);
+		//eCount++;
 	}
 
 	void draw(float dt);
 	void update(float dt);
 
 	void updateHealth(float dmg);
+
+	void handleInput(sf::Event event);
 
 	~Hud();
 };

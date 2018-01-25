@@ -107,6 +107,9 @@
     <ClInclude Include="Ability.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Dungeon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="media\Textures.txt">

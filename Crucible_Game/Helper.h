@@ -4,6 +4,7 @@
 class Helper
 {
 public:
+	float dotProduct(sf::Vector2f v1, sf::Vector2f v2);
 	sf::FloatRect resizeView(float windowW, float windowH, float aspectRatio);
 	float magnitude(sf::Vector2f);
 	sf::Vector2f normalized(sf::Vector2f vec, float mag);
