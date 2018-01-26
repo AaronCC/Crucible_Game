@@ -24,6 +24,7 @@ public:
 	virtual void handleInput();
 
 private:
+	bool old_mLeftState = false;
 	sf::Font testFont;
 	sf::Text testText;
 

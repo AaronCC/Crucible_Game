@@ -41,6 +41,7 @@ void TestState::draw(const float dt)
 	testText.setString("FPS: " +std::to_string(fTotal));
 	this->player.draw(dt);
 	this->game->window.draw(testText);
+	//this->camera.setDefaultView();
 }
 
 void TestState::update(const float dt)
@@ -57,7 +58,15 @@ void TestState::handleInput()
 	sf::Event event;
 
 	sf::Vector2f mousePos = this->game->window.mapPixelToCoords(sf::Mouse::getPosition(this->game->window), this->view);
-	
+
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && old_mLeftState == false)
+	{
+		this->player.setPos((sf::Vector2f)this->map->mouseIndex * 32.f);
+		old_mLeftState = true;
+	}
+	else if(!sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		old_mLeftState = false;
+
 	this->player.handleInput();
 	while (this->game->window.pollEvent(event))
 	{

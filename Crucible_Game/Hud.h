@@ -17,13 +17,35 @@ public:
 	sf::Text slotText[A_SLOT_COUNT];
 	sf::Font font;
 
+	sf::Vector2f slotStart;
+	float slotW = 32.f;
+
+	struct Cooldown {
+		float totalTime;
+		float timer;
+		bool active;
+		sf::IntRect bounds;
+	};
+	
+	std::vector<Cooldown> cooldowns;
+
 	std::map<sf::Keyboard::Key, std::pair<sf::Sprite,bool>> aSlotSprites;
 	std::pair<sf::Sprite,bool> lmbSprite;
 	std::pair<sf::Sprite,bool> rmbSprite;
 
+	sf::Sprite cdSprite;
+
 	void setSlotSprites(std::vector<std::pair<sf::Keyboard::Key, std::string>> slotSpriteIDs,
 		std::string lmbID, std::string rmbID);
 
+	void setCooldown(int index, float timer) { 
+		if (index >= A_SLOT_COUNT)
+			return;
+		cooldowns[index].active = true;
+		cooldowns[index].timer = timer;
+		cooldowns[index].totalTime = timer;
+		cooldowns[index].bounds = sf::IntRect(slotStart.x + (index * slotW), slotStart.y, slotW, slotW);
+	}
 
 	Hud() {};
 	Hud(Game * game, std::vector<std::string> eData)
@@ -51,8 +73,7 @@ public:
 		elements[H_POOL].setOrigin(0, elements[H_POOL].getTexture()->getSize().y);
 		eCount++;
 
-		sf::Vector2f slotStart = { 95.f, game->windowSize.y - 15.f };
-		float slotW = 32.f;
+		slotStart = { 95.f, game->windowSize.y - 15.f };
 		for (int i = 0; i < A_SLOT_COUNT; i++)
 		{
 			std::string slotID = A_SLOT + std::to_string(i);
@@ -65,6 +86,16 @@ public:
 		}
 		eCount++;
 
+		cooldowns.reserve(A_SLOT_COUNT);
+
+		for (int cd = 0; cd < A_SLOT_COUNT; cd++)
+		{
+			cooldowns.push_back(Cooldown());
+			setCooldown(cd, 0);
+		}
+
+		cdSprite.setTexture(this->game->texmgr.getRef("cooldown_icon"));
+		cdSprite.setOrigin(0, slotW);
 		//elements[CAN_SELECT].setTexture(game->texmgr.getRef(eData[eCount])); 
 		//elements[CAN_SELECT].setOrigin(0,0);
 		//eCount++;

@@ -1,4 +1,6 @@
 #include "Player.h"
+#include "PathFinder.h"
+
 #include <cmath>
 void Player::handleInput()
 {
@@ -31,6 +33,7 @@ void Player::handleInput()
 			ability->activate(this->position, sf::Mouse::getPosition(), ability->id);
 			abilities.push_back(ability);
 			rmbCooldown = ability->cooldown;
+			hud.setCooldown(7, rmbCooldown);
 		}
 	}
 	/* temp */
@@ -53,8 +56,9 @@ void Player::handleEvent(sf::Event event)
 	case sf::Event::Resized:
 		hudView.setViewport(helper.resizeView(event.size.width, event.size.height, game->aspectRatio));
 		break;
-	case sf::Event::MouseMoved:
-		hud.handleInput(event);
+	case sf::Event::MouseLeft:
+	
+		break;
 	default:
 		break;
 	}
@@ -84,20 +88,16 @@ void Player::draw(float dt)
 
 void Player::updateAnim(sf::View view)
 {
-	this->animHandler.unPause();
+	//this->animHandler.unPause();
 
-	if (walkState == WalkState::NONE && velocity.x == 0 && velocity.y == 0 && !this->animHandler.isPaused())
-	{
-		this->animHandler.reset();
-		this->animHandler.pause();
-	}
+	//if (walkState == WalkState::NONE && velocity.x == 0 && velocity.y == 0 && !this->animHandler.isPaused())
+	//{
+	//	this->animHandler.reset();
+	//	this->animHandler.pause();
+	//}
 
 	sf::Vector2f mousePos = this->game->window.mapPixelToCoords(sf::Mouse::getPosition(this->game->window), view);
 	std::string oldAnim = currentAnim;
-
-	/*sf::Vector2f camPos = view.getCenter();
-	sf::Vector2f camW = view.getSize() / 2.f;
-	mousePos = { mousePos.x + camPos.x - camW.x, mousePos.y + camPos.y - camW.y};*/
 
 	float xdiff = mousePos.x - position.x;
 	float ydiff = mousePos.y - position.y;
@@ -109,24 +109,7 @@ void Player::updateAnim(sf::View view)
 		angle += 2 * (180 - angle);
 
 	this->sprite.setRotation(angle);
-	/*if (std::abs(ydiff) >= std::abs(xdiff))
-	{
-		if (ydiff < 0)
-			currentAnim = "N";
-		else
-			currentAnim = "S";
-	}
-	else if (xdiff > 0)
-	{
-		if (std::abs(ydiff) < std::abs(xdiff))
-			currentAnim = "E";
-	}
-	else if (xdiff < 0)
-	{
-		if (std::abs(ydiff) < std::abs(xdiff))
-			currentAnim = "W";
-	}
-*/
+
 	this->animHandler.changeAnim(anims[currentAnim]);
 	oldWalkState = walkState;
 	walkState = WalkState::NONE;
@@ -160,6 +143,17 @@ void Player::update(float dt)
 	moveForce = { 0,0 };
 
 	updateAbilities(dt);
+
+	this->tilePos.x = std::ceil((position.x) / 32);
+	this->tilePos.y = std::ceil((position.y) / 32);
+	if (tilePos.x < 0)
+		tilePos.x = 0;
+	if (tilePos.y < 0)
+		tilePos.y = 0;
+
+	setPos((sf::Vector2f)tilePos * 32.f);
+
+	hud.update(dt);
 }
 
 void Player::updateAbilities(float dt)

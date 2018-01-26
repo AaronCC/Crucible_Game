@@ -10,3 +10,5 @@ slash_icon media/slash_icon.png
 player media/player_temp.png
 can_select media/can_select.png
 cant_select media/cant_select.png
+move_icon media/move_icon.png
+cooldown_icon media/cooldown_icon.png

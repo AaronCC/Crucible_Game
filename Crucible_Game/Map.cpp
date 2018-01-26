@@ -31,8 +31,9 @@ sf::Vector2i Map::getSelectPos()
 {
 	sf::Vector2f camPos = this->camera->view.getCenter();
 	sf::Vector2f camSize = this->camera->view.getSize();
-	sf::Vector2i mousePos = sf::Mouse::getPosition(this->game->window);
-	mousePos += sf::Vector2i(16, 16) + (sf::Vector2i)camPos - ((sf::Vector2i)camSize / 2);
+	sf::Vector2f mousePos = 
+		this->game->window.mapPixelToCoords(sf::Mouse::getPosition(this->game->window), this->camera->view);
+	mousePos -= {16, 16};
 	this->mouseIndex.x = std::ceil(mousePos.x / 32);
 	this->mouseIndex.y = std::ceil(mousePos.y / 32);
 	if (mouseIndex.x < 0)

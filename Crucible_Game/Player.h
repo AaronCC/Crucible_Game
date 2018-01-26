@@ -109,7 +109,7 @@ public:
 
 		/* TEMP */
 		rmbAbility = Ability(this->game, game->texmgr.getRef("slash"), { 0,3,0.1f }, { 32,32 }, "slash", 0.5f);
-		hud.setSlotSprites({}, "", "slash_icon");
+		hud.setSlotSprites({}, "move_icon", "slash_icon");
 	}
 
 	~Player();

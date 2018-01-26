@@ -107,6 +107,7 @@
     <ClInclude Include="Hud.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="MenuState.h" />
+    <ClInclude Include="PathFinder.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="TestState.h" />
     <ClInclude Include="TextureManager.h" />
