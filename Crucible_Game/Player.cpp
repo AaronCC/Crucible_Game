@@ -1,5 +1,5 @@
 #include "Player.h"
-#include "PathFinder.h"
+//#include "PathFinder.h"
 
 #include <cmath>
 void Player::handleInput()
@@ -57,7 +57,7 @@ void Player::handleEvent(sf::Event event)
 		hudView.setViewport(helper.resizeView(event.size.width, event.size.height, game->aspectRatio));
 		break;
 	case sf::Event::MouseLeft:
-	
+
 		break;
 	default:
 		break;
@@ -119,7 +119,29 @@ void Player::update(float dt)
 {
 	float fX, fY;
 
-	totalForce += moveForce;
+	if (wayPoints.size() > 0)
+	{
+		sf::Vector2i to = wayPoints.top() - this->tilePos;
+		sf::Vector2f dir = helper.normalized((sf::Vector2f)to, helper.magnitude((sf::Vector2f)to));
+		if (testTimer <= 0)//to == sf::Vector2i{ 0, 0 })
+		{
+			setPos({ wayPoints.top().x * 32.f, wayPoints.top().y * 32.f });
+			wayPoints.pop();
+			testTimer = 0.5;
+		}
+		else {
+			testTimer -= dt;
+		}
+		/*else
+		{
+			dir *= speed;
+			velocity += dir;
+			velocity = helper.clamp(velocity, maxSpeed);
+			move(velocity * dt);
+			setPos(position);
+		}*/
+	}
+	/*totalForce += moveForce;
 
 	fX = velocity.x == 0 ? 0 : friction;
 	fY = velocity.y == 0 ? 0 : friction;
@@ -132,15 +154,15 @@ void Player::update(float dt)
 	velocity += acceleration;
 
 	velocity.x = std::abs(velocity.x) <= std::abs(fX) ? 0 : velocity.x;
-	velocity.y = std::abs(velocity.y) <= std::abs(fY) ? 0 : velocity.y;
+	velocity.y = std::abs(velocity.y) <= std::abs(fY) ? 0 : velocity.y;*/
 
-	velocity = helper.clamp(velocity, maxSpeed);
+	//velocity = helper.clamp(velocity, maxSpeed);
 
-	move(velocity * dt);
-	this->sprite.setPosition(position);
+	//move(velocity * dt);
 
-	totalForce -= moveForce;
-	moveForce = { 0,0 };
+
+	//totalForce -= moveForce;
+	//moveForce = { 0,0 };
 
 	updateAbilities(dt);
 
@@ -151,7 +173,7 @@ void Player::update(float dt)
 	if (tilePos.y < 0)
 		tilePos.y = 0;
 
-	setPos((sf::Vector2f)tilePos * 32.f);
+	//setPos((sf::Vector2f)tilePos * 32.f);
 
 	hud.update(dt);
 }

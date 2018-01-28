@@ -7,6 +7,7 @@
 #include "Hud.h"
 #include "Helper.h"
 #include "Ability.h"
+#include <stack>
 
 class Player
 {
@@ -31,6 +32,8 @@ public:
 	Game* game;
 	Hud hud;
 	sf::View hudView;
+
+	float testTimer = 0;
 
 	sf::Sprite sprite;
 
@@ -64,10 +67,14 @@ public:
 		position = pos; 
 		position.x = std::round(position.x);
 		position.y = std::round(position.y);
+		this->sprite.setPosition(position);
 	}
 	void updateAnim(sf::View view);
 
 	sf::Vector2f getForce() { return totalForce; }
+
+	void addWayPoint(std::pair<int, int> point) { wayPoints.push({ point.first,point.second }); }
+	void clearWayPoints() { this->wayPoints = std::stack<sf::Vector2i>(); }
 
 	Player() {};
 	Player(Game* game, sf::Vector2u size, sf::Texture& texture, const std::vector<Animation>& animations, sf::Vector2i spawnPos)
@@ -110,6 +117,8 @@ public:
 		/* TEMP */
 		rmbAbility = Ability(this->game, game->texmgr.getRef("slash"), { 0,3,0.1f }, { 32,32 }, "slash", 0.5f);
 		hud.setSlotSprites({}, "move_icon", "slash_icon");
+
+		setPos(position);
 	}
 
 	~Player();
@@ -120,6 +129,7 @@ private:
 	sf::Vector2f acceleration;
 	sf::Vector2f velocity;
 	std::string currentAnim;
+	std::stack<sf::Vector2i> wayPoints;
 
 	float maxSpeed;
 	float friction;

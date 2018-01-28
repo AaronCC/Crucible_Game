@@ -19,6 +19,8 @@ TestState::TestState(Game* game)
 		this->game->texmgr.getRef("player"),
 		{ walkAnim,walkAnim,walkAnim,walkAnim },
 		map->spawnPos);
+	pf = PathFinder(this->map, this->map->width, this->map->height);
+	this->old_mLeftState = true;
 }
 
 TestState::~TestState()
@@ -41,7 +43,6 @@ void TestState::draw(const float dt)
 	testText.setString("FPS: " +std::to_string(fTotal));
 	this->player.draw(dt);
 	this->game->window.draw(testText);
-	//this->camera.setDefaultView();
 }
 
 void TestState::update(const float dt)
@@ -61,7 +62,13 @@ void TestState::handleInput()
 
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && old_mLeftState == false)
 	{
-		this->player.setPos((sf::Vector2f)this->map->mouseIndex * 32.f);
+		std::vector<std::pair<int,int>> path =  pf.findPath(this->player.tilePos, this->map->mouseIndex);
+		this->player.clearWayPoints();
+		for (auto point : path)
+		{
+			this->player.addWayPoint(point);
+		}
+		//this->player.setPos((sf::Vector2f)this->map->mouseIndex * 32.f);
 		old_mLeftState = true;
 	}
 	else if(!sf::Mouse::isButtonPressed(sf::Mouse::Left))

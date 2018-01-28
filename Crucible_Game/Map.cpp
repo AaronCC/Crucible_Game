@@ -118,7 +118,7 @@ void Map::loadMap()
 				break;
 			}
 
-			this->tiles[y*this->width + x].setPosition(pos);
+			this->tiles[y*this->width + x].setPosition(pos, x, y);
 			this->tiles[y*this->width + x].sprite.setPosition((sf::Vector2f)pos);
 			pos.x += tileSize.x;
 		}

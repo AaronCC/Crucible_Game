@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Map.h"
 #include "Camera.h"
+#include "PathFinder.h"
 
 class TestState : public GameState
 {
@@ -27,7 +28,7 @@ private:
 	bool old_mLeftState = false;
 	sf::Font testFont;
 	sf::Text testText;
-
+	PathFinder pf;
 	Map* map;
 };
 

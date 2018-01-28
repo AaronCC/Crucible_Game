@@ -8,6 +8,7 @@ class Map
 {
 public:
 	std::vector<Tile> tiles;
+	std::vector<Tile>* getTiles() { return &tiles; }
 	int width, height;
 	sf::Vector2u tileSize;
 	sf::Vector2i spawnPos;
