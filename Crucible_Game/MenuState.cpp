@@ -64,7 +64,7 @@ void MenuState::handleInput()
 			{
 				std::string msg = this->buttons.getEMsg(mousePos);
 				if (msg == "btn1")
-					this->game->pushState(new TestState(game));
+					this->game->pushState(new ExploreState(game));
 			}
 		}
 		case sf::Event::KeyReleased:

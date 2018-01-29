@@ -24,6 +24,9 @@ public:
 	int health;
 	int maxHealth;
 
+	unsigned int tickCount;
+	bool resolveActions;
+
 	WalkState walkState;
 	WalkState oldWalkState;
 		
@@ -36,6 +39,7 @@ public:
 	float testTimer = 0;
 
 	sf::Sprite sprite;
+	sf::Sprite queueSprite;
 
 	std::vector<Ability*> abilities;
 	std::map<sf::Keyboard::Key, Ability> keyAbilities;
@@ -73,8 +77,16 @@ public:
 
 	sf::Vector2f getForce() { return totalForce; }
 
-	void addWayPoint(std::pair<int, int> point) { wayPoints.push({ point.first,point.second }); }
-	void clearWayPoints() { this->wayPoints = std::stack<sf::Vector2i>(); }
+	void addWayPoint(std::pair<int, int> point) { 
+		queuedPoints.push_back({ point.first, point.second });
+		wayPoints.push({ point.first,point.second }); 
+	}
+	void clearWayPoints() { 
+		this->wayPoints = std::stack<sf::Vector2i>();
+		queuedPoints.clear();
+	}
+
+	bool moveNext();
 
 	Player() {};
 	Player(Game* game, sf::Vector2u size, sf::Texture& texture, const std::vector<Animation>& animations, sf::Vector2i spawnPos)
@@ -82,6 +94,8 @@ public:
 		walkState = WalkState::NONE;
 		this->game = game;
 
+		this->resolveActions = false;
+		this->tickCount = 0;
 		this->friction = 15.f;
 		this->mass = 1.f;
 		this->speed = 50.f;
@@ -108,6 +122,7 @@ public:
 		keys[sf::Keyboard::Right] = false;
 		keys[sf::Keyboard::Up] = false;
 		keys[sf::Keyboard::Down] = false;
+		keys[sf::Keyboard::Space] = false;
 
 		hudView = { sf::Vector2f(this->game->windowSize.x / 2, this->game->windowSize.y / 2),
 			sf::Vector2f(this->game->windowSize.x, this->game->windowSize.y) };
@@ -117,6 +132,10 @@ public:
 		/* TEMP */
 		rmbAbility = Ability(this->game, game->texmgr.getRef("slash"), { 0,3,0.1f }, { 32,32 }, "slash", 0.5f);
 		hud.setSlotSprites({}, "move_icon", "slash_icon");
+
+		queueSprite.setTexture(this->game->texmgr.getRef("queue_select"));
+		queueSprite.setOrigin(this->game->tileSize.x/2,this->game->tileSize.y/2);
+		queueSprite.setTextureRect(sf::IntRect( 0,0,this->game->tileSize.x,this->game->tileSize.y ));
 
 		setPos(position);
 	}
@@ -130,6 +149,7 @@ private:
 	sf::Vector2f velocity;
 	std::string currentAnim;
 	std::stack<sf::Vector2i> wayPoints;
+	std::vector<sf::Vector2i> queuedPoints;
 
 	float maxSpeed;
 	float friction;

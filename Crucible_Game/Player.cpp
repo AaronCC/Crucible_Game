@@ -1,10 +1,20 @@
 #include "Player.h"
 //#include "PathFinder.h"
-
+#define TILE_SIZE this->game->tileSize
 #include <cmath>
 void Player::handleInput()
 {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && keys[sf::Keyboard::Space] == false)
+	{
+		this->resolveActions = true;
+		keys[sf::Keyboard::Space] = true;
+	}
+	else
+	{
+		this->resolveActions = false;
+		keys[sf::Keyboard::Space] = false;
+	}
+	/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 	{
 		moveForce.x -= speed;
 		walkState = WalkState::LEFT;
@@ -24,7 +34,7 @@ void Player::handleInput()
 		moveForce.x += speed;
 		walkState = WalkState::RIGHT;
 
-	}
+	}*/
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
 	{
 		if (rmbCooldown <= 0)
@@ -80,9 +90,13 @@ void Player::draw(float dt)
 		ability->draw(dt);
 	}
 
+	for (auto point : queuedPoints)
+	{
+		queueSprite.setPosition(point.x * TILE_SIZE.x, point.y * TILE_SIZE.y);
+		this->game->window.draw(queueSprite);
+	}
 	this->game->window.setView(hudView);
 	this->hud.draw(dt);
-
 	return;
 }
 
@@ -115,25 +129,36 @@ void Player::updateAnim(sf::View view)
 	walkState = WalkState::NONE;
 }
 
+bool Player::moveNext()
+{
+	if (wayPoints.size() > 0)
+	{
+		setPos({ wayPoints.top().x * 32.f, wayPoints.top().y * 32.f });
+		wayPoints.pop();
+		return true;
+	}
+	return false;
+}
+
 void Player::update(float dt)
 {
 	float fX, fY;
 
-	if (wayPoints.size() > 0)
-	{
-		sf::Vector2i to = wayPoints.top() - this->tilePos;
-		sf::Vector2f dir = (sf::Vector2f)to;
-		if (testTimer <= 0)//(to == sf::Vector2i{ 0, 0 })
-		{
-			setPos({ wayPoints.top().x * 32.f, wayPoints.top().y * 32.f });
-			wayPoints.pop();
-			//setPos({ tilePos.x * 32.f, tilePos.y * 32.f });
-			testTimer = 0.25;
-		}
-		else
-		{
-			testTimer -= dt;
-		}
+	//if (wayPoints.size() > 0)
+	//{
+	//	sf::Vector2i to = wayPoints.top() - this->tilePos;
+	//	sf::Vector2f dir = (sf::Vector2f)to;
+	//	if (testTimer <= 0)//(to == sf::Vector2i{ 0, 0 })
+	//	{
+	//		setPos({ wayPoints.top().x * 32.f, wayPoints.top().y * 32.f });
+	//		wayPoints.pop();
+	//		//setPos({ tilePos.x * 32.f, tilePos.y * 32.f });
+	//		testTimer = 0.25;
+	//	}
+	//	else
+	//	{
+	//		testTimer -= dt;
+	//	}
 		/*
 		else
 		{
@@ -142,7 +167,7 @@ void Player::update(float dt)
 			move(velocity * dt);
 			setPos(position);
 		}*/
-	}
+	//}
 	/*totalForce += moveForce;
 
 	fX = velocity.x == 0 ? 0 : friction;

@@ -63,6 +63,9 @@
     <ClCompile Include="Ability.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ExploreState.cpp">
+      <Filter>Source Files\States</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -112,6 +115,9 @@
     </ClInclude>
     <ClInclude Include="PathFinder.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ExploreState.h">
+      <Filter>Header Files\States</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
