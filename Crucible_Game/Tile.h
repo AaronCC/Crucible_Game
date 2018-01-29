@@ -18,6 +18,7 @@ struct Node {
 	Node *parent;
 	int x, y;
 	int f, g, h;
+
 	Node() {
 		s = set::None;
 		this->parent = nullptr;
@@ -89,6 +90,7 @@ public:
 	sf::Uint32 unitHeight;
 	sf::Uint32 unitWidth;
 
+	bool fow;
 	Node node;
 
 	TileType tileType;
@@ -105,6 +107,7 @@ public:
 		const std::vector<Animation>& animations,
 		const TileType tileType)
 	{
+		this->fow = true;
 		this->passable = true;
 		sf::Vector2u size = texture.getSize();
 		this->tileType = tileType;

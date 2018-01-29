@@ -122,20 +122,22 @@ void Player::update(float dt)
 	if (wayPoints.size() > 0)
 	{
 		sf::Vector2i to = wayPoints.top() - this->tilePos;
-		sf::Vector2f dir = helper.normalized((sf::Vector2f)to, helper.magnitude((sf::Vector2f)to));
-		if (testTimer <= 0)//to == sf::Vector2i{ 0, 0 })
+		sf::Vector2f dir = (sf::Vector2f)to;
+		if (testTimer <= 0)//(to == sf::Vector2i{ 0, 0 })
 		{
 			setPos({ wayPoints.top().x * 32.f, wayPoints.top().y * 32.f });
 			wayPoints.pop();
-			testTimer = 0.5;
+			//setPos({ tilePos.x * 32.f, tilePos.y * 32.f });
+			testTimer = 0.25;
 		}
-		else {
+		else
+		{
 			testTimer -= dt;
 		}
-		/*else
+		/*
+		else
 		{
-			dir *= speed;
-			velocity += dir;
+			velocity = dir * speed;
 			velocity = helper.clamp(velocity, maxSpeed);
 			move(velocity * dt);
 			setPos(position);

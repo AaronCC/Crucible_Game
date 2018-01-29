@@ -48,8 +48,8 @@ void TestState::draw(const float dt)
 void TestState::update(const float dt)
 {
 	sf::Vector2f oldPos = player.position;
-	this->camera.update(dt);
 	this->player.update(dt);
+	this->camera.update(dt);
 	this->map->update(dt);
 	this->player.updateAnim(this->camera.view);
 }

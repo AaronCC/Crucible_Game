@@ -26,6 +26,7 @@ public:
 	std::vector<Tile*> open;
 	std::vector<Tile*> closed;
 	std::vector<Tile>* tiles;
+	Helper helper;
 	int width, height;
 	PathFinder() {}
 	PathFinder(Map* map, int width, int height)
@@ -35,25 +36,7 @@ public:
 		this->height = height;
 	}
 
-	std::vector<std::pair<int, int>> getNeighbors(int x, int y)
-	{
-		std::vector<std::pair<int, int>> neighbors;
-		neighbors.reserve(8);
-
-		for (int yn = y - 1; yn <= y + 1; yn++)
-		{
-			if (yn == height || yn < 0)
-				continue;
-			for (int xn = x - 1; xn <= x + 1; xn++)
-			{
-				if (xn == width || xn < 0 || (xn == x && yn == y))
-					continue;
-				neighbors.push_back({ xn,yn });
-			}
-		}
-
-		return neighbors;
-	}
+	
 
 	Tile* getTile(int x, int y)
 	{
@@ -122,7 +105,7 @@ public:
 		{
 			for (int x = 0; x < width; x++)
 			{
-				getTile(x, y)->node = Node(x,y);
+				getTile(x, y)->node = Node(x, y);
 			}
 		}
 		// Init start / end
@@ -144,11 +127,13 @@ public:
 			if (current->node == end->node)
 				break;
 			toClosed(current);
-			neighbors = getNeighbors(current->node.x, current->node.y);
+			neighbors = helper.getNeighbors(current->node.x, current->node.y, width, height);
 			for (auto n : neighbors)
 			{
 				bool addOpen = false;
 				Tile* nt = getTile(n.first, n.second);
+				if (!nt->passable)
+					continue;
 				if (nt->node.inClosed())
 					continue;
 				if (!nt->node.inOpen())

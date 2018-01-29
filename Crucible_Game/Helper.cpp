@@ -5,6 +5,26 @@ float Helper::dotProduct(sf::Vector2f v1, sf::Vector2f v2)
 	return (v1.x * v2.x + v1.y * v2.y);
 }
 
+std::vector<std::pair<int, int>> Helper::getNeighbors(int x, int y, int width, int height)
+{
+	std::vector<std::pair<int, int>> neighbors;
+	neighbors.reserve(8);
+
+	for (int yn = y - 1; yn <= y + 1; yn++)
+	{
+		if (yn == height || yn < 0)
+			continue;
+		for (int xn = x - 1; xn <= x + 1; xn++)
+		{
+			if (xn == width || xn < 0 || (xn == x && yn == y))
+				continue;
+			neighbors.push_back({ xn,yn });
+		}
+	}
+
+	return neighbors;
+}
+
 sf::FloatRect Helper::resizeView(float windowW, float windowH, float aspectRatio)
 {
 	float windowRatio = windowW / (float)windowH;
