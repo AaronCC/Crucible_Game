@@ -3,7 +3,6 @@
 #include "Dungeon.h"
 
 
-
 void Map::draw(sf::RenderWindow & window, float dt)
 {
 	for (int y = 0; y < this->height; ++y)
@@ -127,6 +126,11 @@ void Map::loadMap()
 	}
 }
 
+Tile* Map::getTile(int x, int y)
+{
+	return &this->tiles[y*this->width + x];
+}
+
 Map::Map(Game* game, Camera* camera)
 {
 	this->game = game;
@@ -135,6 +139,8 @@ Map::Map(Game* game, Camera* camera)
 	this->tileSize = this->game->tileSize;
 	this->canSelect = this->game->tileAtlas.at("can_select");
 	this->cantSelect = this->game->tileAtlas.at("cant_select");
+	this->canSelect.reveal();
+	this->cantSelect.reveal();
 }
 Map::~Map()
 {

@@ -21,6 +21,8 @@ ExploreState::ExploreState(Game* game)
 		map->spawnPos);
 	pf = PathFinder(this->map, this->map->width, this->map->height);
 	this->old_mLeftState = true;
+	this->player.updateTilePos();
+	resolveFoW();
 }
 
 ExploreState::~ExploreState()
@@ -97,11 +99,25 @@ void ExploreState::handleInput()
 	sf::Vector2f center = view.getCenter();
 }
 
+void ExploreState::resolveFoW()
+{
+	for (int y = -player.lightRadius; y <= player.lightRadius; y++)
+	{
+		for (int x = -player.lightRadius; x <= player.lightRadius; x++)
+		{
+			sf::Vector2i pos = { x + player.tilePos.x, y + player.tilePos.y };
+			if (pos.x < 0 || pos.y < 0 || pos.x > map->width - 1 || pos.y > map->height - 1)
+				continue;
+			map->getTile(pos.x,pos.y)->reveal();
+		}
+	}
+}
+
 void ExploreState::resolveGameState(unsigned int ticks)
 {
 	while (player.moveNext())
 	{
-
+		resolveFoW();
 	}
 	this->player.clearWayPoints();
 }

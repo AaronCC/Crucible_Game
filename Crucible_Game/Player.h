@@ -38,6 +38,8 @@ public:
 
 	float testTimer = 0;
 
+	 int lightRadius;
+
 	sf::Sprite sprite;
 	sf::Sprite queueSprite;
 
@@ -61,6 +63,7 @@ public:
 	void handleEvent(sf::Event event);
 	void draw(float dt);
 	void update(float dt);
+	void updateTilePos();
 	void updateAbilities(float dt);
 	void move(sf::Vector2f offset) { 
 		position += offset;
@@ -93,7 +96,7 @@ public:
 	{
 		walkState = WalkState::NONE;
 		this->game = game;
-
+		this->lightRadius = 4;
 		this->resolveActions = false;
 		this->tickCount = 0;
 		this->friction = 15.f;

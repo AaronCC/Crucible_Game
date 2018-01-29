@@ -30,6 +30,8 @@ public:
 
 	void Map::loadMap();
 
+	Tile * getTile(int x, int y);
+
 	Map(Game* game, Camera* camera);
 	~Map();
 

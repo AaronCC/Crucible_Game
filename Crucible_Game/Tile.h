@@ -100,10 +100,11 @@ public:
 	int tileVariant;
 
 	bool passable;
+	sf::Sprite fowSprite;
 
 	/* Constructor */
 	Tile() { }
-	Tile(sf::Vector2u tileSize, const unsigned int height, sf::Texture& texture,
+	Tile(sf::Vector2u tileSize, const unsigned int height, sf::Texture& texture, sf::Texture& fow,
 		const std::vector<Animation>& animations,
 		const TileType tileType)
 	{
@@ -117,6 +118,8 @@ public:
 		this->animHandler.changeAnim(this->tileVariant);
 		this->sprite.setOrigin(sf::Vector2f(tileSize.x / 2, tileSize.y / 2));
 		this->sprite.setTexture(texture);
+		this->fowSprite.setTexture(fow);
+		this->fowSprite.setOrigin({ (float)tileSize.x / 2, (float)tileSize.y / 2 });
 		this->animHandler.frameSize = sf::IntRect(0, 0, tileSize.x, tileSize.y*height);
 		for (auto animation : animations)
 		{
@@ -126,17 +129,23 @@ public:
 	}
 	void setPosition(sf::Vector2i position) {
 		this->position = position;
-		this->sprite.setPosition({ std::round((float)position.x),std::round((float)position.y) });
+		sf::Vector2f roundedPos = { std::round((float)position.x),std::round((float)position.y) };
+		this->sprite.setPosition(roundedPos);
+		this->fowSprite.setPosition(roundedPos);
 	}
 	void setPosition(sf::Vector2i position, int x, int y) {
 		this->position = position;
-		this->sprite.setPosition({ std::round((float)position.x),std::round((float)position.y) });
+		sf::Vector2f roundedPos = { std::round((float)position.x),std::round((float)position.y) };
+		this->sprite.setPosition(roundedPos);
+		this->fowSprite.setPosition(roundedPos);
 		this->node.x = x;
 		this->node.y = y;
 		this->node.parent = nullptr;
 	}
 
 	void draw(sf::RenderWindow& window, float dt);
+
+	void reveal();
 
 	void update();
 

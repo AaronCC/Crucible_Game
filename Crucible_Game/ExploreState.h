@@ -22,6 +22,7 @@ public:
 	virtual void draw(const float dt);
 	virtual void update(const float dt);
 	virtual void handleInput();
+	void resolveFoW();
 	void resolveGameState(unsigned int ticks);
 
 private:

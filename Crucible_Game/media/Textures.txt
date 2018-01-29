@@ -13,3 +13,4 @@ cant_select media/cant_select.png
 move_icon media/move_icon.png
 cooldown_icon media/cooldown_icon.png
 queue_select media/queue_select.png
+fow media/fow.png

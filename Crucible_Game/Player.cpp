@@ -135,6 +135,7 @@ bool Player::moveNext()
 	{
 		setPos({ wayPoints.top().x * 32.f, wayPoints.top().y * 32.f });
 		wayPoints.pop();
+		updateTilePos();
 		return true;
 	}
 	return false;
@@ -193,16 +194,21 @@ void Player::update(float dt)
 
 	updateAbilities(dt);
 
+	updateTilePos();
+
+	//setPos((sf::Vector2f)tilePos * 32.f);
+
+	hud.update(dt);
+}
+
+void Player::updateTilePos()
+{
 	this->tilePos.x = std::ceil((position.x) / 32);
 	this->tilePos.y = std::ceil((position.y) / 32);
 	if (tilePos.x < 0)
 		tilePos.x = 0;
 	if (tilePos.y < 0)
 		tilePos.y = 0;
-
-	//setPos((sf::Vector2f)tilePos * 32.f);
-
-	hud.update(dt);
 }
 
 void Player::updateAbilities(float dt)

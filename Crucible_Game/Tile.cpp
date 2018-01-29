@@ -17,8 +17,14 @@ void Tile::draw(sf::RenderWindow& window, float dt)
 
 	/* Draw the tile */
 	window.draw(this->sprite);
-
+	if (fow)
+		window.draw(this->fowSprite);
 	return;
+}
+
+void Tile::reveal()
+{
+	this->fow = false;
 }
 
 void Tile::update()
