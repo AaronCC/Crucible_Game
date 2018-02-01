@@ -4,13 +4,24 @@ Ability::~Ability()
 {
 }
 
-void Ability::activate(sf::Vector2f pPos, sf::Vector2i mPos, std::string id)
+void Ability::activate(sf::Vector2i pPos, sf::Vector2i mPos)
 {
- 	this->isAlive = true;
+	this->isAlive = true;
 	this->durTimer = this->duration;
 	this->animHandler.changeAnim(0);
 	this->animHandler.reset();
-	this->sprite.setPosition(pPos);
+}
+
+std::vector<sf::Vector2i> Ability::getActiveTiles(sf::Vector2i pPos, sf::Vector2i mPos)
+{
+	switch (id)
+	{
+	case ID::SLASH:
+		this->sprite.setPosition(mPos.x * 32, mPos.y * 32);
+		return { mPos };
+	default:
+		break;
+	}
 }
 
 void Ability::update(float dt)

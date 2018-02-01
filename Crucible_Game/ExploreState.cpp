@@ -18,7 +18,7 @@ ExploreState::ExploreState(Game* game)
 		sf::Vector2u(32, 32),
 		this->game->texmgr.getRef("player"),
 		{ walkAnim,walkAnim,walkAnim,walkAnim },
-		map->spawnPos);
+		map->spawnPos, &this->camera.view, &this->map->mouseIndex);
 	pf = PathFinder(this->map, this->map->width, this->map->height);
 	this->old_mLeftState = true;
 	this->player.updateTilePos();
@@ -72,6 +72,7 @@ void ExploreState::handleInput()
 		{
 			this->player.addWayPoint(point);
 		}
+		this->player.queuedAction = Player::Action::MOVE;
 		//this->player.setPos((sf::Vector2f)this->map->mouseIndex * 32.f);
 		old_mLeftState = true;
 	}
@@ -108,17 +109,20 @@ void ExploreState::resolveFoW()
 			sf::Vector2i pos = { x + player.tilePos.x, y + player.tilePos.y };
 			if (pos.x < 0 || pos.y < 0 || pos.x > map->width - 1 || pos.y > map->height - 1)
 				continue;
-			map->getTile(pos.x,pos.y)->reveal();
+			map->getTile(pos.x, pos.y)->reveal();
 		}
 	}
 }
 
 void ExploreState::resolveGameState(unsigned int ticks)
 {
-	while (player.moveNext())
-	{
-		resolveFoW();
-	}
+	if (player.queuedAction == Player::Action::ABILITY)
+		player.queuedAbility->activate(player.tilePos, map->mouseIndex);
+	else if (player.queuedAction == Player::Action::MOVE)
+		while (player.moveNext())
+		{
+			resolveFoW();
+		}
 	this->player.clearWayPoints();
 }
 

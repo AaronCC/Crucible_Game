@@ -14,11 +14,11 @@ TestState::TestState(Game* game)
 	camera = Camera(game, &player);
 	map = new Map(game, &camera);
 	map->loadMap();
-	player = Player(game,
+	/*player = Player(game,
 		sf::Vector2u(32, 32),
 		this->game->texmgr.getRef("player"),
 		{ walkAnim,walkAnim,walkAnim,walkAnim },
-		map->spawnPos);
+		map->spawnPos, &camera->view);*/
 	pf = PathFinder(this->map, this->map->width, this->map->height);
 	this->old_mLeftState = true;
 }
@@ -69,6 +69,7 @@ void TestState::handleInput()
 			this->player.addWayPoint(point);
 		}
 		//this->player.setPos((sf::Vector2f)this->map->mouseIndex * 32.f);
+		this->player.queuedAction = Player::Action::MOVE;
 		old_mLeftState = true;
 	}
 	else if(!sf::Mouse::isButtonPressed(sf::Mouse::Left))

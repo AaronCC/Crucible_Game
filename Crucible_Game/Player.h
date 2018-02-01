@@ -21,6 +21,12 @@ public:
 		NONE
 	};
 	
+	enum Action {
+		MOVE,
+		ABILITY
+	};
+	Action queuedAction;
+
 	int health;
 	int maxHealth;
 
@@ -38,11 +44,15 @@ public:
 
 	float testTimer = 0;
 
-	 int lightRadius;
+	sf::View* view;
+	sf::Vector2i* mIndex;
+
+	int lightRadius;
 
 	sf::Sprite sprite;
 	sf::Sprite queueSprite;
 
+	Ability* queuedAbility;
 	std::vector<Ability*> abilities;
 	std::map<sf::Keyboard::Key, Ability> keyAbilities;
 	std::map<sf::Keyboard::Key, float> keyCooldowns;
@@ -92,9 +102,13 @@ public:
 	bool moveNext();
 
 	Player() {};
-	Player(Game* game, sf::Vector2u size, sf::Texture& texture, const std::vector<Animation>& animations, sf::Vector2i spawnPos)
+	Player(Game* game, sf::Vector2u size,
+		sf::Texture& texture, const std::vector<Animation>& animations,
+		sf::Vector2i spawnPos, sf::View* view, sf::Vector2i* mIndex)
 	{
 		walkState = WalkState::NONE;
+		this->mIndex = mIndex;
+		this->view = view;
 		this->game = game;
 		this->lightRadius = 4;
 		this->resolveActions = false;
@@ -133,7 +147,7 @@ public:
 		hud = Hud(game, { "globe","life_globe", "ability_slot", "can_select", "cant_select" });
 
 		/* TEMP */
-		rmbAbility = Ability(this->game, game->texmgr.getRef("slash"), { 0,3,0.1f }, { 32,32 }, "slash", 0.5f);
+		rmbAbility = Ability(this->game, game->texmgr.getRef("slash"), { 0,3,0.1f }, { 32,32 }, Ability::ID::SLASH, 0.5f, 1);
 		hud.setSlotSprites({}, "move_icon", "slash_icon");
 
 		queueSprite.setTexture(this->game->texmgr.getRef("queue_select"));

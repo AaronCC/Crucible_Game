@@ -4,6 +4,7 @@
 #include <cmath>
 void Player::handleInput()
 {
+
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && keys[sf::Keyboard::Space] == false)
 	{
 		this->resolveActions = true;
@@ -14,39 +15,6 @@ void Player::handleInput()
 		this->resolveActions = false;
 		keys[sf::Keyboard::Space] = false;
 	}
-	/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-	{
-		moveForce.x -= speed;
-		walkState = WalkState::LEFT;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-	{
-		moveForce.y -= speed;
-		walkState = WalkState::UP;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-	{
-		moveForce.y += speed;
-		walkState = WalkState::DOWN;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-	{
-		moveForce.x += speed;
-		walkState = WalkState::RIGHT;
-
-	}*/
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
-	{
-		if (rmbCooldown <= 0)
-		{
-			Ability* ability = new Ability(rmbAbility);
-			ability->activate(this->position, sf::Mouse::getPosition(), ability->id);
-			abilities.push_back(ability);
-			rmbCooldown = ability->cooldown;
-			hud.setCooldown(7, rmbCooldown);
-		}
-	}
-	/* temp */
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::J))
 	{
 		health -= 1;
@@ -56,7 +24,42 @@ void Player::handleInput()
 			health = maxHealth;
 		}
 	}
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
+	{
+		//if (rmbCooldown <= 0)
+		//{
+		queuedAction = Action::ABILITY;
+		queuedPoints.clear();
+		queuedAbility = new Ability(rmbAbility);
+		for (auto tile : queuedAbility->getActiveTiles(this->tilePos, *mIndex))
+			queuedPoints.push_back(tile);
+		rmbCooldown = queuedAbility->cooldown;
+		hud.setCooldown(7, rmbCooldown);
+		//}
+	}
 
+	/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+	{
+	moveForce.x -= speed;
+	walkState = WalkState::LEFT;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+	{
+	moveForce.y -= speed;
+	walkState = WalkState::UP;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+	{
+	moveForce.y += speed;
+	walkState = WalkState::DOWN;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	{
+	moveForce.x += speed;
+	walkState = WalkState::RIGHT;
+
+	}*/
+	/* temp */
 }
 
 void Player::handleEvent(sf::Event event)
@@ -102,14 +105,6 @@ void Player::draw(float dt)
 
 void Player::updateAnim(sf::View view)
 {
-	//this->animHandler.unPause();
-
-	//if (walkState == WalkState::NONE && velocity.x == 0 && velocity.y == 0 && !this->animHandler.isPaused())
-	//{
-	//	this->animHandler.reset();
-	//	this->animHandler.pause();
-	//}
-
 	sf::Vector2f mousePos = this->game->window.mapPixelToCoords(sf::Mouse::getPosition(this->game->window), view);
 	std::string oldAnim = currentAnim;
 
@@ -168,29 +163,29 @@ void Player::update(float dt)
 			move(velocity * dt);
 			setPos(position);
 		}*/
-	//}
-	/*totalForce += moveForce;
+		//}
+		/*totalForce += moveForce;
 
-	fX = velocity.x == 0 ? 0 : friction;
-	fY = velocity.y == 0 ? 0 : friction;
+		fX = velocity.x == 0 ? 0 : friction;
+		fY = velocity.y == 0 ? 0 : friction;
 
-	acceleration.x = velocity.x > 0 ? (totalForce.x / mass) - fX
-		: (totalForce.x / mass) + fX;
-	acceleration.y = velocity.y > 0 ? (totalForce.y / mass) - fY
-		: (totalForce.y / mass) + fY;
+		acceleration.x = velocity.x > 0 ? (totalForce.x / mass) - fX
+			: (totalForce.x / mass) + fX;
+		acceleration.y = velocity.y > 0 ? (totalForce.y / mass) - fY
+			: (totalForce.y / mass) + fY;
 
-	velocity += acceleration;
+		velocity += acceleration;
 
-	velocity.x = std::abs(velocity.x) <= std::abs(fX) ? 0 : velocity.x;
-	velocity.y = std::abs(velocity.y) <= std::abs(fY) ? 0 : velocity.y;*/
+		velocity.x = std::abs(velocity.x) <= std::abs(fX) ? 0 : velocity.x;
+		velocity.y = std::abs(velocity.y) <= std::abs(fY) ? 0 : velocity.y;*/
 
-	//velocity = helper.clamp(velocity, maxSpeed);
+		//velocity = helper.clamp(velocity, maxSpeed);
 
-	//move(velocity * dt);
+		//move(velocity * dt);
 
 
-	//totalForce -= moveForce;
-	//moveForce = { 0,0 };
+		//totalForce -= moveForce;
+		//moveForce = { 0,0 };
 
 	updateAbilities(dt);
 

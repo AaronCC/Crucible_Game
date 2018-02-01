@@ -6,11 +6,15 @@
 class Ability
 {
 public:
+	enum ID {
+		SLASH
+	};
+
 	sf::Sprite sprite;
 	AnimationHandler animHandler;
 	Game* game;
 
-	std::string id;
+	ID id;
 	sf::Vector2u size;
 
 	float duration;
@@ -18,10 +22,15 @@ public:
 	bool isAlive;
 	float cooldown;
 
-	void activate(sf::Vector2f pPos, sf::Vector2i mPos, std::string id);
+	int speed;
+
+	void activate(sf::Vector2i pPos, sf::Vector2i mPos);
+	std::vector<sf::Vector2i> getActiveTiles(sf::Vector2i pPos, sf::Vector2i mPos);
 	void update(float dt);
 	void draw(float dt);
 	
+
+
 	Ability() {}
 
 	Ability(const Ability& a)
@@ -39,9 +48,11 @@ public:
 		sf::Texture& texture,
 		Animation animation,
 		sf::Vector2u size,
-		std::string id,
-		float cooldown)
+		ID id,
+		float cooldown,
+		int speed)
 	{
+		this->speed = speed;
 		this->cooldown = cooldown;
 		this->size = size;
 		this->id = id;
