@@ -21,6 +21,8 @@ public:
 	float durTimer;
 	bool isAlive;
 	float cooldown;
+	unsigned int slotNum;
+	unsigned int tickCost;
 
 	int speed;
 
@@ -42,6 +44,8 @@ public:
 		this->animHandler = a.animHandler;
 		this->duration = a.duration;
 		this->cooldown = a.cooldown;
+		this->slotNum = a.slotNum;
+		this->tickCost = a.tickCost;
 	}
 
 	Ability(Game* game,
@@ -50,8 +54,12 @@ public:
 		sf::Vector2u size,
 		ID id,
 		float cooldown,
-		int speed)
+		int speed,
+		unsigned int slotNum,
+		unsigned int tickCost)
 	{
+		this->tickCost = tickCost;
+		this->slotNum = slotNum;
 		this->speed = speed;
 		this->cooldown = cooldown;
 		this->size = size;

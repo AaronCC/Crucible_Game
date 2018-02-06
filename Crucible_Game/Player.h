@@ -17,13 +17,14 @@ public:
 		LEFT,
 		UP,
 		DOWN,
-		RIGHT,
-		NONE
+		RIGHT
+		//NONE
 	};
 	
 	enum Action {
 		MOVE,
-		ABILITY
+		ABILITY,
+		NONE
 	};
 	Action queuedAction;
 
@@ -54,12 +55,15 @@ public:
 
 	Ability* queuedAbility;
 	std::vector<Ability*> abilities;
+
 	std::map<sf::Keyboard::Key, Ability> keyAbilities;
 	std::map<sf::Keyboard::Key, float> keyCooldowns;
 	Ability rmbAbility;
 	float rmbCooldown;
 	Ability lmbAbility;
 	float lmbCooldown;
+	float queuedCooldown;
+	unsigned int queuedAbilitySlotNum;
 
 	std::map<sf::Keyboard::Key, bool> keys;
 	std::map<std::string, unsigned int> anims;
@@ -93,10 +97,29 @@ public:
 	void addWayPoint(std::pair<int, int> point) { 
 		queuedPoints.push_back({ point.first, point.second });
 		wayPoints.push({ point.first,point.second }); 
+		this->tickCount += speed * 1;
 	}
-	void clearWayPoints() { 
+	void clearWayPoints() {
+		this->tickCount = 0;
 		this->wayPoints = std::stack<sf::Vector2i>();
 		queuedPoints.clear();
+	}
+
+	void activateQueuedAbility()
+	{
+		queuedAbility->activate(tilePos, *mIndex);
+		abilities.push_back(queuedAbility);
+		hud.setCooldown(queuedAbilitySlotNum, queuedCooldown);
+		queuedAbility = nullptr;
+		queuedAction = Action::NONE;
+	}
+	void resolveAbilityCDs(unsigned int ticks)
+	{
+		for (int cd = 0; cd < hud.cooldowns.size(); cd++)
+		{
+			if(hud.cooldowns[cd].active)
+				hud.updateCD(cd, ticks);
+		}
 	}
 
 	bool moveNext();
@@ -106,7 +129,7 @@ public:
 		sf::Texture& texture, const std::vector<Animation>& animations,
 		sf::Vector2i spawnPos, sf::View* view, sf::Vector2i* mIndex)
 	{
-		walkState = WalkState::NONE;
+		//walkState = WalkState::NONE;
 		this->mIndex = mIndex;
 		this->view = view;
 		this->game = game;
@@ -114,9 +137,9 @@ public:
 		this->resolveActions = false;
 		this->tickCount = 0;
 		this->friction = 15.f;
-		this->mass = 1.f;
-		this->speed = 50.f;
-		this->maxSpeed = 100.f;
+		//this->mass = 1.f;
+		this->speed = 1.f;
+		//this->maxSpeed = 100.f;
 
 		this->health = 100;
 		this->maxHealth = this->health;
@@ -147,7 +170,8 @@ public:
 		hud = Hud(game, { "globe","life_globe", "ability_slot", "can_select", "cant_select" });
 
 		/* TEMP */
-		rmbAbility = Ability(this->game, game->texmgr.getRef("slash"), { 0,3,0.1f }, { 32,32 }, Ability::ID::SLASH, 0.5f, 1);
+		rmbAbility = Ability(this->game, game->texmgr.getRef("slash"),
+			{ 0,3,0.1f }, { 32,32 }, Ability::ID::SLASH, 10, 1, 7, 2);
 		hud.setSlotSprites({}, "move_icon", "slash_icon");
 
 		queueSprite.setTexture(this->game->texmgr.getRef("queue_select"));

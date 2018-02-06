@@ -1,6 +1,7 @@
 #include "Player.h"
 //#include "PathFinder.h"
 #define TILE_SIZE this->game->tileSize
+#define RMB_SLOT 7
 #include <cmath>
 void Player::handleInput()
 {
@@ -10,11 +11,12 @@ void Player::handleInput()
 		this->resolveActions = true;
 		keys[sf::Keyboard::Space] = true;
 	}
-	else
+	else if (keys[sf::Keyboard::Space] == true)
 	{
 		this->resolveActions = false;
-		keys[sf::Keyboard::Space] = false;
+		keys[sf::Keyboard::Space] = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
 	}
+
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::J))
 	{
 		health -= 1;
@@ -26,16 +28,17 @@ void Player::handleInput()
 	}
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
 	{
-		//if (rmbCooldown <= 0)
-		//{
-		queuedAction = Action::ABILITY;
-		queuedPoints.clear();
-		queuedAbility = new Ability(rmbAbility);
-		for (auto tile : queuedAbility->getActiveTiles(this->tilePos, *mIndex))
-			queuedPoints.push_back(tile);
-		rmbCooldown = queuedAbility->cooldown;
-		hud.setCooldown(7, rmbCooldown);
-		//}
+		if (hud.cooldowns[RMB_SLOT].timer <= 0)
+		{
+			queuedAction = Action::ABILITY;
+			queuedPoints.clear();
+			queuedAbility = new Ability(rmbAbility);
+			for (auto tile : queuedAbility->getActiveTiles(this->tilePos, *mIndex))
+				queuedPoints.push_back(tile);
+			queuedCooldown = queuedAbility->cooldown;
+			queuedAbilitySlotNum = RMB_SLOT;
+			this->tickCount = queuedAbility->tickCost;
+		}
 	}
 
 	/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
@@ -121,7 +124,7 @@ void Player::updateAnim(sf::View view)
 
 	this->animHandler.changeAnim(anims[currentAnim]);
 	oldWalkState = walkState;
-	walkState = WalkState::NONE;
+	//walkState = WalkState::NONE;
 }
 
 bool Player::moveNext()
@@ -210,7 +213,7 @@ void Player::updateAbilities(float dt)
 {
 	int i = 0;
 	std::vector<int> rmCache;
-	if (rmbCooldown > 0)
+	/*if (rmbCooldown > 0)
 		rmbCooldown -= dt;
 	if (lmbCooldown > 0)
 		lmbCooldown -= dt;
@@ -218,7 +221,7 @@ void Player::updateAbilities(float dt)
 	{
 		if (cd.second > 0)
 			cd.second -= dt;
-	}
+	}*/
 	for (auto ability : abilities)
 	{
 		ability->update(dt);

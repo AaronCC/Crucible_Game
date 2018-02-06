@@ -71,14 +71,20 @@ void Hud::draw(float dt)
 		}
 	}
 }
-
+void Hud::updateCD(unsigned int slot, unsigned int ticks)
+{
+	if (cooldowns[slot].active)
+	{
+		cooldowns[slot].timer -= ticks;
+	}
+}
 void Hud::update(float dt)
 {
 	for (int cd = 0; cd < A_SLOT_COUNT; cd++)
 	{
 		if (cooldowns[cd].active)
 		{
-			cooldowns[cd].timer -= dt;
+			//cooldowns[cd].timer -= dt;
 			if (cooldowns[cd].timer < 0)
 			{
 				cooldowns[cd].active = false;

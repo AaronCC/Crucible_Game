@@ -107,6 +107,7 @@ public:
 	}
 
 	void draw(float dt);
+	void updateCD(unsigned int slot, unsigned int ticks);
 	void update(float dt);
 
 	void updateHealth(float dmg);

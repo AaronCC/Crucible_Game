@@ -72,6 +72,7 @@ void ExploreState::handleInput()
 		{
 			this->player.addWayPoint(point);
 		}
+
 		this->player.queuedAction = Player::Action::MOVE;
 		//this->player.setPos((sf::Vector2f)this->map->mouseIndex * 32.f);
 		old_mLeftState = true;
@@ -117,12 +118,13 @@ void ExploreState::resolveFoW()
 void ExploreState::resolveGameState(unsigned int ticks)
 {
 	if (player.queuedAction == Player::Action::ABILITY)
-		player.queuedAbility->activate(player.tilePos, map->mouseIndex);
+		player.activateQueuedAbility();
 	else if (player.queuedAction == Player::Action::MOVE)
 		while (player.moveNext())
 		{
 			resolveFoW();
 		}
+	player.resolveAbilityCDs(ticks);
 	this->player.clearWayPoints();
 }
 
