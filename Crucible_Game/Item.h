@@ -6,10 +6,13 @@
 class Item
 {
 public:
-	Item();
+	Item(std::string name)
+	{
+		this->name = name;
+	}
 	~Item();
 
-	sf::Text name;
+	std::string name;
 };
 
 #endif /* ITEM_H */

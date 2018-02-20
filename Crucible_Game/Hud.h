@@ -3,6 +3,9 @@
 #include "Game.h"
 #include "Item.h"
 #include <queue>
+#include <string>
+#include <sstream>
+#include <iterator>
 
 #define H_GLOBE "hGlobe"
 #define H_POOL "hPool"
@@ -11,23 +14,104 @@
 #define CANT_SELECT "cant_select"
 #define A_SLOT_COUNT 8
 
+
 class InvSlot {
+#define xOffset 180
+#define spacing 36
+#define invSlotW 160
+#define invSlotH 32
+#define infoWidth 100
+#define tSize 12
+#define charWidth 8
+
 public:
 	sf::Vector2f start{ 10, 10 };
 
-	unsigned int xOffset = 180;
-	unsigned int spacing = 36;
-	unsigned int width = 160;
-	unsigned int height = 32;
+	sf::RectangleShape infoBack;
+	std::vector<sf::Text> itemText;
+	std::vector<sf::Text> infoText;
+
+	float lineH = tSize + 4;
+	int maxInfoChar = infoWidth/charWidth;
+	int maxNameChar = invSlotW / charWidth;
+
+	std::vector<std::string> wrapWord(int lineLength, std::string name)
+	{
+		std::vector<std::string> wrapped;
+		int charcount = 0;
+		std::vector<std::string> words = chopWord(item->name);
+		std::string newLine = words[0];
+		charcount += words[0].length();
+		int linecount = 0;
+		for (int i = 1; i < words.size(); i++)
+		{
+			charcount += words[i].length() + 1;
+			if (charcount >= lineLength)
+			{
+				wrapped.push_back(newLine);
+				charcount = words[i].length() + 1;;
+				linecount++;
+				newLine = "";
+			}
+			newLine += " " + words[i];
+		}
+		if (newLine != "")
+		{
+			wrapped.push_back(newLine);
+		}
+		return wrapped;
+	}
+
+	std::vector<std::string> chopWord(std::string word)
+	{
+		std::istringstream buffer(word);
+		std::istream_iterator<std::string> beg(buffer), end;
+		std::vector<std::string> words(beg, end);
+		return words;
+	}
+
+	void setItem(Item* item) {
+		this->item = item;
+
+		if (item->name.size() <= 0)
+			return;
+
+		int linecount = 0;
+
+		for (auto line : wrapWord(maxNameChar, item->name))
+		{
+			itemText.push_back(sf::Text(line, game->fonts["main_font"], tSize));
+			itemText[linecount].setFillColor(sf::Color::White);
+			linecount++;
+		}
+
+		linecount = 0;
+		for (auto line : wrapWord(maxInfoChar,item->name))
+		{
+			infoText.push_back(sf::Text(line, game->fonts["main_font"], tSize));
+			infoText[linecount].setFillColor(sf::Color::White);
+			linecount++;
+		}
+	}
 
 	InvSlot() {}
-	InvSlot(int index, bool eq)
+	InvSlot(int index, bool eq, Game* game)
 	{
+		this->game = game;
 		this->position = sf::Vector2f{
 			start.y + (xOffset *(int)eq),
 			start.x + (spacing * index)
 		};
+		infoBack.setSize({ infoWidth, lineH });
+		infoBack.setFillColor(sf::Color::Black);
+		infoBack.setOrigin({ 0,0 });
+		infoBack.setPosition(this->position);
+		infoBack.setOutlineThickness(2.f);
+		infoBack.setOutlineColor(sf::Color::Magenta);
+
+		sf::Vector2f padd{ 4, 2 };
 	}
+
 	~InvSlot() {}
 
 	bool InvSlot::isHovering(const sf::Vector2f mousePos)
@@ -35,18 +119,16 @@ public:
 		if (
 			mousePos.x >= position.x &&
 			mousePos.y >= position.y &&
-			mousePos.x <= position.x + width &&
-			mousePos.y <= position.y + height
+			mousePos.x <= position.x + invSlotW &&
+			mousePos.y <= position.y + invSlotH
 			) return true;
 		return false;
 	}
 
-	void setItem(Item* item) { this->item = item; }
-
 	sf::Vector2f position;
 private:
 	Item * item;
-
+	Game* game;
 private:
 };
 
@@ -58,6 +140,7 @@ public:
 
 	sf::Sprite itemTextBack;
 	sf::Sprite itemInfoBack;
+	InvSlot hovering;
 
 	bool showInfo = false;
 
@@ -71,7 +154,8 @@ public:
 		itemInfoBack.setOrigin(0, 0);
 		for (int i = 0; i < 3; i++)
 		{
-			slots.push_back(InvSlot(i, false));
+			slots.push_back(InvSlot(i, false, this->game));
+			slots[i].setItem(&Item("Giant Sword of Demon Slaying"));
 		}
 	}
 
@@ -169,7 +253,7 @@ public:
 			elements[slotID].setPosition(slotPos);
 			elements[slotID].setOrigin(0, elements[slotID].getTexture()->getSize().y);
 			slotText[i].setPosition(slotPos.x + (slotW / 2) - (slotText[i].getString().getSize() * 4.f), slotPos.y - slotW - 20.f);
-			slotText[i].setCharacterSize(12);
+			slotText[i].setCharacterSize(tSize);
 		}
 		eCount++;
 

@@ -159,25 +159,50 @@ void Inventory::draw()
 		//itemInfoBack.setPosition(slot.position);
 		this->game->window.draw(itemTextBack);
 		//this->game->window.draw(itemInfoBack);
+		for (auto text : slot.itemText)
+		{
+			this->game->window.draw(text);
+		}
 	}
 	if (showInfo)
-		this->game->window.draw(itemInfoBack);
+	{
+		this->game->window.draw(hovering.infoBack);
+		for (auto text : hovering.infoText)
+		{
+			this->game->window.draw(text);
+		}
+	}
 }
 
 void Inventory::update(sf::Vector2f mousePos)
 {
-	InvSlot* hovering = nullptr;
-	for (auto slot : slots)
+	mousePos += {2, 2};
+	showInfo = false;
+	float offset = 0.f;
+	for (int s = 0; s < slots.size(); s++)
 	{
-		if (slot.isHovering(mousePos))
+		for (int i = 0; i < slots[s].itemText.size(); i++)
 		{
-			hovering = &slot;
+			int textL = slots[s].itemText[i].getString().getSize();
+			offset = (((slots[s].maxNameChar+1) - textL) / 2.f)*(charWidth);
+			slots[s].itemText[i].setPosition(slots[s].position.x + offset, slots[s].position.y + (i*tSize));
+		}
+		if (slots[s].isHovering(mousePos))
+		{
+			hovering = slots[s];
+			showInfo = true;
 			break;
 		}
 	}
-	if (hovering != nullptr) { 
-		this->showInfo = true;
+	if (showInfo) {
+		for (int i = 0; i < hovering.infoText.size(); i++)
+		{
+			int textL = hovering.infoText[i].getString().getSize();
+			offset = (((hovering.maxInfoChar+1) - textL) / 2.f)*(charWidth);
+			hovering.infoText[i].setPosition(mousePos.x+offset,mousePos.y+(i*tSize));
+		}
 		itemInfoBack.setPosition(mousePos);
+		hovering.infoBack.setPosition(mousePos);
+		hovering.infoBack.setSize({ infoWidth, (tSize+2) * (float)hovering.infoText.size() });
 	}
-	else { showInfo = false; }
 }
