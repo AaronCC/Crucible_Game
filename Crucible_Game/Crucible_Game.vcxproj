@@ -88,6 +88,7 @@
     <ClCompile Include="Gui.cpp" />
     <ClCompile Include="Helper.cpp" />
     <ClCompile Include="Hud.cpp" />
+    <ClCompile Include="Item.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="MenuState.cpp" />
@@ -107,6 +108,7 @@
     <ClInclude Include="Gui.h" />
     <ClInclude Include="Helper.h" />
     <ClInclude Include="Hud.h" />
+    <ClInclude Include="Item.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="MenuState.h" />
     <ClInclude Include="PathFinder.h" />

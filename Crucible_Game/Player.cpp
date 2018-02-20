@@ -5,10 +5,11 @@
 #include <cmath>
 void Player::handleInput()
 {
-
+	this->hud.handleInput();
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && keys[sf::Keyboard::Space] == false)
 	{
 		this->resolveActions = true;
+		this->hud.gameMsgs.clear();
 		keys[sf::Keyboard::Space] = true;
 	}
 	else if (keys[sf::Keyboard::Space] == true)
@@ -16,7 +17,15 @@ void Player::handleInput()
 		this->resolveActions = false;
 		keys[sf::Keyboard::Space] = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
 	}
-
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::I) && keys[sf::Keyboard::I] == false)
+	{
+		this->hud.showInv = !this->hud.showInv;
+		keys[sf::Keyboard::I] = true;
+	}
+	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::I))
+	{
+		keys[sf::Keyboard::I] = false;
+	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::J))
 	{
 		health -= 1;
@@ -40,29 +49,6 @@ void Player::handleInput()
 			this->tickCount = queuedAbility->tickCost;
 		}
 	}
-
-	/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-	{
-	moveForce.x -= speed;
-	walkState = WalkState::LEFT;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-	{
-	moveForce.y -= speed;
-	walkState = WalkState::UP;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-	{
-	moveForce.y += speed;
-	walkState = WalkState::DOWN;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-	{
-	moveForce.x += speed;
-	walkState = WalkState::RIGHT;
-
-	}*/
-	/* temp */
 }
 
 void Player::handleEvent(sf::Event event)
@@ -103,6 +89,10 @@ void Player::draw(float dt)
 	}
 	this->game->window.setView(hudView);
 	this->hud.draw(dt);
+	if (this->hud.showInv)
+	{
+		this->inventory.draw();
+	}
 	return;
 }
 
@@ -139,64 +129,27 @@ bool Player::moveNext()
 	return false;
 }
 
+void Player::queueHudMsg(std::queue<std::string> msgs)
+{
+	while (msgs.size() > 0)
+	{
+		hud.queueMsg(msgs.front());
+		msgs.pop();
+	}
+}	
+
 void Player::update(float dt)
 {
 	float fX, fY;
-
-	//if (wayPoints.size() > 0)
-	//{
-	//	sf::Vector2i to = wayPoints.top() - this->tilePos;
-	//	sf::Vector2f dir = (sf::Vector2f)to;
-	//	if (testTimer <= 0)//(to == sf::Vector2i{ 0, 0 })
-	//	{
-	//		setPos({ wayPoints.top().x * 32.f, wayPoints.top().y * 32.f });
-	//		wayPoints.pop();
-	//		//setPos({ tilePos.x * 32.f, tilePos.y * 32.f });
-	//		testTimer = 0.25;
-	//	}
-	//	else
-	//	{
-	//		testTimer -= dt;
-	//	}
-		/*
-		else
-		{
-			velocity = dir * speed;
-			velocity = helper.clamp(velocity, maxSpeed);
-			move(velocity * dt);
-			setPos(position);
-		}*/
-		//}
-		/*totalForce += moveForce;
-
-		fX = velocity.x == 0 ? 0 : friction;
-		fY = velocity.y == 0 ? 0 : friction;
-
-		acceleration.x = velocity.x > 0 ? (totalForce.x / mass) - fX
-			: (totalForce.x / mass) + fX;
-		acceleration.y = velocity.y > 0 ? (totalForce.y / mass) - fY
-			: (totalForce.y / mass) + fY;
-
-		velocity += acceleration;
-
-		velocity.x = std::abs(velocity.x) <= std::abs(fX) ? 0 : velocity.x;
-		velocity.y = std::abs(velocity.y) <= std::abs(fY) ? 0 : velocity.y;*/
-
-		//velocity = helper.clamp(velocity, maxSpeed);
-
-		//move(velocity * dt);
-
-
-		//totalForce -= moveForce;
-		//moveForce = { 0,0 };
 
 	updateAbilities(dt);
 
 	updateTilePos();
 
-	//setPos((sf::Vector2f)tilePos * 32.f);
-
 	hud.update(dt);
+
+	if (hud.showInv)
+		inventory.update(this->game->window.mapPixelToCoords(sf::Mouse::getPosition(this->game->window), hudView));
 }
 
 void Player::updateTilePos()

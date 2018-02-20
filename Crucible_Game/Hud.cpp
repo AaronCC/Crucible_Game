@@ -40,6 +40,14 @@ void Hud::setSlotSprites(std::vector<std::pair<sf::Keyboard::Key, std::string>> 
 	}
 }
 
+void Hud::queueMsg(std::string msg)
+{
+	sf::Text text;
+	text.setFont(this->game->fonts["main_font"]);
+	text.setString(msg);
+	text.setCharacterSize(12);
+	gameMsgs.push_back(text);
+}
 
 void Hud::draw(float dt)
 {
@@ -69,6 +77,18 @@ void Hud::draw(float dt)
 			cdSprite.setTextureRect(cooldowns[cd].bounds);
 			this->game->window.draw(cdSprite);
 		}
+	}
+	sf::Vector2f offset = { 0,0 };
+	if (showMsgs || showInv)
+	{
+		this->game->window.draw(msgBack);
+		if (showMsgs)
+			for (int i = 0; i < gameMsgs.size(); i++)
+			{
+				gameMsgs[i].setPosition(msgStart + offset);
+				this->game->window.draw(gameMsgs[i]);
+				offset.y -= 10;
+			}
 	}
 }
 void Hud::updateCD(unsigned int slot, unsigned int ticks)
@@ -109,23 +129,55 @@ void Hud::updateHealth(float percent)
 {
 	sf::IntRect hRect = elements[H_GLOBE].getTextureRect();
 	int newH = (1.f - percent)*(float)hRect.height;
-	elements[H_POOL].setTextureRect({ 0, newH,hRect.width,(int)(hRect.height * percent)});
+	elements[H_POOL].setTextureRect({ 0, newH,hRect.width,(int)(hRect.height * percent) });
 	sf::Vector2f pos = elements[H_GLOBE].getPosition();
 	elements[H_POOL].setPosition(pos.x, pos.y + newH);
 }
 
-void Hud::handleInput(sf::Event event)
+void Hud::handleInput()
 {
-	switch (event.type)
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tilde) && keys[sf::Keyboard::Tilde] == false)
 	{
-	case sf::Event::MouseMoved:
-
-		break;
-	default:
-		break;
+		showMsgs = !showMsgs;
+		keys[sf::Keyboard::Tilde] = true;
+	}
+	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Tilde))
+	{
+		keys[sf::Keyboard::Tilde] = false;
 	}
 }
 
 Hud::~Hud()
 {
+}
+
+void Inventory::draw()
+{
+	for (auto slot : slots)
+	{
+		itemTextBack.setPosition(slot.position);
+		//itemInfoBack.setPosition(slot.position);
+		this->game->window.draw(itemTextBack);
+		//this->game->window.draw(itemInfoBack);
+	}
+	if (showInfo)
+		this->game->window.draw(itemInfoBack);
+}
+
+void Inventory::update(sf::Vector2f mousePos)
+{
+	InvSlot* hovering = nullptr;
+	for (auto slot : slots)
+	{
+		if (slot.isHovering(mousePos))
+		{
+			hovering = &slot;
+			break;
+		}
+	}
+	if (hovering != nullptr) { 
+		this->showInfo = true;
+		itemInfoBack.setPosition(mousePos);
+	}
+	else { showInfo = false; }
 }

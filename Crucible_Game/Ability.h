@@ -23,6 +23,7 @@ public:
 	float cooldown;
 	unsigned int slotNum;
 	unsigned int tickCost;
+	std::string name;
 
 	int speed;
 
@@ -46,6 +47,7 @@ public:
 		this->cooldown = a.cooldown;
 		this->slotNum = a.slotNum;
 		this->tickCost = a.tickCost;
+		this->name = a.name;
 	}
 
 	Ability(Game* game,
@@ -56,8 +58,10 @@ public:
 		float cooldown,
 		int speed,
 		unsigned int slotNum,
-		unsigned int tickCost)
+		unsigned int tickCost,
+		std::string name)
 	{
+		this->name = name;
 		this->tickCost = tickCost;
 		this->slotNum = slotNum;
 		this->speed = speed;

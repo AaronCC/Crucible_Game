@@ -26,6 +26,14 @@ public:
 		ABILITY,
 		NONE
 	};
+
+	struct Stats {
+		int attack;
+		int defense;
+		int power;
+		int knowledge;
+	};
+
 	Action queuedAction;
 
 	int health;
@@ -52,6 +60,7 @@ public:
 
 	sf::Sprite sprite;
 	sf::Sprite queueSprite;
+
 
 	Ability* queuedAbility;
 	std::vector<Ability*> abilities;
@@ -105,13 +114,15 @@ public:
 		queuedPoints.clear();
 	}
 
-	void activateQueuedAbility()
+	std::string activateQueuedAbility()
 	{
+		std::string msg = queuedAbility->name;
 		queuedAbility->activate(tilePos, *mIndex);
 		abilities.push_back(queuedAbility);
 		hud.setCooldown(queuedAbilitySlotNum, queuedCooldown);
 		queuedAbility = nullptr;
 		queuedAction = Action::NONE;
+		return msg;
 	}
 	void resolveAbilityCDs(unsigned int ticks)
 	{
@@ -123,6 +134,10 @@ public:
 	}
 
 	bool moveNext();
+
+	Inventory inventory;
+
+	void queueHudMsg(std::queue<std::string> msgs);
 
 	Player() {};
 	Player(Game* game, sf::Vector2u size,
@@ -171,7 +186,7 @@ public:
 
 		/* TEMP */
 		rmbAbility = Ability(this->game, game->texmgr.getRef("slash"),
-			{ 0,3,0.1f }, { 32,32 }, Ability::ID::SLASH, 10, 1, 7, 2);
+			{ 0,3,0.1f }, { 32,32 }, Ability::ID::SLASH, 10, 1, 7, 2, "slash");
 		hud.setSlotSprites({}, "move_icon", "slash_icon");
 
 		queueSprite.setTexture(this->game->texmgr.getRef("queue_select"));
@@ -179,6 +194,8 @@ public:
 		queueSprite.setTextureRect(sf::IntRect( 0,0,this->game->tileSize.x,this->game->tileSize.y ));
 
 		setPos(position);
+
+		this->inventory = Inventory(this->game);
 	}
 
 	~Player();

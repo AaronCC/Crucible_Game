@@ -1,6 +1,8 @@
 #ifndef HUD_H
 #define HUD_H
 #include "Game.h"
+#include "Item.h"
+#include <queue>
 
 #define H_GLOBE "hGlobe"
 #define H_POOL "hPool"
@@ -8,6 +10,78 @@
 #define CAN_SELECT "can_select"
 #define CANT_SELECT "cant_select"
 #define A_SLOT_COUNT 8
+
+class InvSlot {
+public:
+	sf::Vector2f start{ 10, 10 };
+
+	unsigned int xOffset = 180;
+	unsigned int spacing = 36;
+	unsigned int width = 160;
+	unsigned int height = 32;
+
+	InvSlot() {}
+	InvSlot(int index, bool eq)
+	{
+		this->position = sf::Vector2f{
+			start.y + (xOffset *(int)eq),
+			start.x + (spacing * index)
+		};
+	}
+	~InvSlot() {}
+
+	bool InvSlot::isHovering(const sf::Vector2f mousePos)
+	{
+		if (
+			mousePos.x >= position.x &&
+			mousePos.y >= position.y &&
+			mousePos.x <= position.x + width &&
+			mousePos.y <= position.y + height
+			) return true;
+		return false;
+	}
+
+	void setItem(Item* item) { this->item = item; }
+
+	sf::Vector2f position;
+private:
+	Item * item;
+
+private:
+};
+
+class Inventory {
+public:
+	Game * game;
+	sf::Font font;
+	std::vector<InvSlot> slots;
+
+	sf::Sprite itemTextBack;
+	sf::Sprite itemInfoBack;
+
+	bool showInfo = false;
+
+	Inventory() {}
+	Inventory(Game* game) {
+		this->game = game;
+		this->font = this->game->fonts["main_font"];
+		itemTextBack.setTexture(this->game->texmgr.getRef("item_text_back"));
+		itemInfoBack.setTexture(this->game->texmgr.getRef("item_info_back"));
+		itemTextBack.setOrigin(0, 0);
+		itemInfoBack.setOrigin(0, 0);
+		for (int i = 0; i < 3; i++)
+		{
+			slots.push_back(InvSlot(i, false));
+		}
+	}
+
+	~Inventory() {}
+
+	void draw();
+	void update(sf::Vector2f mousePos);
+private:
+};
+
 class Hud
 {
 public:
@@ -17,8 +91,16 @@ public:
 	sf::Text slotText[A_SLOT_COUNT];
 	sf::Font font;
 
+
+	std::vector<sf::Text> itemSlotNames;
+
 	sf::Vector2f slotStart;
 	float slotW = 32.f;
+
+	std::vector<sf::Text> gameMsgs;
+	bool showMsgs;
+	bool showInv;
+	sf::Sprite msgBack;
 
 	struct Cooldown {
 		float totalTime;
@@ -26,19 +108,24 @@ public:
 		bool active;
 		sf::IntRect bounds;
 	};
-	
+
 	std::vector<Cooldown> cooldowns;
 
-	std::map<sf::Keyboard::Key, std::pair<sf::Sprite,bool>> aSlotSprites;
-	std::pair<sf::Sprite,bool> lmbSprite;
-	std::pair<sf::Sprite,bool> rmbSprite;
+	std::map<sf::Keyboard::Key, bool> keys;
+
+	std::map<sf::Keyboard::Key, std::pair<sf::Sprite, bool>> aSlotSprites;
+	std::pair<sf::Sprite, bool> lmbSprite;
+	std::pair<sf::Sprite, bool> rmbSprite;
+	sf::Vector2f msgStart = sf::Vector2f(6, 478);
 
 	sf::Sprite cdSprite;
 
 	void setSlotSprites(std::vector<std::pair<sf::Keyboard::Key, std::string>> slotSpriteIDs,
 		std::string lmbID, std::string rmbID);
 
-	void setCooldown(int index, float timer) { 
+	void queueMsg(std::string msg);
+
+	void setCooldown(int index, float timer) {
 		if (index >= A_SLOT_COUNT)
 			return;
 		cooldowns[index].active = true;
@@ -96,14 +183,15 @@ public:
 
 		cdSprite.setTexture(this->game->texmgr.getRef("cooldown_icon"));
 		cdSprite.setOrigin(0, slotW);
-		//elements[CAN_SELECT].setTexture(game->texmgr.getRef(eData[eCount])); 
-		//elements[CAN_SELECT].setOrigin(0,0);
-		//eCount++;
 
-		//elements[CANT_SELECT].setTexture(game->texmgr.getRef(eData[eCount]));
-		//elements[CANT_SELECT].setOrigin(elements[CANT_SELECT].getTexture()->getSize().x/2,
-		//	elements[CANT_SELECT].getTexture()->getSize().y/2);
-		//eCount++;
+		showInv = false;
+
+		showMsgs = false;
+		msgBack.setTexture(this->game->texmgr.getRef("text_back"));
+		msgBack.setOrigin(0, 0);
+		msgBack.setPosition(0, 0);
+
+		keys[sf::Keyboard::Tilde] = false;
 	}
 
 	void draw(float dt);
@@ -112,7 +200,7 @@ public:
 
 	void updateHealth(float dmg);
 
-	void handleInput(sf::Event event);
+	void handleInput();
 
 	~Hud();
 };

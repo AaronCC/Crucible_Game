@@ -1,5 +1,5 @@
 #include "ExploreState.h"
-
+#include <queue>
 #define PLAYER this->map->player
 
 ExploreState::ExploreState(Game* game)
@@ -44,7 +44,7 @@ void ExploreState::draw(const float dt)
 	fps++;
 	testText.setString("FPS: " + std::to_string(fTotal));
 	this->player.draw(dt);
-	this->game->window.draw(testText);
+	//this->game->window.draw(testText);
 }
 
 void ExploreState::update(const float dt)
@@ -117,14 +117,17 @@ void ExploreState::resolveFoW()
 
 void ExploreState::resolveGameState(unsigned int ticks)
 {
+	std::queue<std::string> msgs;
 	if (player.queuedAction == Player::Action::ABILITY)
-		player.activateQueuedAbility();
+		msgs.push(player.activateQueuedAbility());
 	else if (player.queuedAction == Player::Action::MOVE)
 		while (player.moveNext())
 		{
 			resolveFoW();
+			msgs.push("Moved");
 		}
 	player.resolveAbilityCDs(ticks);
+	player.queueHudMsg(msgs);
 	this->player.clearWayPoints();
 }
 
