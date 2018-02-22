@@ -79,16 +79,19 @@ void Hud::draw(float dt)
 		}
 	}
 	sf::Vector2f offset = { 0,0 };
-	if (showMsgs || showInv)
+	if (showState != ShowState::SHOW_NONE)
 	{
 		this->game->window.draw(msgBack);
-		if (showMsgs)
+		if (showState == Hud::ShowState::SHOW_MSG)
+		{ 
 			for (int i = 0; i < gameMsgs.size(); i++)
 			{
 				gameMsgs[i].setPosition(msgStart + offset);
 				this->game->window.draw(gameMsgs[i]);
 				offset.y -= 10;
 			}
+			this->game->window.draw(msgTitle);
+		}
 	}
 }
 void Hud::updateCD(unsigned int slot, unsigned int ticks)
@@ -138,7 +141,10 @@ void Hud::handleInput()
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tilde) && keys[sf::Keyboard::Tilde] == false)
 	{
-		showMsgs = !showMsgs;
+		if (showState == Hud::ShowState::SHOW_MSG)
+			showState = Hud::ShowState::SHOW_NONE;
+		else
+			showState = Hud::ShowState::SHOW_MSG;
 		keys[sf::Keyboard::Tilde] = true;
 	}
 	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Tilde))
@@ -153,23 +159,57 @@ Hud::~Hud()
 
 void Inventory::draw()
 {
-	for (auto slot : slots)
+	this->game->window.draw(slider);
+	this->game->window.draw(invTitle);
+	this->game->window.draw(deleteButton.first);
+	this->game->window.draw(deleteButton.second);
+	for (int i = slotScIndex; i < maxScHeight + slotScIndex; i++)
 	{
-		itemTextBack.setPosition(slot.position);
-		//itemInfoBack.setPosition(slot.position);
-		this->game->window.draw(itemTextBack);
-		//this->game->window.draw(itemInfoBack);
-		for (auto text : slot.itemText)
+		if (i >= slots.size())
+			break;
+		itemTextBack.setPosition(slots[i].position);
+		this->game->window.draw(slots[i].slotBack);
+		for (auto text : slots[i].itemText)
 		{
 			this->game->window.draw(text);
 		}
 	}
-	if (showInfo)
+	for (auto slot : equipped)
 	{
-		this->game->window.draw(hovering.infoBack);
-		for (auto text : hovering.infoText)
+		this->game->window.draw(slot.first.slotBack);
+		for (auto text : slot.first.itemText)
 		{
 			this->game->window.draw(text);
+		}
+		this->game->window.draw(slot.second);
+	}
+	if (showInfo)
+	{
+		if (hoveringEq && equipped[hovering].first.nameInfoText.size() > 0)
+		{
+			this->game->window.draw(equipped[hovering].first.infoBack);
+
+			for (auto text : equipped[hovering].first.nameInfoText)
+			{
+				this->game->window.draw(text);
+			}
+			for (auto text : equipped[hovering].first.buffInfoText)
+			{
+				this->game->window.draw(text);
+			}
+		}
+		else if(!hoveringEq && slots[hovering].nameInfoText.size() > 0)
+		{
+			this->game->window.draw(slots[hovering].infoBack);
+
+			for (auto text : slots[hovering].nameInfoText)
+			{
+				this->game->window.draw(text);
+			}
+			for (auto text : slots[hovering].buffInfoText)
+			{
+				this->game->window.draw(text);
+			}
 		}
 	}
 }
@@ -179,30 +219,90 @@ void Inventory::update(sf::Vector2f mousePos)
 	mousePos += {2, 2};
 	showInfo = false;
 	float offset = 0.f;
-	for (int s = 0; s < slots.size(); s++)
+	int index = 0;
+	for (int s = slotScIndex; s < slots.size(); s++)
 	{
+		/*if (s >= slots.size())
+			break;*/
+		slots[s].updatePos({
+			slots[s].start.x + (xOffset * (int)slots[s].equipped),
+			slots[s].start.y + (spacing * index)
+			});
 		for (int i = 0; i < slots[s].itemText.size(); i++)
 		{
 			int textL = slots[s].itemText[i].getString().getSize();
-			offset = (((slots[s].maxNameChar+1) - textL) / 2.f)*(charWidth);
+			offset = (((slots[s].maxNameChar + 1) - textL) / 2.f)*(charWidth);
 			slots[s].itemText[i].setPosition(slots[s].position.x + offset, slots[s].position.y + (i*tSize));
 		}
 		if (slots[s].isHovering(mousePos))
 		{
-			hovering = slots[s];
+			hoveringEq = false;
+			hovering = s;
 			showInfo = true;
-			break;
 		}
+		else if (isHoveringDelete(mousePos))
+		{
+			delHover = true;
+		}
+		else
+			delHover = false;
+		index++;
+	}
+	for (int s = 0; s < equipped.size(); s++)
+	{
+
+		for (int i = 0; i < equipped[s].first.itemText.size(); i++)
+		{
+			int textL = equipped[s].first.itemText[i].getString().getSize();
+			offset = (((equipped[s].first.maxNameChar + 1) - textL) / 2.f)*(charWidth);
+			equipped[s].first.itemText[i].setPosition(equipped[s].first.position.x + offset, equipped[s].first.position.y + (i*tSize));
+		}
+		if (equipped[s].first.isHovering(mousePos))
+		{
+			hoveringEq = true;
+			hovering = s;
+			showInfo = true;
+		}
+		index++;
 	}
 	if (showInfo) {
-		for (int i = 0; i < hovering.infoText.size(); i++)
+		if (hoveringEq)
 		{
-			int textL = hovering.infoText[i].getString().getSize();
-			offset = (((hovering.maxInfoChar+1) - textL) / 2.f)*(charWidth);
-			hovering.infoText[i].setPosition(mousePos.x+offset,mousePos.y+(i*tSize));
+			for (int i = 0; i < equipped[hovering].first.nameInfoText.size(); i++)
+			{
+				int textL = equipped[hovering].first.nameInfoText[i].getString().getSize();
+				offset = (((equipped[hovering].first.maxInfoChar + 1) - textL) / 2.f)*(charWidth);
+				equipped[hovering].first.nameInfoText[i].setPosition(mousePos.x + offset, mousePos.y + (i*tSize));
+			}
+			int nSize = equipped[hovering].first.nameInfoText.size() + 1;
+			for (int i = 0; i < equipped[hovering].first.buffInfoText.size(); i++)
+			{
+				int textL = equipped[hovering].first.buffInfoText[i].getString().getSize();
+				offset = (((equipped[hovering].first.maxInfoChar + 1) - textL) / 2.f)*(charWidth);
+				equipped[hovering].first.buffInfoText[i].setPosition(mousePos.x + offset, mousePos.y + ((i + nSize)*tSize));
+			}
+			itemInfoBack.setPosition(mousePos);
+			equipped[hovering].first.infoBack.setPosition(mousePos);
+			equipped[hovering].first.infoBack.setSize({ infoWidth, (tSize + 2) * ((float)nSize + equipped[hovering].first.buffInfoText.size()) });
 		}
-		itemInfoBack.setPosition(mousePos);
-		hovering.infoBack.setPosition(mousePos);
-		hovering.infoBack.setSize({ infoWidth, (tSize+2) * (float)hovering.infoText.size() });
+		else
+		{
+			for (int i = 0; i < slots[hovering].nameInfoText.size(); i++)
+			{
+				int textL = slots[hovering].nameInfoText[i].getString().getSize();
+				offset = (((slots[hovering].maxInfoChar + 1) - textL) / 2.f)*(charWidth);
+				slots[hovering].nameInfoText[i].setPosition(mousePos.x + offset, mousePos.y + (i*tSize));
+			}
+			int nSize = slots[hovering].nameInfoText.size() + 1;
+			for (int i = 0; i < slots[hovering].buffInfoText.size(); i++)
+			{
+				int textL = slots[hovering].buffInfoText[i].getString().getSize();
+				offset = (((slots[hovering].maxInfoChar + 1) - textL) / 2.f)*(charWidth);
+				slots[hovering].buffInfoText[i].setPosition(mousePos.x + offset, mousePos.y + ((i + nSize)*tSize));
+			}
+			itemInfoBack.setPosition(mousePos);
+			slots[hovering].infoBack.setPosition(mousePos);
+			slots[hovering].infoBack.setSize({ infoWidth, (tSize + 2) * ((float)nSize + slots[hovering].buffInfoText.size()) });
+		}
 	}
 }

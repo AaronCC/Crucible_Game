@@ -30,7 +30,7 @@ public:
 	struct Stats {
 		int attack;
 		int defense;
-		int power;
+		int agility;
 		int knowledge;
 	};
 
@@ -50,6 +50,8 @@ public:
 	Game* game;
 	Hud hud;
 	sf::View hudView;
+
+	Stats stats;
 
 	float testTimer = 0;
 

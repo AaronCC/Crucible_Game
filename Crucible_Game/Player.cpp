@@ -19,7 +19,10 @@ void Player::handleInput()
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::I) && keys[sf::Keyboard::I] == false)
 	{
-		this->hud.showInv = !this->hud.showInv;
+		if (this->hud.showState == Hud::ShowState::SHOW_INV)
+			this->hud.showState = Hud::ShowState::SHOW_NONE;
+		else
+			this->hud.showState = Hud::ShowState::SHOW_INV;
 		keys[sf::Keyboard::I] = true;
 	}
 	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::I))
@@ -59,7 +62,12 @@ void Player::handleEvent(sf::Event event)
 		hudView.setViewport(helper.resizeView(event.size.width, event.size.height, game->aspectRatio));
 		break;
 	case sf::Event::MouseLeft:
-
+		break;
+	case sf::Event::MouseWheelMoved:
+		if (this->hud.showState == Hud::ShowState::SHOW_INV)
+		{
+			this->inventory.scroll(event.mouseWheel.delta);
+		}
 		break;
 	default:
 		break;
@@ -89,7 +97,7 @@ void Player::draw(float dt)
 	}
 	this->game->window.setView(hudView);
 	this->hud.draw(dt);
-	if (this->hud.showInv)
+	if (this->hud.showState == Hud::ShowState::SHOW_INV)
 	{
 		this->inventory.draw();
 	}
@@ -136,7 +144,7 @@ void Player::queueHudMsg(std::queue<std::string> msgs)
 		hud.queueMsg(msgs.front());
 		msgs.pop();
 	}
-}	
+}
 
 void Player::update(float dt)
 {
@@ -148,7 +156,7 @@ void Player::update(float dt)
 
 	hud.update(dt);
 
-	if (hud.showInv)
+	if (this->hud.showState == Hud::ShowState::SHOW_INV)
 		inventory.update(this->game->window.mapPixelToCoords(sf::Mouse::getPosition(this->game->window), hudView));
 }
 

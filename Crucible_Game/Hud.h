@@ -16,30 +16,33 @@
 
 
 class InvSlot {
-#define xOffset 180
-#define spacing 36
-#define invSlotW 160
+#define xOffset 200
+#define spacing 40
+#define invSlotW 190
 #define invSlotH 32
-#define infoWidth 100
+#define infoWidth 116
 #define tSize 12
 #define charWidth 8
+#define slotBorder 2
 
 public:
-	sf::Vector2f start{ 10, 10 };
-
+	sf::Vector2f start{ 25, 10 };
 	sf::RectangleShape infoBack;
+	sf::RectangleShape slotBack;
 	std::vector<sf::Text> itemText;
-	std::vector<sf::Text> infoText;
-
+	std::vector<sf::Text> nameInfoText;
+	std::vector<sf::Text> buffInfoText;
+	bool equipped = false;
+	bool selected = false;
 	float lineH = tSize + 4;
-	int maxInfoChar = infoWidth/charWidth;
+	int maxInfoChar = infoWidth / charWidth;
 	int maxNameChar = invSlotW / charWidth;
 
 	std::vector<std::string> wrapWord(int lineLength, std::string name)
 	{
 		std::vector<std::string> wrapped;
 		int charcount = 0;
-		std::vector<std::string> words = chopWord(item->name);
+		std::vector<std::string> words = chopWord(name);
 		std::string newLine = words[0];
 		charcount += words[0].length();
 		int linecount = 0;
@@ -70,45 +73,87 @@ public:
 		return words;
 	}
 
+	int getItemSlotType() {
+		if (item == nullptr)
+			return -1;
+		return this->item->slotType;
+	}
+
+	Item* getItem() {
+		return item;
+	}
+
 	void setItem(Item* item) {
 		this->item = item;
-
+		clearText();
 		if (item->name.size() <= 0)
 			return;
 
 		int linecount = 0;
-
 		for (auto line : wrapWord(maxNameChar, item->name))
 		{
 			itemText.push_back(sf::Text(line, game->fonts["main_font"], tSize));
-			itemText[linecount].setFillColor(sf::Color::White);
+			itemText[linecount].setFillColor({ 90, 210, 220 });
 			linecount++;
 		}
 
 		linecount = 0;
-		for (auto line : wrapWord(maxInfoChar,item->name))
+		for (auto line : wrapWord(maxInfoChar, item->name))
 		{
-			infoText.push_back(sf::Text(line, game->fonts["main_font"], tSize));
-			infoText[linecount].setFillColor(sf::Color::White);
+			nameInfoText.push_back(sf::Text(line, game->fonts["main_font"], tSize));
+			nameInfoText[linecount].setFillColor({ 90, 210, 220 });
 			linecount++;
+		}
+
+		linecount = 0;
+		for (auto buff : item->getBuffString())
+		{
+			for (auto line : wrapWord(maxInfoChar, buff))
+			{
+				buffInfoText.push_back(sf::Text(line, game->fonts["main_font"], tSize));
+				buffInfoText[linecount].setFillColor(sf::Color::White);
+				linecount++;
+			}
 		}
 	}
 
+	void updatePos(sf::Vector2f newPos)
+	{
+		this->position = newPos;
+		this->slotBack.setPosition(this->position);
+	}
+	void clearText() {
+		itemText.clear();
+		nameInfoText.clear();
+		buffInfoText.clear();
+	}
+	void removeItem() {
+		clearText();
+		this->item = nullptr;
+	}
 	InvSlot() {}
 	InvSlot(int index, bool eq, Game* game)
 	{
+		this->item = nullptr;
 		this->game = game;
+		this->equipped = eq;
 		this->position = sf::Vector2f{
-			start.y + (xOffset *(int)eq),
-			start.x + (spacing * index)
+			start.x + (xOffset * (int)eq),
+			start.y + ((spacing + ((int)eq*tSize)) * (index)) + ((int)eq*tSize)
 		};
 		infoBack.setSize({ infoWidth, lineH });
 		infoBack.setFillColor(sf::Color::Black);
 		infoBack.setOrigin({ 0,0 });
 		infoBack.setPosition(this->position);
-		infoBack.setOutlineThickness(2.f);
-		infoBack.setOutlineColor(sf::Color::Magenta);
+		infoBack.setOutlineThickness(slotBorder);
+		infoBack.setOutlineColor({ 150, 150, 200 });
 
+		slotBack.setSize({ invSlotW, invSlotH });
+		slotBack.setFillColor(sf::Color::Black);
+		slotBack.setOrigin({ 0,0 });
+		slotBack.setPosition(this->position);
+		slotBack.setOutlineThickness(slotBorder);
+		slotBack.setOutlineColor({ 150, 150, 200 });
 		sf::Vector2f padd{ 4, 2 };
 	}
 
@@ -119,8 +164,8 @@ public:
 		if (
 			mousePos.x >= position.x &&
 			mousePos.y >= position.y &&
-			mousePos.x <= position.x + invSlotW &&
-			mousePos.y <= position.y + invSlotH
+			mousePos.x <= position.x + invSlotW + (2 * slotBorder) &&
+			mousePos.y <= position.y + invSlotH + (2 * slotBorder)
 			) return true;
 		return false;
 	}
@@ -133,14 +178,61 @@ private:
 };
 
 class Inventory {
+#define invHeight 500
+#define invWidth 800
 public:
 	Game * game;
 	sf::Font font;
 	std::vector<InvSlot> slots;
-
+	std::vector<std::pair<InvSlot, sf::Text>> equipped;
+	sf::Text invTitle;
+	std::pair<sf::RectangleShape, sf::Text> deleteButton;
 	sf::Sprite itemTextBack;
 	sf::Sprite itemInfoBack;
-	InvSlot hovering;
+	sf::RectangleShape slider;
+	bool hoveringEq = false;
+	bool lastSelected = false;
+	int hovering;
+	int selected;
+	bool delHover = false;
+	bool delSelect = false;
+
+	bool isHoveringDelete(sf::Vector2f mousePos)
+	{
+		sf::Vector2f position = deleteButton.first.getPosition();
+		sf::Vector2f size = deleteButton.first.getSize();
+		if (
+			mousePos.x >= position.x &&
+			mousePos.y >= position.y &&
+			mousePos.x <= position.x + size.x + (2 * slotBorder) &&
+			mousePos.y <= position.y + size.y + (2 * slotBorder)
+			) return true;
+		return false;
+	}
+
+	bool eqToSlot(int eqIndex)
+	{
+		if (equipped[eqIndex].first.getItem() == nullptr)
+			return false;
+		for (int i = 0; i < slots.size(); i++)
+		{
+			if (slots[i].getItem() == nullptr)
+			{
+				slots[i].setItem(equipped[eqIndex].first.getItem());
+				equipped[eqIndex].first.removeItem();
+				return true;
+			}
+		}
+		return false;
+	}
+	bool slotToEq(int index, int eqIndex)
+	{
+		if (slots[index].getItem() == nullptr)
+			return false;
+		equipped[eqIndex].first.setItem(slots[index].getItem());
+		slots[index].removeItem();
+		return true;
+	}
 
 	bool showInfo = false;
 
@@ -152,18 +244,145 @@ public:
 		itemInfoBack.setTexture(this->game->texmgr.getRef("item_info_back"));
 		itemTextBack.setOrigin(0, 0);
 		itemInfoBack.setOrigin(0, 0);
-		for (int i = 0; i < 3; i++)
+		invTitle = sf::Text("Inventory", game->fonts["main_font"], tSize);
+		invTitle.setPosition({ invWidth - (charWidth * 10), 10 });
+		invTitle.setFillColor(sf::Color::White);
+
+		/* TEMP */
+		Item* item;
+		for (int i = 0; i < 25; i++)
 		{
 			slots.push_back(InvSlot(i, false, this->game));
-			slots[i].setItem(&Item("Giant Sword of Demon Slaying"));
 		}
+		item = new Item("Helm of the All-Seeing God",
+			{ 0,0,0,12 },
+			Item::SlotType::HED);
+		slots[0].setItem(item);
+		item = new Item("Ring of Power",
+			{ 1,1,1,1 },
+			Item::SlotType::RNG);
+		slots[1].setItem(item);
+
+		std::vector<std::string> eqNames = { "Head","Body","Main-hand","Off-hand","Ring","Amulet","Cloak","Belt" };
+		for (int i = 0; i < 8; i++)
+		{
+			equipped.push_back({ InvSlot(i,true,this->game),
+				sf::Text(eqNames[i], game->fonts["main_font"], tSize) });
+			equipped[i].second.setPosition(equipped[i].first.position - sf::Vector2f(0, 4 + tSize));
+			equipped[i].second.setFillColor({ 255, 220, 125 });
+		}
+		/* END */
+		slider.setSize({ 10, (invHeight+10) / ((float)slots.size() - maxScHeight + 2) });
+		slider.setFillColor(sf::Color::White);
+		slider.setOrigin({ 0,0 });
+		slider.setPosition({ 10,10 });
+		deleteButton.first.setSize({ invSlotW / 2,invSlotH });
+		deleteButton.first.setFillColor(sf::Color::Black);
+		deleteButton.first.setOrigin({ 0,0 });
+		deleteButton.first.setPosition({ 25 + xOffset,10 + invHeight - (1.5*spacing) });
+		deleteButton.first.setOutlineThickness(2.f);
+		deleteButton.first.setOutlineColor({ 150,150,200 });
+		deleteButton.second = sf::Text("Delete", game->fonts["main_font"], tSize);
+		deleteButton.second.setPosition(deleteButton.first.getPosition() + (deleteButton.first.getSize() / 4.f));
+		deleteButton.second.setFillColor({ 255, 90, 50 });
 	}
 
 	~Inventory() {}
 
+	void select() {
+		if (delHover)
+		{
+			if (delSelect)
+			{
+				if (lastSelected)
+				{
+					equipped[selected].first.removeItem();
+					equipped[selected].first.slotBack.setOutlineColor({ 150,150,200 });
+				}
+				else
+				{
+					slots[selected].removeItem();
+					slots[selected].slotBack.setOutlineColor({ 150,150,200 });
+				}
+				deleteButton.first.setOutlineColor({ 150,150,200 });
+				selected = -1;
+				return;
+			}
+			if (selected >= 0)
+			{
+				delSelect = true;
+				deleteButton.first.setOutlineColor({ 255,220,125 });
+			}
+		}
+		else {
+			deleteButton.first.setOutlineColor({ 150,150,200 });
+			for (int i = 0; i < equipped.size(); i++)
+				equipped[i].first.slotBack.setOutlineColor({ 150,150,200 });
+			for (int i = 0; i < slots.size(); i++)
+				slots[i].slotBack.setOutlineColor({ 150,150,200 });
+			if (hoveringEq)
+			{
+				if (selected == hovering)
+				{
+					int slotType = equipped[hovering].first.getItemSlotType();
+					equipped[hovering].first.selected = false;
+					equipped[hovering].first.slotBack.setOutlineColor({ 150,150,200 });
+					int selectedSlotType = equipped[hovering].first.getItemSlotType();
+					if (selectedSlotType != -1)
+					{
+						eqToSlot(selectedSlotType);
+					}
+					selected = -1;
+					lastSelected = true;
+					return;
+				}
+				selected = hovering;
+				lastSelected = true;
+				equipped[hovering].first.selected = true;
+				equipped[hovering].first.slotBack.setOutlineColor({ 255, 220, 125 });
+				return;
+			}
+			else if (selected == hovering)
+			{
+				int slotType = slots[selected].getItemSlotType();
+				slots[selected].selected = false;
+				slots[selected].slotBack.setOutlineColor({ 150,150,200 });
+				if (slotType != -1)
+				{
+					eqToSlot(slotType);
+					slotToEq(selected, slotType);
+				}
+				selected = -1;
+				lastSelected = false;
+				return;
+			}
+			selected = hovering;
+			lastSelected = false;
+			slots[selected].selected = true;
+			slots[selected].slotBack.setOutlineColor({ 255, 220, 125 });
+		}
+	}
+
+	void scroll(int delta)
+	{
+		slotScIndex -= delta;
+		if (slotScIndex < 0) {
+			slotScIndex = 0;
+		}
+		else if (slotScIndex >= slots.size()) {
+			slotScIndex = slots.size() - 1;
+		}
+		else if (slotScIndex >= slots.size() - maxScHeight) {
+			slotScIndex = slots.size() - maxScHeight;
+		}
+		slider.setPosition({ 10,10 + (slotScIndex*(float)slider.getSize().y) });
+	}
+
 	void draw();
 	void update(sf::Vector2f mousePos);
 private:
+	int slotScIndex = 0;
+	unsigned int maxScHeight = invHeight / spacing;
 };
 
 class Hud
@@ -175,6 +394,7 @@ public:
 	sf::Text slotText[A_SLOT_COUNT];
 	sf::Font font;
 
+	sf::Text msgTitle;
 
 	std::vector<sf::Text> itemSlotNames;
 
@@ -182,8 +402,13 @@ public:
 	float slotW = 32.f;
 
 	std::vector<sf::Text> gameMsgs;
-	bool showMsgs;
-	bool showInv;
+	enum ShowState {
+		SHOW_MSG,
+		SHOW_INV,
+		SHOW_NONE
+	};
+	ShowState showState;
+
 	sf::Sprite msgBack;
 
 	struct Cooldown {
@@ -221,6 +446,10 @@ public:
 	Hud() {};
 	Hud(Game * game, std::vector<std::string> eData)
 	{
+		this->showState = ShowState::SHOW_NONE;
+		msgTitle = sf::Text("Game Messages", game->fonts["main_font"], tSize);
+		msgTitle.setPosition({ invWidth - (charWidth * 13), 10 });
+		msgTitle.setFillColor(sf::Color::White);
 		//font.loadFromFile("C:/Windows/Fonts/Arial.ttf");
 		for (int i = 0; i < A_SLOT_COUNT; i++)
 		{
@@ -267,10 +496,6 @@ public:
 
 		cdSprite.setTexture(this->game->texmgr.getRef("cooldown_icon"));
 		cdSprite.setOrigin(0, slotW);
-
-		showInv = false;
-
-		showMsgs = false;
 		msgBack.setTexture(this->game->texmgr.getRef("text_back"));
 		msgBack.setOrigin(0, 0);
 		msgBack.setPosition(0, 0);

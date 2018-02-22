@@ -61,26 +61,6 @@ void ExploreState::update(const float dt)
 void ExploreState::handleInput()
 {
 	sf::Event event;
-
-	sf::Vector2f mousePos = this->game->window.mapPixelToCoords(sf::Mouse::getPosition(this->game->window), this->view);
-
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && old_mLeftState == false)
-	{
-		std::vector<std::pair<int, int>> path = pf.findPath(this->player.tilePos, this->map->mouseIndex);
-		this->player.clearWayPoints();
-		for (auto point : path)
-		{
-			this->player.addWayPoint(point);
-		}
-
-		this->player.queuedAction = Player::Action::MOVE;
-		//this->player.setPos((sf::Vector2f)this->map->mouseIndex * 32.f);
-		old_mLeftState = true;
-	}
-	else if (!sf::Mouse::isButtonPressed(sf::Mouse::Left))
-		old_mLeftState = false;
-
-	this->player.handleInput();
 	while (this->game->window.pollEvent(event))
 	{
 		player.handleEvent(event);
@@ -98,6 +78,33 @@ void ExploreState::handleInput()
 		default: break;
 		}
 	}
+	sf::Vector2f mousePos = this->game->window.mapPixelToCoords(sf::Mouse::getPosition(this->game->window), this->view);
+
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && old_mLeftState == false)
+	{
+		if (player.hud.showState == Hud::ShowState::SHOW_INV)
+		{
+			if (player.hud.showState == Hud::ShowState::SHOW_INV && (player.inventory.showInfo || player.inventory.delHover))
+				player.inventory.select();
+		}
+		else if (player.hud.showState == Hud::ShowState::SHOW_NONE)
+		{
+			std::vector<std::pair<int, int>> path = pf.findPath(this->player.tilePos, this->map->mouseIndex);
+			this->player.clearWayPoints();
+			for (auto point : path)
+			{
+				this->player.addWayPoint(point);
+			}
+
+			this->player.queuedAction = Player::Action::MOVE;
+		}
+		old_mLeftState = true;
+	}
+	else if (!sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		old_mLeftState = false;
+
+	this->player.handleInput();
+	
 	sf::Vector2f center = view.getCenter();
 }
 
