@@ -306,6 +306,7 @@ public:
 				}
 				deleteButton.first.setOutlineColor({ 150,150,200 });
 				selected = -1;
+				delSelect = false;
 				return;
 			}
 			if (selected >= 0)
@@ -320,9 +321,9 @@ public:
 				equipped[i].first.slotBack.setOutlineColor({ 150,150,200 });
 			for (int i = 0; i < slots.size(); i++)
 				slots[i].slotBack.setOutlineColor({ 150,150,200 });
-			if (hoveringEq)
+			if (hoveringEq )
 			{
-				if (selected == hovering)
+				if (selected == hovering && lastSelected)
 				{
 					int slotType = equipped[hovering].first.getItemSlotType();
 					equipped[hovering].first.selected = false;
@@ -342,7 +343,7 @@ public:
 				equipped[hovering].first.slotBack.setOutlineColor({ 255, 220, 125 });
 				return;
 			}
-			else if (selected == hovering)
+			else if (selected == hovering && !lastSelected)
 			{
 				int slotType = slots[selected].getItemSlotType();
 				slots[selected].selected = false;
@@ -360,6 +361,8 @@ public:
 			lastSelected = false;
 			slots[selected].selected = true;
 			slots[selected].slotBack.setOutlineColor({ 255, 220, 125 });
+
+			delSelect = false;
 		}
 	}
 
