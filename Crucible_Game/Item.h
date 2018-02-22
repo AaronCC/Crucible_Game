@@ -10,7 +10,7 @@ public:
 		HED = 0,
 		BDY = 1,
 		MAH = 2,
-		OHH = 3,
+		OFH = 3,
 		RNG = 4,
 		AMU = 5,
 		CLK = 6,
@@ -26,6 +26,8 @@ public:
 	};
 
 	Buffs buffs;
+	bool twoHanded = false;
+
 	std::vector<std::string> getBuffString()
 	{
 		std::vector<std::string> buffStr;

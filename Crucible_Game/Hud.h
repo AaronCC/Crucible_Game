@@ -225,11 +225,37 @@ public:
 		}
 		return false;
 	}
+	bool hasOpenSlot()
+	{
+		for (int i = 0; i < slots.size(); i++)
+		{
+			if (slots[i].getItem() == nullptr)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 	bool slotToEq(int index, int eqIndex)
 	{
+		Item* item = slots[index].getItem();
+		bool openSlot = hasOpenSlot();
+		bool twoHEq = false;
+		if (equipped[Item::SlotType::MAH].first.getItem() != nullptr)
+			twoHEq = equipped[Item::SlotType::MAH].first.getItem()->twoHanded;
 		if (slots[index].getItem() == nullptr)
 			return false;
-		equipped[eqIndex].first.setItem(slots[index].getItem());
+		if (item->twoHanded && openSlot)
+		{
+			eqToSlot(Item::SlotType::OFH);
+		}
+		else if (item->slotType == Item::SlotType::OFH &&
+			twoHEq &&
+			openSlot)
+		{
+			eqToSlot(Item::SlotType::MAH);
+		}
+		equipped[eqIndex].first.setItem(item);
 		slots[index].removeItem();
 		return true;
 	}
@@ -258,10 +284,28 @@ public:
 			{ 0,0,0,12 },
 			Item::SlotType::HED);
 		slots[0].setItem(item);
+
 		item = new Item("Ring of Power",
 			{ 1,1,1,1 },
 			Item::SlotType::RNG);
 		slots[1].setItem(item);
+
+		item = new Item("Two-handed Sword",
+			{ 99,0,0,0 },
+			Item::SlotType::MAH);
+		slots[2].setItem(item);
+		slots[2].getItem()->twoHanded = true;
+
+		item = new Item("One-handed Sword",
+			{ 10,0,1,0 },
+			Item::SlotType::MAH);
+		slots[3].setItem(item);
+
+		item = new Item("Cardboard Shield",
+			{ 0,2,0,0 },
+			Item::SlotType::OFH);
+		slots[4].setItem(item);
+
 
 		std::vector<std::string> eqNames = { "Head","Body","Main-hand","Off-hand","Ring","Amulet","Cloak","Belt" };
 		for (int i = 0; i < 8; i++)
@@ -272,7 +316,7 @@ public:
 			equipped[i].second.setFillColor({ 255, 220, 125 });
 		}
 		/* END */
-		slider.setSize({ 10, (invHeight+10) / ((float)slots.size() - maxScHeight + 2) });
+		slider.setSize({ 10, (invHeight + 10) / ((float)slots.size() - maxScHeight + 2) });
 		slider.setFillColor(sf::Color::White);
 		slider.setOrigin({ 0,0 });
 		slider.setPosition({ 10,10 });
@@ -282,8 +326,8 @@ public:
 		deleteButton.first.setPosition({ 25 + xOffset,10 + invHeight - (1.5*spacing) });
 		deleteButton.first.setOutlineThickness(2.f);
 		deleteButton.first.setOutlineColor({ 150,150,200 });
-		deleteButton.second = sf::Text("Delete", game->fonts["main_font"], tSize);
-		deleteButton.second.setPosition(deleteButton.first.getPosition() + (deleteButton.first.getSize() / 4.f));
+		deleteButton.second = sf::Text("Destroy", game->fonts["main_font"], tSize);
+		deleteButton.second.setPosition(deleteButton.first.getPosition() + (deleteButton.first.getSize() / 4.2f));
 		deleteButton.second.setFillColor({ 255, 90, 50 });
 	}
 
@@ -321,7 +365,7 @@ public:
 				equipped[i].first.slotBack.setOutlineColor({ 150,150,200 });
 			for (int i = 0; i < slots.size(); i++)
 				slots[i].slotBack.setOutlineColor({ 150,150,200 });
-			if (hoveringEq )
+			if (hoveringEq)
 			{
 				if (selected == hovering && lastSelected)
 				{
