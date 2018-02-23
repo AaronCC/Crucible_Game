@@ -206,6 +206,7 @@ public:
 		NONE
 	};
 	Hovering hovType;
+	Hovering selType;
 	int scrollSelect = -1;
 	bool lastSelected = false;
 	int hovering;
@@ -381,13 +382,29 @@ public:
 			{
 				if (lastSelected)
 				{
-					eqItems[selected].first.removeItem();
-					eqItems[selected].first.slotBack.setOutlineColor({ 150,150,200 });
+					if (selType == Hovering::EQI)
+					{
+						eqItems[selected].first.removeItem();
+						eqItems[selected].first.slotBack.setOutlineColor({ 150,150,200 });
+					}
+					else
+					{
+						eqScrolls[selected].first.removeItem();
+						eqScrolls[selected].first.slotBack.setOutlineColor({ 150,150,200 });
+					}
 				}
 				else
 				{
-					itemSlots[selected].removeItem();
-					itemSlots[selected].slotBack.setOutlineColor({ 150,150,200 });
+					if (selType == Hovering::ITM)
+					{
+						itemSlots[selected].removeItem();
+						itemSlots[selected].slotBack.setOutlineColor({ 150,150,200 });
+					}
+					else
+					{
+						scrollSlots[selected].removeItem();
+						scrollSlots[selected].slotBack.setOutlineColor({ 150,150,200 });
+					}
 				}
 				deleteButton.first.setOutlineColor({ 150,150,200 });
 				selected = -1;
@@ -427,6 +444,7 @@ public:
 					selected = -1;
 					scrollSelect = -1;
 					lastSelected = true;
+					selType = Hovering::NONE;
 					return;
 				}
 				selected = hovering;
@@ -434,6 +452,7 @@ public:
 				eqItems[hovering].first.selected = true;
 				eqItems[hovering].first.slotBack.setOutlineColor({ 255, 220, 125 });
 				scrollSelect = -1;
+				selType = hovType;
 				return;
 			}
 			case Hovering::ITM:
@@ -451,6 +470,7 @@ public:
 					selected = -1;
 					scrollSelect = -1;
 					lastSelected = false;
+					selType = Hovering::NONE;
 					return;
 				}
 				selected = hovering;
@@ -458,6 +478,7 @@ public:
 				itemSlots[selected].selected = true;
 				itemSlots[selected].slotBack.setOutlineColor({ 255, 220, 125 });
 				scrollSelect = -1;
+				selType = hovType;
 				break;
 			}
 			case Hovering::EQS:
@@ -474,9 +495,11 @@ public:
 					}
 					selected = -1;
 					lastSelected = true;
+					selType = Hovering::NONE;
 					return;
 				}
 				selected = hovering;
+				selType = hovType;
 				if (scrollSelect != -1)
 				{
 					eqToSlot(selected, scrollSlots, eqScrolls);
@@ -505,6 +528,7 @@ public:
 					}
 					selected = -1;
 					lastSelected = false;
+					selType = Hovering::NONE;
 					return;
 				}
 				selected = hovering;
@@ -512,6 +536,7 @@ public:
 				lastSelected = false;
 				scrollSlots[selected].selected = true;
 				scrollSlots[selected].slotBack.setOutlineColor({ 255, 220, 125 });
+				selType = hovType;
 				break;
 			}
 			default:
