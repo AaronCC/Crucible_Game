@@ -63,12 +63,12 @@ public:
 	sf::Sprite sprite;
 	sf::Sprite queueSprite;
 
-
 	Ability* queuedAbility;
 	std::vector<Ability*> abilities;
 
 	std::map<sf::Keyboard::Key, Ability> keyAbilities;
 	std::map<sf::Keyboard::Key, float> keyCooldowns;
+
 	Ability rmbAbility;
 	float rmbCooldown;
 	Ability lmbAbility;
@@ -188,7 +188,7 @@ public:
 
 		/* TEMP */
 		rmbAbility = Ability(this->game, game->texmgr.getRef("slash"),
-			{ 0,3,0.1f }, { 32,32 }, Ability::ID::SLASH, 10, 1, 7, 2, "slash");
+			{ 0,3,0.1f }, { 32,32 }, Ability::ID::SLASH, 10, 1, 7, 2, "slash", "Slash");
 		hud.setSlotSprites({}, "move_icon", "slash_icon");
 
 		queueSprite.setTexture(this->game->texmgr.getRef("queue_select"));

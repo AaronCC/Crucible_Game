@@ -66,7 +66,7 @@ void Player::handleEvent(sf::Event event)
 	case sf::Event::MouseWheelMoved:
 		if (this->hud.showState == Hud::ShowState::SHOW_INV)
 		{
-			this->inventory.scroll(event.mouseWheel.delta);
+			this->inventory.scrollItems(event.mouseWheel.delta);
 		}
 		break;
 	default:

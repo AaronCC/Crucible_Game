@@ -24,7 +24,7 @@ public:
 	unsigned int slotNum;
 	unsigned int tickCost;
 	std::string name;
-
+	std::string description;
 	int speed;
 
 	void activate(sf::Vector2i pPos, sf::Vector2i mPos);
@@ -32,7 +32,7 @@ public:
 	void update(float dt);
 	void draw(float dt);
 	
-
+	void resolveCollision() {}
 
 	Ability() {}
 
@@ -48,6 +48,7 @@ public:
 		this->slotNum = a.slotNum;
 		this->tickCost = a.tickCost;
 		this->name = a.name;
+		this->description = description;
 	}
 
 	Ability(Game* game,
@@ -59,7 +60,8 @@ public:
 		int speed,
 		unsigned int slotNum,
 		unsigned int tickCost,
-		std::string name)
+		std::string name,
+		std::string description)
 	{
 		this->name = name;
 		this->tickCost = tickCost;
@@ -76,9 +78,14 @@ public:
 		this->animHandler.frameSize = sf::IntRect( 0,0,size.x,size.y );
 		this->animHandler.addAnim(animation);
 		this->duration = animation.duration * animation.getLength();
+		this->description = description;
 	}
 
 	~Ability();
+};
+
+class Projectile : public Ability {
+
 };
 
 #endif /* ABILITY_H */

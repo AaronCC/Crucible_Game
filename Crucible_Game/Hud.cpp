@@ -83,7 +83,7 @@ void Hud::draw(float dt)
 	{
 		this->game->window.draw(msgBack);
 		if (showState == Hud::ShowState::SHOW_MSG)
-		{ 
+		{
 			for (int i = 0; i < gameMsgs.size(); i++)
 			{
 				gameMsgs[i].setPosition(msgStart + offset);
@@ -165,16 +165,36 @@ void Inventory::draw()
 	this->game->window.draw(deleteButton.second);
 	for (int i = slotScIndex; i < maxScHeight + slotScIndex; i++)
 	{
-		if (i >= slots.size())
+		if (i >= itemSlots.size())
 			break;
-		itemTextBack.setPosition(slots[i].position);
-		this->game->window.draw(slots[i].slotBack);
-		for (auto text : slots[i].itemText)
+		itemTextBack.setPosition(itemSlots[i].position);
+		this->game->window.draw(itemSlots[i].slotBack);
+		for (auto text : itemSlots[i].itemText)
 		{
 			this->game->window.draw(text);
 		}
 	}
-	for (auto slot : equipped)
+	for (auto slot : eqItems)
+	{
+		this->game->window.draw(slot.first.slotBack);
+		for (auto text : slot.first.itemText)
+		{
+			this->game->window.draw(text);
+		}
+		this->game->window.draw(slot.second);
+	}
+	for (int i = slotScIndex; i < maxScHeight + slotScIndex; i++)
+	{
+		if (i >= scrollSlots.size())
+			break;
+		itemTextBack.setPosition(scrollSlots[i].position);
+		this->game->window.draw(scrollSlots[i].slotBack);
+		for (auto text : scrollSlots[i].itemText)
+		{
+			this->game->window.draw(text);
+		}
+	}
+	for (auto slot : eqScrolls)
 	{
 		this->game->window.draw(slot.first.slotBack);
 		for (auto text : slot.first.itemText)
@@ -185,31 +205,80 @@ void Inventory::draw()
 	}
 	if (showInfo)
 	{
-		if (hoveringEq && equipped[hovering].first.nameInfoText.size() > 0)
+		switch (hovType)
 		{
-			this->game->window.draw(equipped[hovering].first.infoBack);
+		case Hovering::EQI:
+		{
+			if (eqItems[hovering].first.nameInfoText.size() > 0)
+			{
+				this->game->window.draw(eqItems[hovering].first.infoBack);
 
-			for (auto text : equipped[hovering].first.nameInfoText)
-			{
-				this->game->window.draw(text);
+				for (auto text : eqItems[hovering].first.nameInfoText)
+				{
+					this->game->window.draw(text);
+				}
+				for (auto text : eqItems[hovering].first.buffInfoText)
+				{
+					this->game->window.draw(text);
+				}
+				this->game->window.draw(eqItems[hovering].first.slotTypeText);
 			}
-			for (auto text : equipped[hovering].first.buffInfoText)
-			{
-				this->game->window.draw(text);
-			}
+			break;
 		}
-		else if(!hoveringEq && slots[hovering].nameInfoText.size() > 0)
+		case Hovering::ITM:
 		{
-			this->game->window.draw(slots[hovering].infoBack);
+			if (itemSlots[hovering].nameInfoText.size() > 0)
+			{
+				this->game->window.draw(itemSlots[hovering].infoBack);
 
-			for (auto text : slots[hovering].nameInfoText)
-			{
-				this->game->window.draw(text);
+				for (auto text : itemSlots[hovering].nameInfoText)
+				{
+					this->game->window.draw(text);
+				}
+				for (auto text : itemSlots[hovering].buffInfoText)
+				{
+					this->game->window.draw(text);
+				}
+				this->game->window.draw(itemSlots[hovering].slotTypeText);
 			}
-			for (auto text : slots[hovering].buffInfoText)
+			break;
+		}
+		case Hovering::EQS:
+		{
+			if (eqScrolls[hovering].first.nameInfoText.size() > 0)
 			{
-				this->game->window.draw(text);
+				this->game->window.draw(eqScrolls[hovering].first.infoBack);
+
+				for (auto text : eqScrolls[hovering].first.nameInfoText)
+				{
+					this->game->window.draw(text);
+				}
+				for (auto text : eqScrolls[hovering].first.buffInfoText)
+				{
+					this->game->window.draw(text);
+				}
+				this->game->window.draw(eqScrolls[hovering].first.slotTypeText);
 			}
+			break;
+		}
+		case Hovering::SCR:
+		{
+			if (scrollSlots[hovering].nameInfoText.size() > 0)
+			{
+				this->game->window.draw(scrollSlots[hovering].infoBack);
+
+				for (auto text : scrollSlots[hovering].nameInfoText)
+				{
+					this->game->window.draw(text);
+				}
+				for (auto text : scrollSlots[hovering].buffInfoText)
+				{
+					this->game->window.draw(text);
+				}
+				this->game->window.draw(scrollSlots[hovering].slotTypeText);
+			}
+			break;
+		}
 		}
 	}
 }
@@ -220,22 +289,23 @@ void Inventory::update(sf::Vector2f mousePos)
 	showInfo = false;
 	float offset = 0.f;
 	int index = 0;
-	for (int s = slotScIndex; s < slots.size(); s++)
+	for (int s = slotScIndex; s < scrollSlots.size(); s++)
 	{
 		/*if (s >= slots.size())
-			break;*/
-		slots[s].updatePos({
-			slots[s].start.x + (xOffset * (int)slots[s].equipped),
-			slots[s].start.y + (spacing * index)
+		break;*/
+		scrollSlots[s].updatePos({
+			scrollSlots[s].start.x + (xOffset * (int)scrollSlots[s].equipped),
+			scrollSlots[s].start.y + (spacing * index)
 			});
-		for (int i = 0; i < slots[s].itemText.size(); i++)
+		for (int i = 0; i < scrollSlots[s].itemText.size(); i++)
 		{
-			int textL = slots[s].itemText[i].getString().getSize();
-			offset = (((slots[s].maxNameChar + 1) - textL) / 2.f)*(charWidth);
-			slots[s].itemText[i].setPosition(slots[s].position.x + offset, slots[s].position.y + (i*tSize));
+			int textL = scrollSlots[s].itemText[i].getString().getSize();
+			offset = (((scrollSlots[s].maxNameChar + 1) - textL) / 2.f)*(charWidth);
+			scrollSlots[s].itemText[i].setPosition(scrollSlots[s].position.x + offset, scrollSlots[s].position.y + (i*tSize));
 		}
-		if (slots[s].isHovering(mousePos))
+		if (scrollSlots[s].isHovering(mousePos))
 		{
+			hovType = Hovering::SCR;
 			hoveringEq = false;
 			hovering = s;
 			showInfo = true;
@@ -248,17 +318,64 @@ void Inventory::update(sf::Vector2f mousePos)
 			delHover = false;
 		index++;
 	}
-	for (int s = 0; s < equipped.size(); s++)
+	for (int s = 0; s < eqScrolls.size(); s++)
 	{
-
-		for (int i = 0; i < equipped[s].first.itemText.size(); i++)
+		for (int i = 0; i < eqScrolls[s].first.itemText.size(); i++)
 		{
-			int textL = equipped[s].first.itemText[i].getString().getSize();
-			offset = (((equipped[s].first.maxNameChar + 1) - textL) / 2.f)*(charWidth);
-			equipped[s].first.itemText[i].setPosition(equipped[s].first.position.x + offset, equipped[s].first.position.y + (i*tSize));
+			int textL = eqScrolls[s].first.itemText[i].getString().getSize();
+			offset = (((eqScrolls[s].first.maxNameChar + 1) - textL) / 2.f)*(charWidth);
+			eqScrolls[s].first.itemText[i].setPosition(eqScrolls[s].first.position.x + offset, eqScrolls[s].first.position.y + (i*tSize));
 		}
-		if (equipped[s].first.isHovering(mousePos))
+		if (eqScrolls[s].first.isHovering(mousePos))
 		{
+			hovType = Hovering::EQS;
+			hoveringEq = true;
+			hovering = s;
+			showInfo = true;
+		}
+		index++;
+	}
+	index = 0;
+	for (int s = slotScIndex; s < itemSlots.size(); s++)
+	{
+		/*if (s >= slots.size())
+			break;*/
+		itemSlots[s].updatePos({
+			itemSlots[s].start.x + (xOffset * (int)itemSlots[s].equipped),
+			itemSlots[s].start.y + (spacing * index)
+			});
+		for (int i = 0; i < itemSlots[s].itemText.size(); i++)
+		{
+			int textL = itemSlots[s].itemText[i].getString().getSize();
+			offset = (((itemSlots[s].maxNameChar + 1) - textL) / 2.f)*(charWidth);
+			itemSlots[s].itemText[i].setPosition(itemSlots[s].position.x + offset, itemSlots[s].position.y + (i*tSize));
+		}
+		if (itemSlots[s].isHovering(mousePos))
+		{
+			hovType = Hovering::ITM;
+			hoveringEq = false;
+			hovering = s;
+			showInfo = true;
+		}
+		else if (isHoveringDelete(mousePos))
+		{
+			delHover = true;
+		}
+		else
+			delHover = false;
+		index++;
+	}
+	for (int s = 0; s < eqItems.size(); s++)
+	{
+		for (int i = 0; i < eqItems[s].first.itemText.size(); i++)
+		{
+			int textL = eqItems[s].first.itemText[i].getString().getSize();
+			offset = (((eqItems[s].first.maxNameChar + 1) - textL) / 2.f)*(charWidth);
+			eqItems[s].first.itemText[i].setPosition(eqItems[s].first.position.x + offset, eqItems[s].first.position.y + (i*tSize));
+		}
+		if (eqItems[s].first.isHovering(mousePos))
+		{
+			hovType = Hovering::EQI;
 			hoveringEq = true;
 			hovering = s;
 			showInfo = true;
@@ -266,43 +383,103 @@ void Inventory::update(sf::Vector2f mousePos)
 		index++;
 	}
 	if (showInfo) {
-		if (hoveringEq)
+		int textL;
+		switch (hovType)
 		{
-			for (int i = 0; i < equipped[hovering].first.nameInfoText.size(); i++)
+		case Hovering::EQI:
+		{
+			for (int i = 0; i < eqItems[hovering].first.nameInfoText.size(); i++)
 			{
-				int textL = equipped[hovering].first.nameInfoText[i].getString().getSize();
-				offset = (((equipped[hovering].first.maxInfoChar + 1) - textL) / 2.f)*(charWidth);
-				equipped[hovering].first.nameInfoText[i].setPosition(mousePos.x + offset, mousePos.y + (i*tSize));
+				textL = eqItems[hovering].first.nameInfoText[i].getString().getSize();
+				offset = (((eqItems[hovering].first.maxInfoChar + 1) - textL) / 2.f)*(charWidth);
+				eqItems[hovering].first.nameInfoText[i].setPosition(mousePos.x + offset, mousePos.y + (i*tSize));
 			}
-			int nSize = equipped[hovering].first.nameInfoText.size() + 1;
-			for (int i = 0; i < equipped[hovering].first.buffInfoText.size(); i++)
+			int nSize = eqItems[hovering].first.nameInfoText.size() + 3;
+			textL = eqItems[hovering].first.slotTypeText.getString().getSize();
+			offset = (((eqItems[hovering].first.maxInfoChar + 1) - textL) / 2.f)*(charWidth);
+			eqItems[hovering].first.slotTypeText.setPosition(mousePos.x + offset, mousePos.y + ((nSize - 2)*tSize));
+			for (int i = 0; i < eqItems[hovering].first.buffInfoText.size(); i++)
 			{
-				int textL = equipped[hovering].first.buffInfoText[i].getString().getSize();
-				offset = (((equipped[hovering].first.maxInfoChar + 1) - textL) / 2.f)*(charWidth);
-				equipped[hovering].first.buffInfoText[i].setPosition(mousePos.x + offset, mousePos.y + ((i + nSize)*tSize));
+				textL = eqItems[hovering].first.buffInfoText[i].getString().getSize();
+				offset = (((eqItems[hovering].first.maxInfoChar + 1) - textL) / 2.f)*(charWidth);
+				eqItems[hovering].first.buffInfoText[i].setPosition(mousePos.x + offset, mousePos.y + ((i + nSize)*tSize));
 			}
 			itemInfoBack.setPosition(mousePos);
-			equipped[hovering].first.infoBack.setPosition(mousePos);
-			equipped[hovering].first.infoBack.setSize({ infoWidth, (tSize + 2) * ((float)nSize + equipped[hovering].first.buffInfoText.size()) });
+			eqItems[hovering].first.infoBack.setPosition(mousePos);
+			eqItems[hovering].first.infoBack.setSize({ infoWidth, (tSize + 2) * ((float)nSize + eqItems[hovering].first.buffInfoText.size()) });
+			break;
 		}
-		else
+		case Hovering::ITM:
 		{
-			for (int i = 0; i < slots[hovering].nameInfoText.size(); i++)
+			for (int i = 0; i < itemSlots[hovering].nameInfoText.size(); i++)
 			{
-				int textL = slots[hovering].nameInfoText[i].getString().getSize();
-				offset = (((slots[hovering].maxInfoChar + 1) - textL) / 2.f)*(charWidth);
-				slots[hovering].nameInfoText[i].setPosition(mousePos.x + offset, mousePos.y + (i*tSize));
+				textL = itemSlots[hovering].nameInfoText[i].getString().getSize();
+				offset = (((itemSlots[hovering].maxInfoChar + 1) - textL) / 2.f)*(charWidth);
+				itemSlots[hovering].nameInfoText[i].setPosition(mousePos.x + offset, mousePos.y + (i*tSize));
 			}
-			int nSize = slots[hovering].nameInfoText.size() + 1;
-			for (int i = 0; i < slots[hovering].buffInfoText.size(); i++)
+			int nSize = itemSlots[hovering].nameInfoText.size() + 3;
+			textL = itemSlots[hovering].slotTypeText.getString().getSize();
+			offset = (((itemSlots[hovering].maxInfoChar + 1) - textL) / 2.f)*(charWidth);
+			itemSlots[hovering].slotTypeText.setPosition(mousePos.x + offset, mousePos.y + ((nSize - 2)*tSize));
+			for (int i = 0; i < itemSlots[hovering].buffInfoText.size(); i++)
 			{
-				int textL = slots[hovering].buffInfoText[i].getString().getSize();
-				offset = (((slots[hovering].maxInfoChar + 1) - textL) / 2.f)*(charWidth);
-				slots[hovering].buffInfoText[i].setPosition(mousePos.x + offset, mousePos.y + ((i + nSize)*tSize));
+				textL = itemSlots[hovering].buffInfoText[i].getString().getSize();
+				offset = (((itemSlots[hovering].maxInfoChar + 1) - textL) / 2.f)*(charWidth);
+				itemSlots[hovering].buffInfoText[i].setPosition(mousePos.x + offset, mousePos.y + ((i + nSize)*tSize));
 			}
 			itemInfoBack.setPosition(mousePos);
-			slots[hovering].infoBack.setPosition(mousePos);
-			slots[hovering].infoBack.setSize({ infoWidth, (tSize + 2) * ((float)nSize + slots[hovering].buffInfoText.size()) });
+			itemSlots[hovering].infoBack.setPosition(mousePos);
+			itemSlots[hovering].infoBack.setSize({ infoWidth, (tSize + 2) * ((float)nSize + itemSlots[hovering].buffInfoText.size()) });
+			break;
+		}
+		case Hovering::EQS:
+		{
+			for (int i = 0; i < eqScrolls[hovering].first.nameInfoText.size(); i++)
+			{
+				textL = eqScrolls[hovering].first.nameInfoText[i].getString().getSize();
+				offset = (((eqScrolls[hovering].first.maxInfoChar + 1) - textL) / 2.f)*(charWidth);
+				eqScrolls[hovering].first.nameInfoText[i].setPosition(mousePos.x + offset, mousePos.y + (i*tSize));
+			}
+			int nSize = eqScrolls[hovering].first.nameInfoText.size() + 3;
+			textL = eqScrolls[hovering].first.slotTypeText.getString().getSize();
+			offset = (((eqScrolls[hovering].first.maxInfoChar + 1) - textL) / 2.f)*(charWidth);
+			eqScrolls[hovering].first.slotTypeText.setPosition(mousePos.x + offset, mousePos.y + ((nSize - 2)*tSize));
+			for (int i = 0; i < eqScrolls[hovering].first.buffInfoText.size(); i++)
+			{
+				textL = eqScrolls[hovering].first.buffInfoText[i].getString().getSize();
+				offset = (((eqScrolls[hovering].first.maxInfoChar + 1) - textL) / 2.f)*(charWidth);
+				eqScrolls[hovering].first.buffInfoText[i].setPosition(mousePos.x + offset, mousePos.y + ((i + nSize)*tSize));
+			}
+			itemInfoBack.setPosition(mousePos);
+			eqScrolls[hovering].first.infoBack.setPosition(mousePos);
+			eqScrolls[hovering].first.infoBack.setSize({ infoWidth, (tSize + 2) * ((float)nSize + eqScrolls[hovering].first.buffInfoText.size()) });
+			break;
+		}
+		case Hovering::SCR:
+		{
+			for (int i = 0; i < scrollSlots[hovering].nameInfoText.size(); i++)
+			{
+				textL = scrollSlots[hovering].nameInfoText[i].getString().getSize();
+				offset = (((scrollSlots[hovering].maxInfoChar + 1) - textL) / 2.f)*(charWidth);
+				scrollSlots[hovering].nameInfoText[i].setPosition(mousePos.x + offset, mousePos.y + (i*tSize));
+			}
+			int nSize = scrollSlots[hovering].nameInfoText.size() + 3;
+			textL = scrollSlots[hovering].slotTypeText.getString().getSize();
+			offset = (((scrollSlots[hovering].maxInfoChar + 1) - textL) / 2.f)*(charWidth);
+			scrollSlots[hovering].slotTypeText.setPosition(mousePos.x + offset, mousePos.y + ((nSize - 2)*tSize));
+			for (int i = 0; i < scrollSlots[hovering].buffInfoText.size(); i++)
+			{
+				textL = scrollSlots[hovering].buffInfoText[i].getString().getSize();
+				offset = (((scrollSlots[hovering].maxInfoChar + 1) - textL) / 2.f)*(charWidth);
+				scrollSlots[hovering].buffInfoText[i].setPosition(mousePos.x + offset, mousePos.y + ((i + nSize)*tSize));
+			}
+			itemInfoBack.setPosition(mousePos);
+			scrollSlots[hovering].infoBack.setPosition(mousePos);
+			scrollSlots[hovering].infoBack.setSize({ infoWidth, (tSize + 2) * ((float)nSize + scrollSlots[hovering].buffInfoText.size()) });
+			break;
+		}
+		default:
+			break;
 		}
 	}
 }
