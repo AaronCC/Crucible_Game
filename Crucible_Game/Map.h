@@ -12,6 +12,7 @@ public:
 	int width, height;
 	sf::Vector2u tileSize;
 	sf::Vector2i spawnPos;
+	sf::Vector2f drawSize;
 	Tile background;
 	Tile canSelect;
 	Tile cantSelect;

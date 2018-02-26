@@ -5,6 +5,7 @@ class Helper
 {
 public:
 	float dotProduct(sf::Vector2f v1, sf::Vector2f v2);
+	std::vector<std::pair<int, int>> getNeighbors(int x, int y, int width, int height, int area);
 	std::vector<std::pair<int, int>> getNeighbors(int x, int y, int width, int height);
 	sf::FloatRect resizeView(float windowW, float windowH, float aspectRatio);
 	float magnitude(sf::Vector2f);

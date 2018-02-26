@@ -2,10 +2,7 @@
 #include <queue>
 #include <vector>
 #include <functional>
-#include "Game.h"
 #include "Map.h"
-
-
 
 class nodeCompare
 {

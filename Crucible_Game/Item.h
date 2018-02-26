@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "Ability.h"
+#include "GenInfo.h"
 
 #ifndef ITEM_H
 #define ITEM_H
@@ -20,12 +21,6 @@ public:
 	};
 	SlotType slotType;
 #define NUM_ITEM_BUFFS 4
-	enum Buffs {
-		attack = 0,
-		defense = 1,
-		agility = 2,
-		knowledge = 3
-	};
 
 	std::vector<std::string> buffStrings{ "Attack","Defense","Agility","Knowledge" };
 	std::vector<std::string> typeStrings{ "Head","Body","Main-hand","Off-hand","Ring","Amulet","Cloak","Belt","Scroll" };

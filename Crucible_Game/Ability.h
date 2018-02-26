@@ -2,17 +2,69 @@
 #define ABILITY_H
 
 #include "Game.h"
+#include "Helper.h"
+#include "GenInfo.h"
 
+class AbEffect {
+public:
+	enum EffType {
+		DEBUFF,
+		BUFF,
+		INST
+	};
+	EffType effType;
+
+	AbEffect()
+	{
+
+	}
+	~AbEffect() {}
+private:
+};
+
+class DebuffEff : public AbEffect {
+
+};
+class BuffEff : public AbEffect {
+
+};
+class InstEff : public AbEffect {
+
+};
 class Ability
 {
 public:
 	enum ID {
 		SLASH
 	};
+	enum AbPrmType {
+		RANGED,
+		MELEE
+	};
+	enum AbSecType {
+		AREA,
+		TARG
+	};
+	AbSecType secType;
+
+	struct AbInfo {
+		AbPrmType prm;
+		AbSecType sec;
+		std::vector<AbEffect> eff;
+		int area;
+	};
+	AbInfo info;
+	std::vector<sf::Vector2f> drawPositions;
+
+	std::vector<sf::Vector2i> getArea(sf::Vector2i origin);
+
+	std::vector<sf::Vector2i> getActiveTiles(sf::Vector2i pPos, sf::Vector2i mPos);
 
 	sf::Sprite sprite;
 	AnimationHandler animHandler;
 	Game* game;
+
+	int range;
 
 	ID id;
 	sf::Vector2u size;
@@ -28,10 +80,9 @@ public:
 	int speed;
 
 	void activate(sf::Vector2i pPos, sf::Vector2i mPos);
-	std::vector<sf::Vector2i> getActiveTiles(sf::Vector2i pPos, sf::Vector2i mPos);
 	void update(float dt);
 	void draw(float dt);
-	
+
 	void resolveCollision() {}
 
 	Ability() {}
@@ -49,6 +100,9 @@ public:
 		this->tickCost = a.tickCost;
 		this->name = a.name;
 		this->description = description;
+		this->info = a.info;
+		this->secType = a.secType;
+		this->range = a.range;
 	}
 
 	Ability(Game* game,
@@ -75,17 +129,18 @@ public:
 		this->sprite.setTexture(texture);
 		this->sprite.setOrigin(size.x / 2, size.y / 2);
 		this->animHandler.changeAnim(0);
-		this->animHandler.frameSize = sf::IntRect( 0,0,size.x,size.y );
+		this->animHandler.frameSize = sf::IntRect(0, 0, size.x, size.y);
 		this->animHandler.addAnim(animation);
 		this->duration = animation.duration * animation.getLength();
 		this->description = description;
+		this->info.area = 1;
+		this->secType = AbSecType::AREA;
+		this->range = 4;
 	}
 
 	~Ability();
-};
-
-class Projectile : public Ability {
-
+private:
+	Helper helper;
 };
 
 #endif /* ABILITY_H */

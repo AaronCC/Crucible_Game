@@ -104,7 +104,10 @@ public:
 	void updateAnim(sf::View view);
 
 	sf::Vector2f getForce() { return totalForce; }
-
+	void addQueuedPoint(sf::Vector2i point)
+	{
+		queuedPoints.push_back({ point.x, point.y });
+	}
 	void addWayPoint(std::pair<int, int> point) { 
 		queuedPoints.push_back({ point.first, point.second });
 		wayPoints.push({ point.first,point.second }); 

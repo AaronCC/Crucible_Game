@@ -45,8 +45,8 @@ void Player::handleInput()
 			queuedAction = Action::ABILITY;
 			queuedPoints.clear();
 			queuedAbility = new Ability(rmbAbility);
-			for (auto tile : queuedAbility->getActiveTiles(this->tilePos, *mIndex))
-				queuedPoints.push_back(tile);
+			for (auto tile : queuedAbility->getActiveTiles(tilePos, *mIndex))
+				addQueuedPoint(tile);
 			queuedCooldown = queuedAbility->cooldown;
 			queuedAbilitySlotNum = RMB_SLOT;
 			this->tickCount = queuedAbility->tickCost;

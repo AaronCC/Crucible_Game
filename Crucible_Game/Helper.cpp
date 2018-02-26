@@ -5,6 +5,23 @@ float Helper::dotProduct(sf::Vector2f v1, sf::Vector2f v2)
 	return (v1.x * v2.x + v1.y * v2.y);
 }
 
+std::vector<std::pair<int, int>> Helper::getNeighbors(int x, int y, int width, int height, int area)
+{
+	std::vector<std::pair<int, int>> neighbors;
+	neighbors.reserve(8);
+	for (int yn = y - area; yn <= y + area; yn++)
+	{
+		if (yn == height || yn < 0)
+			continue;
+		for (int xn = x - area; xn <= x + area; xn++)
+		{
+			if (xn == width || xn < 0)
+				continue;
+			neighbors.push_back({ xn,yn });
+		}
+	}
+	return neighbors;
+}
 std::vector<std::pair<int, int>> Helper::getNeighbors(int x, int y, int width, int height)
 {
 	std::vector<std::pair<int, int>> neighbors;

@@ -5,9 +5,24 @@
 
 void Map::draw(sf::RenderWindow & window, float dt)
 {
-	for (int y = 0; y < this->height; ++y)
+
+	// Get the camera's position
+	sf::Vector2f camPos = this->camera->view.getCenter();
+	sf::Vector2f center = camPos / 32.f;
+	// Calculate the start tile
+	sf::Vector2f drawStart = { (int)center.x - (drawSize.x / 2), (int)center.y - (drawSize.y / 2) };
+	// Clamp
+	drawStart.x = drawStart.x < 0 ? 0 : drawStart.x;
+	drawStart.y = drawStart.y < 0 ? 0 : drawStart.y;
+	// Calc end tile
+	sf::Vector2f drawEnd = { drawStart.x + drawSize.x, drawStart.y + drawSize.y };
+	// Clamp
+	drawEnd.x = drawEnd.x > width ? width : drawEnd.x;
+	drawEnd.y = drawEnd.y > height ? height : drawEnd.y;
+
+	for (int y = drawStart.y; y < drawEnd.y; ++y)
 	{
-		for (int x = 0; x < this->width; ++x)
+		for (int x = drawStart.x; x < drawEnd.x; ++x)
 		{
 			this->tiles[y*this->width + x].draw(window, dt);
 		}
@@ -17,6 +32,7 @@ void Map::draw(sf::RenderWindow & window, float dt)
 	else
 		cantSelect.draw(window, dt);
 	return;
+
 }
 
 void Map::update(float dt)
@@ -141,6 +157,7 @@ Map::Map(Game* game, Camera* camera)
 	this->cantSelect = this->game->tileAtlas.at("cant_select");
 	this->canSelect.reveal();
 	this->cantSelect.reveal();
+	this->drawSize = { (float)this->game->windowSize.x / tileSize.x, (float)this->game->windowSize.y / tileSize.y };
 }
 Map::~Map()
 {
