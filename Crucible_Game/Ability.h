@@ -55,10 +55,14 @@ public:
 	};
 	AbInfo info;
 	std::vector<sf::Vector2f> drawPositions;
+	std::vector<sf::Vector2i> area;
 
 	std::vector<sf::Vector2i> getArea(sf::Vector2i origin);
 
 	std::vector<sf::Vector2i> getActiveTiles(sf::Vector2i pPos, sf::Vector2i mPos);
+
+
+	void pushPosition(sf::Vector2f pos);
 
 	sf::Sprite sprite;
 	AnimationHandler animHandler;

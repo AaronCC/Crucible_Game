@@ -3,6 +3,30 @@
 #define TILE_SIZE this->game->tileSize
 #define RMB_SLOT 7
 #include <cmath>
+
+void Player::resolveLineOfSight(bool los)
+{
+	if (los)
+	{
+		queuedAction = Action::ABILITY;
+		queuedPoints.clear();
+		queuedAbility = new Ability(rmbAbility);
+		for (auto tile : queuedAbility->getActiveTiles(tilePos, *mIndex))
+			addQueuedPoint(tile);
+		queuedCooldown = queuedAbility->cooldown;
+		queuedAbilitySlotNum = RMB_SLOT;
+		checkLineOfSight = true;
+		this->tickCount = queuedAbility->tickCost;
+	}
+	else
+		clearQueuedPoints();
+}
+
+void Player::resolveAbilityOnTile(sf::Vector2i pos)
+{
+	queuedAbility->pushPosition({ (float)pos.x*TILE_SIZE.x,(float)pos.y*TILE_SIZE.y });
+}
+
 void Player::handleInput()
 {
 	this->hud.handleInput();
@@ -42,14 +66,7 @@ void Player::handleInput()
 	{
 		if (hud.cooldowns[RMB_SLOT].timer <= 0)
 		{
-			queuedAction = Action::ABILITY;
-			queuedPoints.clear();
-			queuedAbility = new Ability(rmbAbility);
-			for (auto tile : queuedAbility->getActiveTiles(tilePos, *mIndex))
-				addQueuedPoint(tile);
-			queuedCooldown = queuedAbility->cooldown;
-			queuedAbilitySlotNum = RMB_SLOT;
-			this->tickCount = queuedAbility->tickCost;
+			checkLineOfSight = true;
 		}
 	}
 }

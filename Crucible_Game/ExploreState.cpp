@@ -23,6 +23,7 @@ ExploreState::ExploreState(Game* game)
 	this->old_mLeftState = true;
 	this->player.updateTilePos();
 	resolveFoW();
+	rTime = 0.01f;
 }
 
 ExploreState::~ExploreState()
@@ -43,6 +44,7 @@ void ExploreState::draw(const float dt)
 	fTime += dt;
 	fps++;
 	testText.setString("FPS: " + std::to_string(fTotal));
+
 	this->player.draw(dt);
 	//this->game->window.draw(testText);
 }
@@ -56,6 +58,44 @@ void ExploreState::update(const float dt)
 	this->player.updateAnim(this->camera.view);
 	if (player.resolveActions)
 		resolveGameState(player.tickCount);
+	if (resolving.first)
+	{
+		rTimeTotal += dt;
+		if (rTimeTotal >= rTime)
+		{
+			std::queue<std::string> msgs;
+			if (player.queuedAction == Player::Action::ABILITY)
+			{
+				for (auto point : player.getQueuedPoints())
+				{
+					if (map->getTile(point.x, point.y)->passable)
+					{
+						if (map->hasLineOfSight(player.tilePos, point))
+							player.resolveAbilityOnTile(point);
+					}
+				}
+				player.clearQueuedPoints();
+				msgs.push(player.activateQueuedAbility());
+				player.resolveAbilityCDs(resolving.second);
+			}
+			else if (player.queuedAction == Player::Action::MOVE)
+			{
+				if (player.moveNext())
+				{
+					resolveFoW();
+					msgs.push("Moved");
+				}
+				else
+				{
+					this->player.clearWayPoints();
+					player.resolveAbilityCDs(resolving.second);
+					resolving = { false,0 };
+				}
+			}
+			rTimeTotal = 0;
+			player.queueHudMsg(msgs);
+		}
+	}
 }
 
 void ExploreState::handleInput()
@@ -104,8 +144,13 @@ void ExploreState::handleInput()
 		old_mLeftState = false;
 
 	this->player.handleInput();
-	
+	if (player.checkLineOfSight)
+	{
+		player.resolveLineOfSight(map->hasLineOfSight(player.tilePos, map->mouseIndex));
+		player.checkLineOfSight = false;
+	}
 	sf::Vector2f center = view.getCenter();
+
 }
 
 void ExploreState::resolveFoW()
@@ -124,6 +169,8 @@ void ExploreState::resolveFoW()
 
 void ExploreState::resolveGameState(unsigned int ticks)
 {
+	resolving = { true,ticks };
+	/*
 	std::queue<std::string> msgs;
 	if (player.queuedAction == Player::Action::ABILITY)
 		msgs.push(player.activateQueuedAbility());
@@ -136,5 +183,6 @@ void ExploreState::resolveGameState(unsigned int ticks)
 	player.resolveAbilityCDs(ticks);
 	player.queueHudMsg(msgs);
 	this->player.clearWayPoints();
+	*/
 }
 

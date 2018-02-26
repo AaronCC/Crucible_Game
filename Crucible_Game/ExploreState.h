@@ -18,6 +18,9 @@ public:
 	int fps;
 	int fTotal;
 	float fTime;
+	std::pair<bool,int> resolving;
+	float rTimeTotal = 0;
+	float rTime;
 
 	std::vector<Ability*> activeAbilities;
 

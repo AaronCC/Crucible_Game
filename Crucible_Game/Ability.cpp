@@ -30,7 +30,6 @@ std::vector<sf::Vector2i> Ability::getArea(sf::Vector2i origin)
 
 std::vector<sf::Vector2i> Ability::getActiveTiles(sf::Vector2i pPos, sf::Vector2i mPos)
 {
-	std::vector<sf::Vector2i> area;
 	sf::Vector2i target;
 	sf::Vector2f dir = { (float)pPos.x - (float)mPos.x, (float)pPos.y - (float)mPos.y };
 	float mag = helper.magnitude(dir);
@@ -46,19 +45,14 @@ std::vector<sf::Vector2i> Ability::getActiveTiles(sf::Vector2i pPos, sf::Vector2
 		if (target.y < 0)
 			target.y = 0;
 	}
-	/*if (path.size() <= range)
-		target = { path[path.size() - 1].first, path[path.size() - 1].second };
-	else
-		target = { path[range].first,path[range].second };*/
 	area = getArea(target);
 	drawPositions.clear();
-	for (auto point : area)
-	{
-		drawPositions.push_back({ point.x *32.f, point.y*32.f });
-	}
 	return area;
 }
-
+void Ability::pushPosition(sf::Vector2f pos)
+{
+	drawPositions.push_back(pos);
+}
 void Ability::update(float dt)
 {
 	durTimer -= dt;

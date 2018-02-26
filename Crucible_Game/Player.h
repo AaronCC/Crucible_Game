@@ -83,7 +83,8 @@ public:
 	sf::Vector2i tilePos;
 
 	Helper helper;
-
+	void resolveLineOfSight(bool los);
+	void resolveAbilityOnTile(sf::Vector2i pos);
 	void handleInput();
 	void handleEvent(sf::Event event);
 	void draw(float dt);
@@ -103,10 +104,20 @@ public:
 	}
 	void updateAnim(sf::View view);
 
+	bool checkLineOfSight = false;
+
 	sf::Vector2f getForce() { return totalForce; }
 	void addQueuedPoint(sf::Vector2i point)
 	{
 		queuedPoints.push_back({ point.x, point.y });
+	}
+	void clearQueuedPoints()
+	{
+		queuedPoints.clear();
+	}
+	std::vector<sf::Vector2i> getQueuedPoints()
+	{
+		return this->queuedPoints;
 	}
 	void addWayPoint(std::pair<int, int> point) { 
 		queuedPoints.push_back({ point.first, point.second });

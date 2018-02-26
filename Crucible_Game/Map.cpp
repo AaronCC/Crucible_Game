@@ -3,6 +3,31 @@
 #include "Dungeon.h"
 
 
+bool Map::hasLineOfSight(sf::Vector2i from, sf::Vector2i to)
+{
+	sf::Vector2i dir = to - from;
+	sf::Vector2i atLocal;
+	sf::Vector2f ray = { dir.x * 32.f, dir.y * 32.f };
+	sf::Vector2f at = { from.x * 32.f, from.y * 32.f };
+	float mag = helper.magnitude(ray);
+	sf::Vector2f rayI = helper.normalized(ray, mag) * 12.f;
+	atLocal = globalToTilePos(at);
+	sf::Vector2i diff;
+	sf::Vector2i nextLocal;
+	while (atLocal != to)
+	{
+		nextLocal = globalToTilePos(at);
+		if (std::abs(diff.x) >= std::abs(dir.x) && std::abs(diff.y) >= std::abs(dir.y))
+			break;
+		diff += nextLocal - atLocal;
+		if (!getTile(atLocal.x, atLocal.y)->passable)
+			return false;
+		at += rayI;
+		atLocal = nextLocal;
+	}
+	return true;
+}
+
 void Map::draw(sf::RenderWindow & window, float dt)
 {
 
@@ -33,6 +58,20 @@ void Map::draw(sf::RenderWindow & window, float dt)
 		cantSelect.draw(window, dt);
 	return;
 
+}
+
+sf::Vector2i Map::globalToTilePos(sf::Vector2f global)
+{
+	sf::Vector2i local;
+	local.x = ::ceil(global.x / 32);
+	local.y = ::ceil(global.y / 32);
+	if (global.x < 0)
+		global.x = 0;
+	else if (global.x > width)
+		global.x = width - 1;
+	if (global.y < 0)
+		global.y = 0;
+	return local;
 }
 
 void Map::update(float dt)
