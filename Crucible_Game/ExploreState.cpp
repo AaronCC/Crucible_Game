@@ -70,8 +70,8 @@ void ExploreState::update(const float dt)
 				{
 					if (map->getTile(point.x, point.y)->passable)
 					{
-						if (map->hasLineOfSight(player.tilePos, point))
-							player.resolveAbilityOnTile(point);
+						sf::Vector2i los = map->hasLineOfSight(player.tilePos, point);
+						player.resolveAbilityOnTile(los);
 					}
 				}
 				player.clearQueuedPoints();

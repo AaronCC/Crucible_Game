@@ -83,7 +83,7 @@ public:
 	sf::Vector2i tilePos;
 
 	Helper helper;
-	void resolveLineOfSight(bool los);
+	void resolveLineOfSight(sf::Vector2i los);
 	void resolveAbilityOnTile(sf::Vector2i pos);
 	void handleInput();
 	void handleEvent(sf::Event event);

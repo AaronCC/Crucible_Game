@@ -3,29 +3,32 @@
 #include "Dungeon.h"
 
 
-bool Map::hasLineOfSight(sf::Vector2i from, sf::Vector2i to)
+sf::Vector2i Map::hasLineOfSight(sf::Vector2i from, sf::Vector2i to)
 {
 	sf::Vector2i dir = to - from;
 	sf::Vector2i atLocal;
+	sf::Vector2i diff;
+	sf::Vector2i nextLocal;
 	sf::Vector2f ray = { dir.x * 32.f, dir.y * 32.f };
 	sf::Vector2f at = { from.x * 32.f, from.y * 32.f };
 	float mag = helper.magnitude(ray);
 	sf::Vector2f rayI = helper.normalized(ray, mag) * 12.f;
 	atLocal = globalToTilePos(at);
-	sf::Vector2i diff;
-	sf::Vector2i nextLocal;
 	while (atLocal != to)
 	{
+		while (globalToTilePos(at) == atLocal)
+		{
+			at += rayI;
+		}
 		nextLocal = globalToTilePos(at);
-		if (std::abs(diff.x) >= std::abs(dir.x) && std::abs(diff.y) >= std::abs(dir.y))
-			break;
 		diff += nextLocal - atLocal;
-		if (!getTile(atLocal.x, atLocal.y)->passable)
-			return false;
-		at += rayI;
+		if (std::abs(diff.x) >= std::abs(dir.x) && std::abs(diff.y) >= std::abs(dir.y))
+			return to;
+		if (!getTile(nextLocal.x, nextLocal.y)->passable)
+			return atLocal;
 		atLocal = nextLocal;
 	}
-	return true;
+	return to;
 }
 
 void Map::draw(sf::RenderWindow & window, float dt)
@@ -85,7 +88,7 @@ sf::Vector2i Map::getSelectPos()
 {
 	sf::Vector2f camPos = this->camera->view.getCenter();
 	sf::Vector2f camSize = this->camera->view.getSize();
-	sf::Vector2f mousePos = 
+	sf::Vector2f mousePos =
 		this->game->window.mapPixelToCoords(sf::Mouse::getPosition(this->game->window), this->camera->view);
 	mousePos -= {16, 16};
 	this->mouseIndex.x = std::ceil(mousePos.x / 32);

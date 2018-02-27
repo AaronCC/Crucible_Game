@@ -4,22 +4,16 @@
 #define RMB_SLOT 7
 #include <cmath>
 
-void Player::resolveLineOfSight(bool los)
+void Player::resolveLineOfSight(sf::Vector2i los)
 {
-	if (los)
-	{
-		queuedAction = Action::ABILITY;
-		queuedPoints.clear();
-		queuedAbility = new Ability(rmbAbility);
-		for (auto tile : queuedAbility->getActiveTiles(tilePos, *mIndex))
-			addQueuedPoint(tile);
-		queuedCooldown = queuedAbility->cooldown;
-		queuedAbilitySlotNum = RMB_SLOT;
-		checkLineOfSight = true;
-		this->tickCount = queuedAbility->tickCost;
-	}
-	else
-		clearQueuedPoints();
+	queuedAction = Action::ABILITY;
+	queuedPoints.clear();
+	for (auto tile : queuedAbility->getActiveTiles(tilePos, los))
+		addQueuedPoint(tile);
+	queuedCooldown = queuedAbility->cooldown;
+	queuedAbilitySlotNum = RMB_SLOT;
+	checkLineOfSight = true;
+	this->tickCount = queuedAbility->tickCost;
 }
 
 void Player::resolveAbilityOnTile(sf::Vector2i pos)
@@ -66,6 +60,7 @@ void Player::handleInput()
 	{
 		if (hud.cooldowns[RMB_SLOT].timer <= 0)
 		{
+			queuedAbility = new Ability(rmbAbility);
 			checkLineOfSight = true;
 		}
 	}

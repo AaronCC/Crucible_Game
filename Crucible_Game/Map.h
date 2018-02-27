@@ -25,7 +25,7 @@ public:
 	sf::Vector2i getSelectPos();
 	sf::Vector2i mouseIndex;
 	Helper helper;
-	bool hasLineOfSight(sf::Vector2i from, sf::Vector2i to);
+	sf::Vector2i hasLineOfSight(sf::Vector2i from, sf::Vector2i to);
 
 	void draw(sf::RenderWindow & window, float dt);
 	sf::Vector2i globalToTilePos(sf::Vector2f global);
