@@ -103,28 +103,28 @@ public:
 		this->slotNum = a.slotNum;
 		this->tickCost = a.tickCost;
 		this->name = a.name;
-		this->description = description;
+		this->description = a.description;
 		this->info = a.info;
 		this->secType = a.secType;
 		this->range = a.range;
+		this->texName = a.texName;
 	}
-
+	std::string texName;
 	Ability(Game* game,
 		sf::Texture& texture,
+		std::string texName,
 		Animation animation,
 		sf::Vector2u size,
 		ID id,
 		float cooldown,
-		int speed,
-		unsigned int slotNum,
 		unsigned int tickCost,
 		std::string name,
 		std::string description)
 	{
 		this->name = name;
+		this->texName = texName;
 		this->tickCost = tickCost;
 		this->slotNum = slotNum;
-		this->speed = speed;
 		this->cooldown = cooldown;
 		this->size = size;
 		this->id = id;

@@ -32,8 +32,11 @@ public:
 	{
 		return typeStrings[slotType];
 	}
-
-	std::vector<std::string> getBuffString()
+	virtual std::string getName()
+	{
+		return this->name;
+	}
+	virtual std::vector<std::string> getBuffString()
 	{
 		std::vector<std::string> buffStr;
 		for (int i = 0; i < NUM_ITEM_BUFFS; i++)
@@ -46,6 +49,7 @@ public:
 		}
 		return buffStr;
 	}
+	virtual std::string getItemTexName() { return ""; }
 
 	Item(std::string name, std::vector<int> buffs, SlotType type)
 	{
@@ -71,6 +75,20 @@ public:
 	}
 	std::string getDesc() {
 		return ability->description;
+	}
+	std::vector<std::string> getBuffString()
+	{
+		std::vector<std::string> buffStr;
+		
+		return { getDesc() };
+	}
+
+	virtual std::string getItemTexName() { 
+		return ability->texName;
+	}
+
+	virtual std::string getName() {
+		return this->ability->name;
 	}
 private:
 	Ability * ability;

@@ -74,6 +74,7 @@ void ExploreState::update(const float dt)
 						player.resolveAbilityOnTile(los);
 					}
 				}
+				resolving = { false,0 };
 				player.clearQueuedPoints();
 				msgs.push(player.activateQueuedAbility());
 				player.resolveAbilityCDs(resolving.second);

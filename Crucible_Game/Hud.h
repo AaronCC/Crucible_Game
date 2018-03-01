@@ -154,11 +154,11 @@ public:
 		infoBack.setOutlineColor({ 150, 150, 200 });
 
 		slotBack.setSize({ invSlotW, invSlotH });
-		slotBack.setFillColor(sf::Color::Black);
+		slotBack.setFillColor({ 27, 31, 38 });
 		slotBack.setOrigin({ 0,0 });
 		slotBack.setPosition(this->position);
 		slotBack.setOutlineThickness(slotBorder);
-		slotBack.setOutlineColor({ 150, 150, 200 });
+		slotBack.setOutlineColor(sf::Color::Black);
 		sf::Vector2f padd{ 4, 2 };
 	}
 
@@ -339,16 +339,24 @@ public:
 		{
 			scrollSlots.push_back(InvSlot(i, false, this->game, 2));
 		}
-		abilityMap["slash"] = Ability(this->game, game->texmgr.getRef("slash"),
-			{ 0,3,0.1f }, { 32,32 }, Ability::ID::SLASH, 10, 1, 7, 2, "slash",
-			"Melee slash in an arc");
+		abilityMap["slash"] = Ability(this->game, game->texmgr.getRef("slash"), "slash_icon",
+			{ 0,3,0.1f }, { 32,32 }, Ability::ID::SLASH, 10, 2, "slash",
+			"Melee slash in an arc"); 
+		abilityMap["move"] = Ability(this->game, game->texmgr.getRef("move_icon"), "move_icon",
+				{ 0,3,0.1f }, { 32,32 }, Ability::ID::SLASH, 10, 2, "move",
+				"Move to target location");
 		Ability* slash = new Ability(abilityMap["slash"]);
 		scroll = new Scroll("Slash",
 			{ 0,0,0,0 },
 			Item::SlotType::SCR,
 			slash);
-		scrollSlots[0].setItem(scroll);
-		std::vector<std::string> scEqNames = { "0","1","2","3","4","5","6","RMB","LMB" };
+		scrollSlots[0].setItem(scroll); 
+		Ability* move = new Ability(abilityMap["move"]);
+		scroll = new Scroll("Move",
+			{ 0,0,0,0 },
+			Item::SlotType::SCR,
+			move);
+		std::vector<std::string> scEqNames = { "1","2","3","4","5","6","LMB","RMB" };
 		for (int i = 0; i < A_SLOT_COUNT; i++)
 		{
 			eqScrolls.push_back({ InvSlot(i,true,this->game,2),
@@ -356,6 +364,7 @@ public:
 			eqScrolls[i].second.setPosition(eqScrolls[i].first.position - sf::Vector2f(0, 4 + tSize));
 			eqScrolls[i].second.setFillColor({ 255, 220, 125 });
 		}
+		eqScrolls[6].first.setItem(scroll);
 #pragma endregion
 		/* END */
 		slider.setSize({ 10, (invHeight + 10) / ((float)itemSlots.size() - maxScHeight + 2) });
@@ -367,7 +376,7 @@ public:
 		deleteButton.first.setOrigin({ 0,0 });
 		deleteButton.first.setPosition({ 25 + xOffset,10 + invHeight - (1.5*spacing) });
 		deleteButton.first.setOutlineThickness(2.f);
-		deleteButton.first.setOutlineColor({ 150,150,200 });
+		deleteButton.first.setOutlineColor(sf::Color::Black);
 		deleteButton.second = sf::Text("Destroy", game->fonts["main_font"], tSize);
 		deleteButton.second.setPosition(deleteButton.first.getPosition() + (deleteButton.first.getSize() / 4.2f));
 		deleteButton.second.setFillColor({ 255, 90, 50 });
@@ -385,12 +394,12 @@ public:
 					if (selType == Hovering::EQI)
 					{
 						eqItems[selected].first.removeItem();
-						eqItems[selected].first.slotBack.setOutlineColor({ 150,150,200 });
+						eqItems[selected].first.slotBack.setOutlineColor(sf::Color::Black);
 					}
 					else
 					{
 						eqScrolls[selected].first.removeItem();
-						eqScrolls[selected].first.slotBack.setOutlineColor({ 150,150,200 });
+						eqScrolls[selected].first.slotBack.setOutlineColor(sf::Color::Black);
 					}
 				}
 				else
@@ -398,15 +407,15 @@ public:
 					if (selType == Hovering::ITM)
 					{
 						itemSlots[selected].removeItem();
-						itemSlots[selected].slotBack.setOutlineColor({ 150,150,200 });
+						itemSlots[selected].slotBack.setOutlineColor(sf::Color::Black);
 					}
 					else
 					{
 						scrollSlots[selected].removeItem();
-						scrollSlots[selected].slotBack.setOutlineColor({ 150,150,200 });
+						scrollSlots[selected].slotBack.setOutlineColor(sf::Color::Black);
 					}
 				}
-				deleteButton.first.setOutlineColor({ 150,150,200 });
+				deleteButton.first.setOutlineColor(sf::Color::Black);
 				selected = -1;
 				delSelect = false;
 				return;
@@ -418,15 +427,15 @@ public:
 			}
 		}
 		else {
-			deleteButton.first.setOutlineColor({ 150,150,200 });
+			deleteButton.first.setOutlineColor(sf::Color::Black);
 			for (int i = 0; i < eqItems.size(); i++)
-				eqItems[i].first.slotBack.setOutlineColor({ 150,150,200 });
+				eqItems[i].first.slotBack.setOutlineColor(sf::Color::Black);
 			for (int i = 0; i < itemSlots.size(); i++)
-				itemSlots[i].slotBack.setOutlineColor({ 150,150,200 });
+				itemSlots[i].slotBack.setOutlineColor(sf::Color::Black);
 			for (int i = 0; i < eqItems.size(); i++)
-				eqScrolls[i].first.slotBack.setOutlineColor({ 150,150,200 });
+				eqScrolls[i].first.slotBack.setOutlineColor(sf::Color::Black);
 			for (int i = 0; i < itemSlots.size(); i++)
-				scrollSlots[i].slotBack.setOutlineColor({ 150,150,200 });
+				scrollSlots[i].slotBack.setOutlineColor(sf::Color::Black);
 			switch (hovType)
 			{
 			case Hovering::EQI:
@@ -435,7 +444,7 @@ public:
 				{
 					int slotType = eqItems[hovering].first.getItemSlotType();
 					eqItems[hovering].first.selected = false;
-					eqItems[hovering].first.slotBack.setOutlineColor({ 150,150,200 });
+					eqItems[hovering].first.slotBack.setOutlineColor(sf::Color::Black);
 					int selectedSlotType = eqItems[hovering].first.getItemSlotType();
 					if (selectedSlotType != -1)
 					{
@@ -461,7 +470,7 @@ public:
 				{
 					int slotType = itemSlots[selected].getItemSlotType();
 					itemSlots[selected].selected = false;
-					itemSlots[selected].slotBack.setOutlineColor({ 150,150,200 });
+					itemSlots[selected].slotBack.setOutlineColor(sf::Color::Black);
 					if (slotType != -1)
 					{
 						eqToSlot(slotType, itemSlots, eqItems);
@@ -487,7 +496,7 @@ public:
 				{
 					int slotType = eqScrolls[hovering].first.getItemSlotType();
 					eqScrolls[hovering].first.selected = false;
-					eqScrolls[hovering].first.slotBack.setOutlineColor({ 150,150,200 });
+					eqScrolls[hovering].first.slotBack.setOutlineColor(sf::Color::Black);
 					int selectedSlotType = eqScrolls[hovering].first.getItemSlotType();
 					if (selectedSlotType != -1)
 					{
@@ -520,7 +529,7 @@ public:
 				{
 					int slotType = scrollSlots[selected].getItemSlotType();
 					scrollSlots[selected].selected = false;
-					scrollSlots[selected].slotBack.setOutlineColor({ 150,150,200 });
+					scrollSlots[selected].slotBack.setOutlineColor(sf::Color::Black);
 					if (slotType != -1)
 					{
 						/*eqToSlot(slotType, scrollSlots, eqScrolls);
@@ -639,7 +648,7 @@ public:
 		{
 			slotText[i].setFont(game->fonts["main_font"]);
 			if (i < A_SLOT_COUNT - 2)
-				slotText[i].setString(std::to_string(i));
+				slotText[i].setString(std::to_string(i+1));
 		}
 		slotText[A_SLOT_COUNT - 2].setString("LMB");
 		slotText[A_SLOT_COUNT - 1].setString("RMB");

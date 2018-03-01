@@ -38,7 +38,10 @@ void Player::handleInput()
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::I) && keys[sf::Keyboard::I] == false)
 	{
 		if (this->hud.showState == Hud::ShowState::SHOW_INV)
+		{
 			this->hud.showState = Hud::ShowState::SHOW_NONE;
+			updateAbilityBar();
+		}
 		else
 			this->hud.showState = Hud::ShowState::SHOW_INV;
 		keys[sf::Keyboard::I] = true;
@@ -60,12 +63,71 @@ void Player::handleInput()
 	{
 		if (hud.cooldowns[RMB_SLOT].timer <= 0)
 		{
-			queuedAbility = new Ability(rmbAbility);
-			checkLineOfSight = true;
+			queueAbility(RMB_SLOT);
+		}
+	}
+	/*if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	{
+		if (hud.cooldowns[RMB_SLOT].timer <= 0)
+		{
+			queueAbility(7);
+		}
+	}*/
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num1))
+	{
+		if (hud.cooldowns[RMB_SLOT].timer <= 0)
+		{
+			queueAbility(0);
+		}
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num2))
+	{
+		if (hud.cooldowns[RMB_SLOT].timer <= 0)
+		{
+			queueAbility(1);
+		}
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num3))
+	{
+		if (hud.cooldowns[RMB_SLOT].timer <= 0)
+		{
+			queueAbility(2);
+		}
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num4))
+	{
+		if (hud.cooldowns[RMB_SLOT].timer <= 0)
+		{
+			queueAbility(3);
+		}
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num5))
+	{
+		if (hud.cooldowns[RMB_SLOT].timer <= 0)
+		{
+			queueAbility(4);
+		}
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num6))
+	{
+		if (hud.cooldowns[RMB_SLOT].timer <= 0)
+		{
+			queueAbility(5);
 		}
 	}
 }
-
+void Player::queueAbility(int slotIndex)
+{
+	Item* itm = inventory.eqScrolls[slotIndex].first.getItem();
+	if (itm == nullptr)
+		return;
+	std::string abStr = itm->getName();
+	if (abStr != "")
+	{
+		queuedAbility = new Ability(inventory.abilityMap[abStr]);
+		checkLineOfSight = true;
+	}
+}
 void Player::handleEvent(sf::Event event)
 {
 	switch (event.type)
@@ -208,6 +270,40 @@ void Player::updateAbilities(float dt)
 		if (rm < rmCache.size() - 1)
 			rmCache[rm + 1]--;
 	}
+}
+
+void Player::updateAbilityBar()
+{
+	std::string lmb, rmb = "";
+	std::vector<std::pair<sf::Keyboard::Key, std::string>> slotIDs;
+	sf::Keyboard::Key keys[6] = {
+		sf::Keyboard::Key::Num1,
+		sf::Keyboard::Key::Num2,
+		sf::Keyboard::Key::Num3,
+		sf::Keyboard::Key::Num4,
+		sf::Keyboard::Key::Num5,
+		sf::Keyboard::Key::Num6
+	};
+	Item* itm;
+	for (int i = 0; i < inventory.eqScrolls.size() - 2; i++)
+	{
+		itm = inventory.eqScrolls[i].first.getItem();
+		if (itm != nullptr)
+		{
+			slotIDs.push_back({ keys[i], itm->getItemTexName() });
+		}
+		else
+		{
+			slotIDs.push_back({ keys[i], "" });
+		}
+	}
+	itm = inventory.eqScrolls[6].first.getItem();
+	if (itm != nullptr)
+		lmb = itm->getItemTexName();
+	itm = inventory.eqScrolls[7].first.getItem();
+	if (itm != nullptr)
+		rmb = itm->getItemTexName();
+	hud.setSlotSprites(slotIDs, lmb, rmb);
 }
 
 Player::~Player()

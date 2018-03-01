@@ -86,6 +86,7 @@ public:
 	void resolveLineOfSight(sf::Vector2i los);
 	void resolveAbilityOnTile(sf::Vector2i pos);
 	void handleInput();
+	void queueAbility(int slotIndex);
 	void handleEvent(sf::Event event);
 	void draw(float dt);
 	void update(float dt);
@@ -201,8 +202,8 @@ public:
 		hud = Hud(game, { "globe","life_globe", "ability_slot", "can_select", "cant_select" });
 
 		/* TEMP */
-		rmbAbility = Ability(this->game, game->texmgr.getRef("slash"),
-			{ 0,3,0.1f }, { 32,32 }, Ability::ID::SLASH, 10, 1, 7, 2, "slash", "Slash");
+		rmbAbility = Ability(this->game, game->texmgr.getRef("slash"),"slash",
+			{ 0,3,0.1f }, { 32,32 }, Ability::ID::SLASH, 10, 2, "slash", "Slash");
 		hud.setSlotSprites({}, "move_icon", "slash_icon");
 
 		queueSprite.setTexture(this->game->texmgr.getRef("queue_select"));
@@ -213,6 +214,8 @@ public:
 
 		this->inventory = Inventory(this->game);
 	}
+
+	void updateAbilityBar();
 
 	~Player();
 

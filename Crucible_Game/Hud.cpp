@@ -3,11 +3,13 @@
 void Hud::setSlotSprites(std::vector<std::pair<sf::Keyboard::Key, std::string>> slotSpriteIDs, std::string lmbID, std::string rmbID)
 {
 	unsigned int idNum = 0;
+	aSlotSprites.clear();
 	for (auto id : slotSpriteIDs)
 	{
 		if (id.second == "")
 		{
 			this->aSlotSprites[id.first].second = false;
+			idNum++;
 			continue;
 		}
 		this->aSlotSprites[id.first].second = true;
@@ -58,6 +60,11 @@ void Hud::draw(float dt)
 	for (int i = 0; i < A_SLOT_COUNT; i++)
 	{
 		this->game->window.draw(slotText[i]);
+	}
+	for (auto slot : aSlotSprites)
+	{
+		if(slot.second.second)
+			this->game->window.draw(slot.second.first);
 	}
 	if (rmbSprite.second)
 	{
