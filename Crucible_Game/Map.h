@@ -4,9 +4,11 @@
 #include "Gui.h"
 #include "Camera.h"
 #include "Helper.h"
+#include "Enemy.h"
 class Map
 {
 public:
+	std::vector<Enemy> enemies;
 	std::vector<Tile> tiles;
 	std::vector<Tile>* getTiles() { return &tiles; }
 	int width, height;

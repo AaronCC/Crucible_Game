@@ -14,9 +14,9 @@ void Ability::activate(sf::Vector2i pPos, sf::Vector2i mPos)
 
 std::vector<sf::Vector2i> Ability::getArea(sf::Vector2i origin)
 {
-	if (secType == AbSecType::TARG)
+	if (info.sec == AbSecType::TARG)
 		return { origin };
-	else if (secType == AbSecType::AREA)
+	else if (info.sec == AbSecType::AREA)
 	{
 		std::vector<sf::Vector2i> area;
 		for (auto point : helper.getNeighbors(origin.x, origin.y, 1000, 1000, info.area))
@@ -33,11 +33,11 @@ std::vector<sf::Vector2i> Ability::getActiveTiles(sf::Vector2i pPos, sf::Vector2
 	sf::Vector2i target;
 	sf::Vector2f dir = { (float)pPos.x - (float)mPos.x, (float)pPos.y - (float)mPos.y };
 	float mag = helper.magnitude(dir);
-	if (mag < range)
+	if (mag < info.range)
 		target = mPos;
 	else
 	{
-		dir = helper.normalized(dir, mag) * (float)range;
+		dir = helper.normalized(dir, mag) * (float)info.range;
 		sf::Vector2i tileDir = { (int)std::ceil(dir.x), (int)std::ceil(dir.y) };
 		target = pPos - tileDir;
 		if (target.x < 0)

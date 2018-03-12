@@ -141,6 +141,40 @@ void Game::loadTextures()
 		texFile.close();
 	}
 }
+void Game::loadSounds()
+{
+	std::string line;
+	std::ifstream sndFile("media/Sounds.txt");
+	if (sndFile.is_open())
+	{
+		while (std::getline(sndFile, line))
+		{
+			std::istringstream iss(line);
+			std::vector<std::string> sndPair((std::istream_iterator<std::string>(iss)),
+				std::istream_iterator<std::string>());
+			sndmgr.loadSound(sndPair[0], sndPair[1]);
+		}
+		sndFile.close();
+	}
+}
+
+void Game::loadMusic()
+{
+	std::string line;
+	std::ifstream mscFile("media/Music.txt");
+	if (mscFile.is_open())
+	{
+		while (std::getline(mscFile, line))
+		{
+			std::istringstream iss(line);
+			std::vector<std::string> mscPair((std::istream_iterator<std::string>(iss)),
+				std::istream_iterator<std::string>());
+			sndmgr.loadMusic(mscPair[0], mscPair[1]);
+		}
+		mscFile.close();
+	}
+}
+
 
 void Game::loadFonts()
 {

@@ -69,6 +69,12 @@
     <ClCompile Include="Item.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SoundManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -128,9 +134,21 @@
     <ClInclude Include="GenInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SoundManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="media\Textures.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="media\Sounds.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="media\Music.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>

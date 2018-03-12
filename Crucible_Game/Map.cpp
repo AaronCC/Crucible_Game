@@ -55,6 +55,12 @@ void Map::draw(sf::RenderWindow & window, float dt)
 			this->tiles[y*this->width + x].draw(window, dt);
 		}
 	}
+
+	for (auto enemy : enemies)
+	{
+		enemy.draw();
+	}
+
 	if (this->tiles[mouseIndex.y*this->width + mouseIndex.x].passable)
 		canSelect.draw(window, dt);
 	else
@@ -80,6 +86,10 @@ sf::Vector2i Map::globalToTilePos(sf::Vector2f global)
 void Map::update(float dt)
 {
 	sf::Vector2i selectPos = getSelectPos();
+	for (int i = 0; i < enemies.size(); i++)
+	{
+		enemies[i].update();
+	}
 	canSelect.setPosition(selectPos);
 	cantSelect.setPosition(selectPos);
 }
@@ -179,6 +189,7 @@ void Map::loadMap()
 			this->tiles[y*this->width + x].sprite.setPosition((sf::Vector2f)pos);
 			pos.x += tileSize.x;
 		}
+		enemies.push_back(Enemy("dummy", game, { width / 2,(height/2)+3 }, 10));
 		pos.x -= tileSize.x * width;
 		pos.y += tileSize.y;
 	}

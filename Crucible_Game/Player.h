@@ -213,6 +213,8 @@ public:
 		setPos(position);
 
 		this->inventory = Inventory(this->game);
+
+		updateAbilityBar();
 	}
 
 	void updateAbilityBar();

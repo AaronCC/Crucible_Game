@@ -23,13 +23,22 @@ private:
 };
 
 class DebuffEff : public AbEffect {
-
+public:
+	DebuffEff() {
+		this->effType = DEBUFF;
+	}
 };
 class BuffEff : public AbEffect {
-
+public:
+	BuffEff() {
+		this->effType = BUFF;
+	}
 };
 class InstEff : public AbEffect {
-
+public:
+	InstEff() {
+		this->effType = INST;
+	}
 };
 class Ability
 {
@@ -45,13 +54,20 @@ public:
 		AREA,
 		TARG
 	};
-	AbSecType secType;
-
 	struct AbInfo {
 		AbPrmType prm;
 		AbSecType sec;
 		std::vector<AbEffect> eff;
 		int area;
+		int range;
+		AbInfo(AbPrmType prm, AbSecType sec, int area, int range)
+		{
+			this->prm = prm;
+			this->sec = sec;
+			this->area = area;
+			this->range = range;
+		}
+		AbInfo() {}
 	};
 	AbInfo info;
 	std::vector<sf::Vector2f> drawPositions;
@@ -67,8 +83,6 @@ public:
 	sf::Sprite sprite;
 	AnimationHandler animHandler;
 	Game* game;
-
-	int range;
 
 	ID id;
 	sf::Vector2u size;
@@ -89,6 +103,9 @@ public:
 
 	void resolveCollision() {}
 
+	void setInfo(AbInfo info) { this->info = info; }
+	void addEff(AbEffect eff) { this->info.eff.push_back(eff); }
+
 	Ability() {}
 
 	Ability(const Ability& a)
@@ -105,8 +122,6 @@ public:
 		this->name = a.name;
 		this->description = a.description;
 		this->info = a.info;
-		this->secType = a.secType;
-		this->range = a.range;
 		this->texName = a.texName;
 	}
 	std::string texName;
@@ -137,9 +152,6 @@ public:
 		this->animHandler.addAnim(animation);
 		this->duration = animation.duration * animation.getLength();
 		this->description = description;
-		this->info.area = 1;
-		this->secType = AbSecType::AREA;
-		this->range = 4;
 	}
 
 	~Ability();

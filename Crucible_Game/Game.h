@@ -6,6 +6,7 @@
 #include <stack>
 
 #include "TextureManager.h"
+#include "SoundManager.h"
 #include "Tile.h"
 
 #define TILE_SIZE 32
@@ -32,6 +33,7 @@ public:
 
 	sf::RenderWindow window;
 	TextureManager texmgr;
+	SoundManager sndmgr;
 
 	void gameLoop();
 
@@ -43,6 +45,10 @@ private:
 	void loadTiles();
 
 	void loadTextures();
+
+	void loadSounds();
+
+	void loadMusic();
 
 	void loadFonts();
 };

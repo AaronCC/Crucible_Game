@@ -342,6 +342,7 @@ public:
 		abilityMap["slash"] = Ability(this->game, game->texmgr.getRef("slash"), "slash_icon",
 			{ 0,3,0.1f }, { 32,32 }, Ability::ID::SLASH, 10, 2, "slash",
 			"Melee slash in an arc"); 
+		abilityMap["slash"].setInfo(Ability::AbInfo(Ability::AbPrmType::RANGED, Ability::AbSecType::TARG, 0, 4));
 		abilityMap["move"] = Ability(this->game, game->texmgr.getRef("move_icon"), "move_icon",
 				{ 0,3,0.1f }, { 32,32 }, Ability::ID::SLASH, 10, 2, "move",
 				"Move to target location");
