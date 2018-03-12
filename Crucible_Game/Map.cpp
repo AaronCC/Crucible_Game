@@ -94,6 +94,17 @@ void Map::update(float dt)
 	cantSelect.setPosition(selectPos);
 }
 
+void Map::activateObjsAtTile(sf::Vector2i pos)
+{
+	for (int i = 0; i < enemies.size(); i++)
+	{
+		if (enemies[i].tilePos == pos)
+			enemies[i].active = true;
+		else
+			enemies[i].active = false;
+	}
+}
+
 sf::Vector2i Map::getSelectPos()
 {
 	sf::Vector2f camPos = this->camera->view.getCenter();
@@ -124,6 +135,17 @@ void Map::handleInput(sf::Event event)
 	default:
 		break;
 	}
+}
+
+std::vector<Enemy*> Map::getEnemiesAtPoint(sf::Vector2i point)
+{
+	std::vector<Enemy*> aEnemies;
+	for (int i = 0; i < enemies.size(); i++)
+	{
+		if (enemies[i].tilePos == point)
+			aEnemies.push_back(&enemies[i]);
+	}
+	return aEnemies;
 }
 
 void Map::loadMap()
@@ -189,10 +211,10 @@ void Map::loadMap()
 			this->tiles[y*this->width + x].sprite.setPosition((sf::Vector2f)pos);
 			pos.x += tileSize.x;
 		}
-		enemies.push_back(Enemy("dummy", game, { width / 2,(height/2)+3 }, 10));
 		pos.x -= tileSize.x * width;
 		pos.y += tileSize.y;
 	}
+	enemies.push_back(Enemy("dummy", game, { width / 2,(height / 2) + 3 }, 10));
 }
 
 Tile* Map::getTile(int x, int y)

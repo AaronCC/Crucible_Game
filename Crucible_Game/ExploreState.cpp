@@ -66,8 +66,17 @@ void ExploreState::update(const float dt)
 			std::queue<std::string> msgs;
 			if (player.queuedAction == Player::Action::ABILITY)
 			{
+				std::vector<AbEffect::Effect> abEffs = player.queuedAbility->getEffects();
 				for (auto point : player.getQueuedPoints())
 				{
+					std::vector<Enemy*> enemies = map->getEnemiesAtPoint(point);
+					for (auto enemy : enemies)
+					{
+						for (auto eff : abEffs)
+						{
+							enemy->applyEff(eff);
+						}
+					}
 					if (map->getTile(point.x, point.y)->passable)
 					{
 						sf::Vector2i los = map->hasLineOfSight(player.tilePos, point);
@@ -163,7 +172,9 @@ void ExploreState::resolveFoW()
 			sf::Vector2i pos = { x + player.tilePos.x, y + player.tilePos.y };
 			if (pos.x < 0 || pos.y < 0 || pos.x > map->width - 1 || pos.y > map->height - 1)
 				continue;
-			map->getTile(pos.x, pos.y)->reveal();
+			Tile* tile = map->getTile(pos.x, pos.y);
+			tile->reveal();
+			
 		}
 	}
 }

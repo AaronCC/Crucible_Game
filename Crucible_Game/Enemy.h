@@ -15,6 +15,9 @@ public:
 
 	Game * game;
 
+	Helper::Stats stats;
+
+	bool active;
 	int hp;
 	int maxHp;
 	sf::Sprite sprite;
@@ -22,6 +25,10 @@ public:
 	sf::Vector2f pos;
 	sf::RectangleShape hpBar;
 	sf::RectangleShape hpBarBack;
+
+	std::vector<AbEffect::Effect> effs;
+
+	void resolveTick();
 
 	Enemy(std::string spriteName, Game* game, sf::Vector2i pos, int hp)
 	{
@@ -39,10 +46,13 @@ public:
 		hpBarBack.setOrigin(0, 0);
 		hpBarBack.setFillColor(sf::Color::Red);
 		hpBarBack.setSize({ TILE_SIZE, 4 });
-		this->dealDamage(1);
+		this->stats = { 1,1,1,1 };
+		this->active = false;
 	}
 
 	void dealDamage(int dmg);
+
+	void applyEff(AbEffect::Effect eff);
 
 	virtual void update();
 	virtual void draw();

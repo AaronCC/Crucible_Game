@@ -27,13 +27,6 @@ public:
 		NONE
 	};
 
-	struct Stats {
-		int attack;
-		int defense;
-		int agility;
-		int knowledge;
-	};
-
 	Action queuedAction;
 
 	int health;
@@ -51,7 +44,7 @@ public:
 	Hud hud;
 	sf::View hudView;
 
-	Stats stats;
+	Helper::Stats stats;
 
 	float testTimer = 0;
 

@@ -4,41 +4,56 @@
 #include "Game.h"
 #include "Helper.h"
 #include "GenInfo.h"
+#include <time.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include "Helper.h"
 
 class AbEffect {
 public:
-	enum EffType {
-		DEBUFF,
-		BUFF,
-		INST
+	enum DamageType {
+		PHYS,
+		FIRE,
+		ICE,
+		LGHT,
+		POIS
 	};
-	EffType effType;
+	struct Damage {
+		DamageType type;
+		int min, max;
+		Damage(DamageType type, int min, int max)
+		{
+			this->type = type;
+			this->min = min;
+			this->max = max;
+		}
+		Damage() {}
+		int getDamage() {
+			return rand() % max + min;
+		}
+	};
+	struct Effect {
+		Helper::Stats stats;
+		Damage damage;
+		int dur;
+		Effect(Helper::Stats stats, Damage damage, int dur)
+		{
+			this->stats = stats;
+			this->damage = damage;
+			this->dur = dur;
+		}
+		Effect() {}
+	};
+	Effect eff;
 
-	AbEffect()
+	virtual Effect getEffects() { return eff; }
+
+	AbEffect(Effect eff)
 	{
-
+		this->eff = eff;
 	}
 	~AbEffect() {}
 private:
-};
-
-class DebuffEff : public AbEffect {
-public:
-	DebuffEff() {
-		this->effType = DEBUFF;
-	}
-};
-class BuffEff : public AbEffect {
-public:
-	BuffEff() {
-		this->effType = BUFF;
-	}
-};
-class InstEff : public AbEffect {
-public:
-	InstEff() {
-		this->effType = INST;
-	}
 };
 class Ability
 {
@@ -57,7 +72,6 @@ public:
 	struct AbInfo {
 		AbPrmType prm;
 		AbSecType sec;
-		std::vector<AbEffect> eff;
 		int area;
 		int range;
 		AbInfo(AbPrmType prm, AbSecType sec, int area, int range)
@@ -69,6 +83,7 @@ public:
 		}
 		AbInfo() {}
 	};
+	std::vector<AbEffect> effs;
 	AbInfo info;
 	std::vector<sf::Vector2f> drawPositions;
 	std::vector<sf::Vector2i> area;
@@ -104,7 +119,15 @@ public:
 	void resolveCollision() {}
 
 	void setInfo(AbInfo info) { this->info = info; }
-	void addEff(AbEffect eff) { this->info.eff.push_back(eff); }
+
+	std::vector<AbEffect::Effect> getEffects() {
+		std::vector<AbEffect::Effect> effEffs;
+		for (auto eff : this->effs)
+		{
+			effEffs.push_back(eff.getEffects());
+		}
+		return effEffs;
+	}
 
 	Ability() {}
 
@@ -123,6 +146,7 @@ public:
 		this->description = a.description;
 		this->info = a.info;
 		this->texName = a.texName;
+		this->effs = a.effs;
 	}
 	std::string texName;
 	Ability(Game* game,
@@ -152,6 +176,11 @@ public:
 		this->animHandler.addAnim(animation);
 		this->duration = animation.duration * animation.getLength();
 		this->description = description;
+		AbEffect eff = AbEffect(AbEffect::Effect({ 0,0,0,0 },
+			AbEffect::Damage(
+				AbEffect::DamageType::ICE, 1, 10),
+			1));
+		this->effs.push_back(eff);
 	}
 
 	~Ability();

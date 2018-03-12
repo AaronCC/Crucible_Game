@@ -19,6 +19,7 @@ void Player::resolveLineOfSight(sf::Vector2i los)
 void Player::resolveAbilityOnTile(sf::Vector2i pos)
 {
 	queuedAbility->pushPosition({ (float)pos.x*TILE_SIZE.x,(float)pos.y*TILE_SIZE.y });
+
 }
 
 void Player::handleInput()
