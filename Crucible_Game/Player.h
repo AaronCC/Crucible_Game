@@ -34,6 +34,7 @@ public:
 
 	unsigned int tickCount;
 	bool resolveActions;
+	bool engaged;
 
 	WalkState walkState;
 	WalkState oldWalkState;
@@ -206,6 +207,8 @@ public:
 		setPos(position);
 
 		this->inventory = Inventory(this->game);
+
+		this->engaged = false;
 
 		updateAbilityBar();
 	}

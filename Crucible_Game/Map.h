@@ -32,7 +32,7 @@ public:
 	void draw(sf::RenderWindow & window, float dt);
 	sf::Vector2i globalToTilePos(sf::Vector2f global);
 	void update(float dt);
-	void activateObjsAtTile(sf::Vector2i pos);
+	bool activateObjsAtTile(std::vector<sf::Vector2i> pos);
 	void handleInput(sf::Event event);
 
 	std::vector<Enemy*> getEnemiesAtPoint(sf::Vector2i point);

@@ -38,8 +38,15 @@ std::vector<sf::Vector2i> Ability::getActiveTiles(sf::Vector2i pPos, sf::Vector2
 	else
 	{
 		dir = helper.normalized(dir, mag) * (float)info.range;
-		sf::Vector2i tileDir = { (int)std::ceil(dir.x), (int)std::ceil(dir.y) };
-		target = pPos - tileDir;
+		sf::Vector2i tileDir = { (int)std::ceil(std::abs(dir.x)), (int)std::ceil(std::abs(dir.y)) };
+		if (dir.x < 0)
+			target.x = pPos.x + tileDir.x;
+		else if (dir.x >= 0)
+			target.x = pPos.x - tileDir.x;
+		if (dir.y < 0)
+			target.y = pPos.y + tileDir.y;
+		else if (dir.y >= 0)
+			target.y = pPos.y - tileDir.y;
 		if (target.x < 0)
 			target.x = 0;
 		if (target.y < 0)

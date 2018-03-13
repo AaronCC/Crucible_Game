@@ -22,6 +22,8 @@ public:
 	float rTimeTotal = 0;
 	float rTime;
 
+	std::vector<Tile*> fowCache;
+
 	std::vector<Ability*> activeAbilities;
 
 	virtual void draw(const float dt);
@@ -32,6 +34,10 @@ public:
 
 private:
 	bool old_mLeftState = false;
+	bool old_wState = false;
+	bool old_sState = false;
+	bool old_aState = false;
+	bool old_dState = false;
 	sf::Font testFont;
 	sf::Text testText;
 	PathFinder pf;

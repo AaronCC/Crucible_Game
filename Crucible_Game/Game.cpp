@@ -88,7 +88,7 @@ void Game::loadTiles()
 			TexMap("grass2", sf::Vector2u{ 2,0 }));*/
 
 	this->tileAtlas["dungeon"] =
-		Tile(this->tileSize, 1, texmgr.getRef("dungeon"), texmgr.getRef("fow"),
+		Tile(this->tileSize, 1, texmgr.getRef("dungeon"), texmgr.getRef("fow"), texmgr.getRef("fow_dark"),
 		{ 
 			staticAnim, // Unused
 		    staticAnim, // Floor
@@ -101,13 +101,13 @@ void Game::loadTiles()
 			TileType::STATIC);
 
 	this->tileAtlas["can_select"] =
-		Tile(this->tileSize, 1, texmgr.getRef("can_select"), texmgr.getRef("fow"),
+		Tile(this->tileSize, 1, texmgr.getRef("can_select"), texmgr.getRef("fow"), texmgr.getRef("fow_dark"),
 			{
 				staticAnim,
 			},
 			TileType::STATIC);
 	this->tileAtlas["cant_select"] =
-		Tile(this->tileSize, 1, texmgr.getRef("cant_select"), texmgr.getRef("fow"),
+		Tile(this->tileSize, 1, texmgr.getRef("cant_select"), texmgr.getRef("fow"), texmgr.getRef("fow_dark"),
 			{
 				staticAnim,
 			},
@@ -120,7 +120,7 @@ void Game::loadTiles()
 
 	Animation walkAnim(0,8,0.1);
 	this->tileAtlas["walktest"] =
-		Tile(sf::Vector2u(64, 64), 1, texmgr.getRef("walktest"), texmgr.getRef("fow"),
+		Tile(sf::Vector2u(64, 64), 1, texmgr.getRef("walktest"), texmgr.getRef("fow"), texmgr.getRef("fow_dark"),
 		{ walkAnim, walkAnim, walkAnim, walkAnim },
 			TileType::ANIMATED);
 }

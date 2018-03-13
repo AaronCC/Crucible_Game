@@ -19,7 +19,7 @@ class InvSlot {
 #define spacing 40
 #define invSlotW 182
 #define invSlotH 32
-#define infoWidth 148
+#define infoWidth 200
 #define tSize 12
 #define charWidth 8
 #define slotBorder 2
@@ -37,7 +37,6 @@ public:
 	float lineH = tSize + 4;
 	int maxInfoChar = infoWidth / charWidth;
 	int maxNameChar = invSlotW / charWidth;
-
 	std::vector<std::string> wrapWord(int lineLength, std::string name)
 	{
 		std::vector<std::string> wrapped;
@@ -111,10 +110,10 @@ public:
 		linecount = 0;
 		for (auto buff : item->getBuffString())
 		{
-			for (auto line : wrapWord(maxInfoChar, buff))
+			for (auto line : wrapWord(maxInfoChar, buff.second))
 			{
 				buffInfoText.push_back(sf::Text(line, game->fonts["main_font"], tSize));
-				buffInfoText[linecount].setFillColor(sf::Color::White);
+				buffInfoText[linecount].setFillColor(buff.first);
 				linecount++;
 			}
 		}
@@ -160,6 +159,7 @@ public:
 		slotBack.setOutlineThickness(slotBorder);
 		slotBack.setOutlineColor(sf::Color::Black);
 		sf::Vector2f padd{ 4, 2 };
+
 	}
 
 	~InvSlot() {}
@@ -342,7 +342,7 @@ public:
 		abilityMap["slash"] = Ability(this->game, game->texmgr.getRef("slash"), "slash_icon",
 			{ 0,3,0.1f }, { 32,32 }, Ability::ID::SLASH, 10, 2, "slash",
 			"Melee slash in an arc"); 
-		abilityMap["slash"].setInfo(Ability::AbInfo(Ability::AbPrmType::RANGED, Ability::AbSecType::TARG, 0, 4));
+		abilityMap["slash"].setInfo(Ability::AbInfo(Ability::AbPrmType::MELEE, Ability::AbSecType::TARG, 0, 1));
 		abilityMap["move"] = Ability(this->game, game->texmgr.getRef("move_icon"), "move_icon",
 				{ 0,3,0.1f }, { 32,32 }, Ability::ID::SLASH, 10, 2, "move",
 				"Move to target location");

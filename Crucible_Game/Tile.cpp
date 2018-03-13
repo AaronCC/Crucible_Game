@@ -17,7 +17,9 @@ void Tile::draw(sf::RenderWindow& window, float dt)
 
 	/* Draw the tile */
 	window.draw(this->sprite);
-	if (fow)
+	if (dark_fow)
+		window.draw(this->fowDarkSprite);
+	else if (fow)
 		window.draw(this->fowSprite);
 	return;
 }
@@ -25,6 +27,7 @@ void Tile::draw(sf::RenderWindow& window, float dt)
 void Tile::reveal()
 {
 	this->fow = false;
+	this->dark_fow = false;
 }
 
 void Tile::update()

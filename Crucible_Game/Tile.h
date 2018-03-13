@@ -91,6 +91,8 @@ public:
 	sf::Uint32 unitWidth;
 
 	bool fow;
+	bool dark_fow;
+
 	Node node;
 
 	TileType tileType;
@@ -101,10 +103,11 @@ public:
 
 	bool passable;
 	sf::Sprite fowSprite;
+	sf::Sprite fowDarkSprite;
 
 	/* Constructor */
 	Tile() { }
-	Tile(sf::Vector2u tileSize, const unsigned int height, sf::Texture& texture, sf::Texture& fow,
+	Tile(sf::Vector2u tileSize, const unsigned int height, sf::Texture& texture, sf::Texture& fow, sf::Texture& fow_dark,
 		const std::vector<Animation>& animations,
 		const TileType tileType)
 	{
@@ -120,6 +123,8 @@ public:
 		this->sprite.setTexture(texture);
 		this->fowSprite.setTexture(fow);
 		this->fowSprite.setOrigin({ (float)tileSize.x / 2, (float)tileSize.y / 2 });
+		this->fowDarkSprite.setTexture(fow_dark);
+		this->fowDarkSprite.setOrigin({ (float)tileSize.x / 2, (float)tileSize.y / 2 });
 		this->animHandler.frameSize = sf::IntRect(0, 0, tileSize.x, tileSize.y*height);
 		for (auto animation : animations)
 		{
@@ -132,12 +137,14 @@ public:
 		sf::Vector2f roundedPos = { std::round((float)position.x),std::round((float)position.y) };
 		this->sprite.setPosition(roundedPos);
 		this->fowSprite.setPosition(roundedPos);
+		this->fowDarkSprite.setPosition(roundedPos);
 	}
 	void setPosition(sf::Vector2i position, int x, int y) {
 		this->position = position;
 		sf::Vector2f roundedPos = { std::round((float)position.x),std::round((float)position.y) };
 		this->sprite.setPosition(roundedPos);
 		this->fowSprite.setPosition(roundedPos);
+		this->fowDarkSprite.setPosition(roundedPos);
 		this->node.x = x;
 		this->node.y = y;
 		this->node.parent = nullptr;

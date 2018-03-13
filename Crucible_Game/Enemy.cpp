@@ -29,6 +29,12 @@ void Enemy::dealDamage(int dmg)
 	this->hp -= dmg;
 	float p = hp / (float)maxHp;
 	this->hpBar.setSize({ p*TILE_SIZE,4 });
+	if (hp <= 0)
+	{
+		this->pos = { -1000.f,-1000.f };
+		this->active = false;
+		update();
+	}
 }
 
 void Enemy::applyEff(AbEffect::Effect eff)
@@ -45,6 +51,7 @@ void Enemy::update()
 	this->tilePos.x = std::ceil((pos.x) / (float)TILE_SIZE);
 	this->tilePos.y = std::ceil((pos.y) / (float)TILE_SIZE);
 	sf::Vector2f halfTSize = { TILE_SIZE / 2, TILE_SIZE / 2 };
+	sprite.setPosition(pos);
 	hpBar.setPosition(pos - halfTSize);
 	hpBarBack.setPosition(pos - halfTSize);
 }

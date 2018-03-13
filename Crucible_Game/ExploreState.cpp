@@ -111,6 +111,7 @@ void ExploreState::update(const float dt)
 void ExploreState::handleInput()
 {
 	sf::Event event;
+	std::queue<std::string> msgs;
 	while (this->game->window.pollEvent(event))
 	{
 		player.handleEvent(event);
@@ -132,27 +133,84 @@ void ExploreState::handleInput()
 
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && old_mLeftState == false)
 	{
-		if (player.hud.showState == Hud::ShowState::SHOW_INV)
+		if (player.hud.showState == Hud::ShowState::SHOW_INV && (player.inventory.showInfo || player.inventory.delHover))
 		{
-			if (player.hud.showState == Hud::ShowState::SHOW_INV && (player.inventory.showInfo || player.inventory.delHover))
 				player.inventory.select();
 		}
-		else if (player.hud.showState == Hud::ShowState::SHOW_NONE)
+		if (!player.engaged)
 		{
-			std::vector<std::pair<int, int>> path = pf.findPath(this->player.tilePos, this->map->mouseIndex);
-			this->player.clearWayPoints();
-			for (auto point : path)
+			if (player.hud.showState == Hud::ShowState::SHOW_NONE)
 			{
-				this->player.addWayPoint(point);
-			}
+				std::vector<std::pair<int, int>> path = pf.findPath(this->player.tilePos, this->map->mouseIndex);
+				this->player.clearWayPoints();
+				for (auto point : path)
+				{
+					this->player.addWayPoint(point);
+				}
 
-			this->player.queuedAction = Player::Action::MOVE;
+				this->player.queuedAction = Player::Action::MOVE;
+			}
+		}
+		else
+		{
+			msgs.push("Cannot quick-move during combat. Use WSAD.");
 		}
 		old_mLeftState = true;
 	}
 	else if (!sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		old_mLeftState = false;
-
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) && old_wState == false)
+	{
+		std::pair<int, int> point = { player.tilePos.x,player.tilePos.y - 1 };
+		if (map->getTile(point.first, point.second)->passable)
+		{
+			this->player.clearWayPoints();
+			this->player.addWayPoint(point);
+			this->player.queuedAction = Player::Action::MOVE;
+		}
+		old_wState = true;
+	}
+	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+		old_wState = false;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) && old_sState == false)
+	{
+		std::pair<int, int> point = { player.tilePos.x,player.tilePos.y + 1 };
+		if (map->getTile(point.first, point.second)->passable)
+		{
+			this->player.clearWayPoints();
+			this->player.addWayPoint(point);
+			this->player.queuedAction = Player::Action::MOVE;
+		}
+		old_sState = true;
+	}
+	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+		old_sState = false;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && old_aState == false)
+	{
+		std::pair<int, int> point = { player.tilePos.x - 1,player.tilePos.y };
+		if (map->getTile(point.first, point.second)->passable)
+		{
+			this->player.clearWayPoints();
+			this->player.addWayPoint(point);
+			this->player.queuedAction = Player::Action::MOVE;
+		}
+		old_aState = true;
+	}
+	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+		old_aState = false;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && old_dState == false)
+	{
+		std::pair<int, int> point = { player.tilePos.x + 1,player.tilePos.y };
+		if (map->getTile(point.first, point.second)->passable)
+		{
+			this->player.clearWayPoints();
+			this->player.addWayPoint(point);
+			this->player.queuedAction = Player::Action::MOVE;
+		}
+		old_dState = true;
+	}
+	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+		old_dState = false;
 	this->player.handleInput();
 	if (player.checkLineOfSight)
 	{
@@ -161,10 +219,17 @@ void ExploreState::handleInput()
 	}
 	sf::Vector2f center = view.getCenter();
 
+	player.queueHudMsg(msgs);
 }
 
 void ExploreState::resolveFoW()
 {
+	std::vector<sf::Vector2i> points;
+	for (auto tile : fowCache)
+	{
+		tile->fow = true;
+	}
+	fowCache.clear();
 	for (int y = -player.lightRadius; y <= player.lightRadius; y++)
 	{
 		for (int x = -player.lightRadius; x <= player.lightRadius; x++)
@@ -174,9 +239,17 @@ void ExploreState::resolveFoW()
 				continue;
 			Tile* tile = map->getTile(pos.x, pos.y);
 			tile->reveal();
-			
+			points.push_back({ pos.x,pos.y });
+			fowCache.push_back(tile);
 		}
 	}
+	if (map->activateObjsAtTile(points) && !player.engaged)
+	{
+		player.engaged = true;
+		player.clearWayPoints();
+	}
+	else
+		player.engaged = false;
 }
 
 void ExploreState::resolveGameState(unsigned int ticks)

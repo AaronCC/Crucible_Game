@@ -11,7 +11,6 @@ void Player::resolveLineOfSight(sf::Vector2i los)
 	for (auto tile : queuedAbility->getActiveTiles(tilePos, los))
 		addQueuedPoint(tile);
 	queuedCooldown = queuedAbility->cooldown;
-	queuedAbilitySlotNum = RMB_SLOT;
 	checkLineOfSight = true;
 	this->tickCount = queuedAbility->tickCost;
 }
@@ -64,6 +63,7 @@ void Player::handleInput()
 	{
 		if (hud.cooldowns[RMB_SLOT].timer <= 0)
 		{
+			queuedAbilitySlotNum = RMB_SLOT;
 			queueAbility(RMB_SLOT);
 		}
 	}
@@ -78,6 +78,7 @@ void Player::handleInput()
 	{
 		if (hud.cooldowns[RMB_SLOT].timer <= 0)
 		{
+			queuedAbilitySlotNum = 0;
 			queueAbility(0);
 		}
 	}
@@ -85,6 +86,7 @@ void Player::handleInput()
 	{
 		if (hud.cooldowns[RMB_SLOT].timer <= 0)
 		{
+			queuedAbilitySlotNum = 1;
 			queueAbility(1);
 		}
 	}
@@ -92,6 +94,7 @@ void Player::handleInput()
 	{
 		if (hud.cooldowns[RMB_SLOT].timer <= 0)
 		{
+			queuedAbilitySlotNum = 2;
 			queueAbility(2);
 		}
 	}
@@ -99,6 +102,7 @@ void Player::handleInput()
 	{
 		if (hud.cooldowns[RMB_SLOT].timer <= 0)
 		{
+			queuedAbilitySlotNum = 3;
 			queueAbility(3);
 		}
 	}
@@ -106,6 +110,7 @@ void Player::handleInput()
 	{
 		if (hud.cooldowns[RMB_SLOT].timer <= 0)
 		{
+			queuedAbilitySlotNum = 4;
 			queueAbility(4);
 		}
 	}
@@ -113,6 +118,7 @@ void Player::handleInput()
 	{
 		if (hud.cooldowns[RMB_SLOT].timer <= 0)
 		{
+			queuedAbilitySlotNum = 5;
 			queueAbility(5);
 		}
 	}

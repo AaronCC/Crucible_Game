@@ -8,6 +8,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "Helper.h"
+#include <random>
+#include <vector>
+#include <iostream>
 
 class AbEffect {
 public:
@@ -29,7 +32,10 @@ public:
 		}
 		Damage() {}
 		int getDamage() {
-			return rand() % max + min;
+			std::random_device rd; 
+			std::mt19937 gen(rd());
+			std::uniform_int_distribution<> dist(0, max - min);
+			return dist(gen) + min;
 		}
 	};
 	struct Effect {
@@ -179,8 +185,13 @@ public:
 		AbEffect eff = AbEffect(AbEffect::Effect({ 0,0,0,0 },
 			AbEffect::Damage(
 				AbEffect::DamageType::ICE, 1, 10),
-			1));
+			1)); 
+		AbEffect eff2 = AbEffect(AbEffect::Effect({ 0,0,0,0 },
+				AbEffect::Damage(
+					AbEffect::DamageType::PHYS, 50,50),
+				5));
 		this->effs.push_back(eff);
+		this->effs.push_back(eff2);
 	}
 
 	~Ability();

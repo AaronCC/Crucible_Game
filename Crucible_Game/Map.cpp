@@ -22,7 +22,7 @@ sf::Vector2i Map::hasLineOfSight(sf::Vector2i from, sf::Vector2i to)
 		}
 		nextLocal = globalToTilePos(at);
 		diff += nextLocal - atLocal;
-		if (std::abs(diff.x) >= std::abs(dir.x) && std::abs(diff.y) >= std::abs(dir.y))
+		if (std::abs(diff.x) >= std::abs(dir.x) && std::abs(diff.y) >= std::abs(dir.y) && getTile(nextLocal.x, nextLocal.y)->passable)
 			return to;
 		if (!getTile(nextLocal.x, nextLocal.y)->passable)
 			return atLocal;
@@ -88,21 +88,30 @@ void Map::update(float dt)
 	sf::Vector2i selectPos = getSelectPos();
 	for (int i = 0; i < enemies.size(); i++)
 	{
-		enemies[i].update();
+		if (enemies[i].active)
+			enemies[i].update();
 	}
 	canSelect.setPosition(selectPos);
 	cantSelect.setPosition(selectPos);
 }
 
-void Map::activateObjsAtTile(sf::Vector2i pos)
+bool Map::activateObjsAtTile(std::vector<sf::Vector2i> pos)
 {
+	bool hit = false;
+	int hc = 0;
 	for (int i = 0; i < enemies.size(); i++)
 	{
-		if (enemies[i].tilePos == pos)
-			enemies[i].active = true;
-		else
-			enemies[i].active = false;
+		enemies[i].active = false;
+		for (auto point : pos)
+			if (enemies[i].tilePos == point)
+			{
+				enemies[i].active = true;
+				hc++;
+			}
 	}
+	if (hc > 0)
+		hit = true;
+	return hit;
 }
 
 sf::Vector2i Map::getSelectPos()
